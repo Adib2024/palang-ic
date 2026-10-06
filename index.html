@@ -106,6 +106,29 @@
         <label><input type="radio" name="mode" value="gabung"><span data-i18n="modeGabung">Gabung</span></label>
       </fieldset>
 
+      <div data-for="palang gabung">
+        <fieldset class="segmented small">
+          <legend data-i18n="shape">Bentuk palang</legend>
+          <label><input type="radio" name="palangShape" value="corner" checked><span data-i18n="shapeCorner">Cop sudut</span></label>
+          <label><input type="radio" name="palangShape" value="parallel"><span data-i18n="shapeParallel">Merentas</span></label>
+          <label><input type="radio" name="palangShape" value="x"><span data-i18n="shapeX">Silang (X)</span></label>
+        </fieldset>
+        <div data-shape="corner">
+          <fieldset class="corners">
+            <legend data-i18n="corner">Penjuru</legend>
+            <div class="corner-grid">
+              <label><input type="radio" name="corner" value="tl"><span data-i18n-attr="aria-label:cornerTL,title:cornerTL" aria-label="Atas kiri">◤</span></label>
+              <label><input type="radio" name="corner" value="tr"><span data-i18n-attr="aria-label:cornerTR,title:cornerTR" aria-label="Atas kanan">◥</span></label>
+              <label><input type="radio" name="corner" value="bl"><span data-i18n-attr="aria-label:cornerBL,title:cornerBL" aria-label="Bawah kiri">◣</span></label>
+              <label><input type="radio" name="corner" value="br"><span data-i18n-attr="aria-label:cornerBR,title:cornerBR" aria-label="Bawah kanan">◢</span></label>
+            </div>
+          </fieldset>
+          <label class="range"><span data-i18n="stampSize">Saiz cop</span>
+            <input type="range" id="stampSize" min="20" max="80" step="1"><output></output></label>
+          <p class="hint" data-i18n="dragHint">Tip: sentuh atau seret pada pratonton untuk alih cop.</p>
+        </div>
+      </div>
+
       <fieldset class="swatches">
         <legend data-i18n="color">Warna</legend>
         <label class="sw sw-black"><input type="radio" name="color" value="black" checked><span data-i18n="black">Hitam</span></label>
@@ -117,11 +140,6 @@
         <summary data-i18n="advanced">Tetapan lanjut</summary>
 
         <div data-for="palang gabung">
-          <fieldset class="segmented small">
-            <legend data-i18n="shape">Bentuk palang</legend>
-            <label><input type="radio" name="palangShape" value="parallel" checked><span data-i18n="shapeParallel">Dua garis selari</span></label>
-            <label><input type="radio" name="palangShape" value="x"><span data-i18n="shapeX">Silang (X)</span></label>
-          </fieldset>
           <fieldset class="segmented small">
             <legend data-i18n="lineStyle">Gaya garis</legend>
             <label><input type="radio" name="lineStyle" value="solid" checked><span data-i18n="solid">Penuh</span></label>
@@ -144,7 +162,7 @@
           <input type="range" id="fontSize" min="2" max="9" step="0.25"><output></output></label>
         <label class="range"><span data-i18n="opacity">Kelegapan</span>
           <input type="range" id="opacity" min="0.1" max="0.8" step="0.05"><output></output></label>
-        <label class="range"><span data-i18n="angle">Sudut</span>
+        <label class="range" data-angle><span data-i18n="angle">Sudut</span>
           <input type="range" id="angle" min="-60" max="60" step="1"><output></output></label>
         <button type="button" class="link" id="reset" data-i18n="reset">Set semula</button>
       </details>

@@ -1,4 +1,4 @@
-import { renderWatermark, composite } from './watermark.js';
+import { renderWatermark, composite, CORNER_ANGLE } from './watermark.js';
 import { loadPhoto } from './image-loader.js';
 import { buildPdf } from './pdf.js';
 import { applyI18n, t, TEMPLATES, todayDMY } from './i18n.js';
@@ -11,6 +11,9 @@ const MODE_DEFAULTS = {
   gabung: { opacity: 0.35, fontSize: 4, angle: -30, thickness: 0.5, density: 'mid' },
 };
 const MODES = Object.keys(MODE_DEFAULTS);
+const SHAPES = ['corner', 'parallel', 'x'];
+const CORNERS = ['tl', 'tr', 'bl', 'br'];
+const STAMP_SIZE_DEFAULT = 40;
 const PREVIEW_MAX = 1400;
 const EXPORT_QUALITY = 0.92;
 const PDF_MAX_SIDE = 2000;
@@ -25,12 +28,18 @@ const state = {
   template: store.load('template', 'ms') === 'en' ? 'en' : 'ms',
   addDate: store.load('addDate', false) === true,
   color: store.load('color', 'black'),
-  palangShape: store.load('palangShape', 'parallel'),
+  palangShape: SHAPES.includes(store.load('palangShape', 'corner')) ? store.load('palangShape', 'corner') : 'corner',
+  corner: CORNERS.includes(store.load('corner', 'tl')) ? store.load('corner', 'tl') : 'tl',
+  stampSize: Number(store.load('stampSize', STAMP_SIZE_DEFAULT)) || STAMP_SIZE_DEFAULT,
   lineStyle: store.load('lineStyle', 'solid'),
   perMode: Object.fromEntries(MODES.map((m) => [m, { ...MODE_DEFAULTS[m], ...(savedPerMode[m] || {}) }])),
   recipient: '',
   photos: { front: null, back: null },
+  // Stamp placement per side: a preset corner or a dragged position.
+  stamp: { front: null, back: null },
 };
+state.stamp.front = { corner: state.corner };
+state.stamp.back = { corner: state.corner };
 
 function watermarkText(forPreview) {
   const who = state.recipient.trim().toUpperCase().replace(/\s+/g, ' ');
@@ -40,12 +49,14 @@ function watermarkText(forPreview) {
   return text;
 }
 
-function options(forPreview = false) {
+function options(forPreview = false, side = 'front') {
   return {
     mode: state.mode,
     text: watermarkText(forPreview),
     color: state.color,
     palangShape: state.palangShape,
+    stampSize: state.stampSize,
+    stampAt: state.stamp[side],
     lineStyle: state.lineStyle,
     ...state.perMode[state.mode],
   };
@@ -58,6 +69,8 @@ function persist() {
   store.save('addDate', state.addDate);
   store.save('color', state.color);
   store.save('palangShape', state.palangShape);
+  store.save('corner', state.corner);
+  store.save('stampSize', state.stampSize);
   store.save('lineStyle', state.lineStyle);
   store.save('perMode', state.perMode);
 }
@@ -85,9 +98,15 @@ function drawPreview() {
     fig.hidden = !photo;
     if (!photo) continue;
     any = true;
-    composite($('canvas', fig), photo, photo.width, photo.height, options(true), PREVIEW_MAX);
+    const canvas = $('canvas', fig);
+    composite(canvas, photo, photo.width, photo.height, options(true, side), PREVIEW_MAX);
+    canvas.classList.toggle('draggable', stampActive());
   }
   $('#emptyPreview').hidden = any;
+}
+
+function stampActive() {
+  return state.mode !== 'tiled' && state.palangShape === 'corner';
 }
 
 /* ---------- Controls ---------- */
@@ -115,6 +134,12 @@ function syncControls() {
   $('#template').value = state.template;
   $('#addDate').checked = state.addDate;
   $$('[data-for]').forEach((el) => { el.hidden = !el.dataset.for.split(' ').includes(state.mode); });
+  $$('input[name="corner"]').forEach((r) => { r.checked = r.value === state.corner; });
+  $('#stampSize').value = state.stampSize;
+  $('#stampSize').nextElementSibling.textContent = `${state.stampSize}%`;
+  $('[data-shape="corner"]').hidden = state.palangShape !== 'corner';
+  // The angle slider has nothing to do in plain palang mode with a corner stamp.
+  $('[data-angle]').hidden = state.mode === 'palang' && state.palangShape === 'corner';
 }
 
 function bindRadio(name, apply) {
@@ -141,6 +166,21 @@ function bindControls() {
   bindRadio('mode', (v) => { state.mode = v; });
   bindRadio('color', (v) => { state.color = v; });
   bindRadio('palangShape', (v) => { state.palangShape = v; });
+  bindRadio('corner', (v) => {
+    state.corner = v;
+    state.stamp.front = { corner: v };
+    state.stamp.back = { corner: v };
+  });
+
+  const size = $('#stampSize');
+  size.addEventListener('input', () => {
+    state.stampSize = Number(size.value);
+    size.nextElementSibling.textContent = `${size.value}%`;
+    schedulePreview();
+  });
+  size.addEventListener('change', persist);
+
+  for (const side of ['front', 'back']) bindStampDrag(side);
   bindRadio('lineStyle', (v) => { state.lineStyle = v; });
   bindRadio('density', (v) => { state.perMode[state.mode].density = v; });
 
@@ -156,6 +196,9 @@ function bindControls() {
 
   $('#reset').addEventListener('click', () => {
     state.perMode[state.mode] = { ...MODE_DEFAULTS[state.mode] };
+    state.stampSize = STAMP_SIZE_DEFAULT;
+    state.stamp.front = { corner: state.corner };
+    state.stamp.back = { corner: state.corner };
     persist();
     syncControls();
     schedulePreview();
@@ -199,6 +242,34 @@ function bindControls() {
   $('#share').addEventListener('click', () => run(share));
 }
 
+// Tap or drag on a preview to move that side's corner stamp.
+function bindStampDrag(side) {
+  const canvas = $(`[data-preview="${side}"] canvas`);
+  let dragging = false;
+  const move = (e) => {
+    const r = canvas.getBoundingClientRect();
+    const prev = state.stamp[side];
+    state.stamp[side] = {
+      corner: 'custom',
+      x: Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)),
+      y: Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)),
+      angle: prev.corner === 'custom' ? prev.angle : CORNER_ANGLE[prev.corner],
+    };
+    schedulePreview();
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!stampActive()) return;
+    dragging = true;
+    canvas.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    move(e);
+  });
+  canvas.addEventListener('pointermove', (e) => { if (dragging) move(e); });
+  const end = () => { dragging = false; };
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+}
+
 function setPhoto(side, canvas) {
   state.photos[side] = canvas;
   const slot = $(`.slot[data-side="${side}"]`);
@@ -230,7 +301,7 @@ function fileBase() {
 
 function renderFull(side, maxSide) {
   const photo = state.photos[side];
-  return composite(document.createElement('canvas'), photo, photo.width, photo.height, options(), maxSide);
+  return composite(document.createElement('canvas'), photo, photo.width, photo.height, options(false, side), maxSide);
 }
 
 function toJpeg(canvas) {

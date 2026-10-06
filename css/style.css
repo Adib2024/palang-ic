@@ -163,7 +163,18 @@ legend { font-size: .9rem; font-weight: 600; margin-bottom: 6px; padding: 0; }
 .range { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; margin-bottom: 12px; font-size: .9rem; font-weight: 600; }
 .range input { grid-column: 1 / -1; grid-row: 2; width: 100%; accent-color: var(--accent); min-height: 32px; }
 .range output { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 500; }
-[data-for][hidden] { display: none; }
+[data-for][hidden], [data-shape][hidden], [data-angle][hidden] { display: none; }
+
+.corners .corner-grid { display: grid; grid-template-columns: repeat(2, 64px); gap: 8px; }
+.corners input { position: absolute; opacity: 0; pointer-events: none; }
+.corners span {
+  display: grid; place-items: center; height: 48px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg); cursor: pointer; font-size: 1.4rem; line-height: 1; color: var(--muted);
+}
+.corners input:checked + span { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.corners input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+.hint { margin: -4px 0 14px; font-size: .85rem; color: var(--muted); }
+.previews canvas.draggable { touch-action: none; cursor: crosshair; }
 
 .previews { display: grid; gap: 12px; }
 .previews figure { margin: 0; }
