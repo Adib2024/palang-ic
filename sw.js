@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user photos never pass through here (they're never fetched).
-const VERSION = 'palangic-v2';
+const VERSION = 'palangic-v3';
 const ASSETS = [
   './',
   'index.html',
@@ -11,6 +11,7 @@ const ASSETS = [
   'js/pdf.js',
   'js/i18n.js',
   'js/storage.js',
+  'js/theme.js',
   'manifest.webmanifest',
   'icons/icon.svg',
   'icons/icon-192.png',

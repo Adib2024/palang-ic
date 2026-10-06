@@ -11,12 +11,13 @@
   <meta name="referrer" content="no-referrer">
   <title>PalangIC</title>
   <meta name="description" content="Palang dan watermark gambar IC (MyKad) anda terus dalam telefon. Tiada apa-apa dimuat naik.">
-  <meta name="theme-color" content="#0f5c4a" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0d1513" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#13224a" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1630" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme.js"></script>
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
@@ -28,9 +29,13 @@
         <p class="tagline" data-i18n="tagline">Palang &amp; watermark IC anda sebelum hantar</p>
       </div>
     </div>
+    <div class="top-actions">
+    <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+            data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
     <div class="lang" role="group" aria-label="Bahasa / Language">
       <button type="button" data-lang="ms" aria-pressed="true">BM</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
     </div>
   </header>
 

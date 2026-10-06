@@ -4,6 +4,7 @@
 export const STRINGS = {
   ms: {
     tagline: 'Palang & watermark IC anda sebelum hantar',
+    themeToggle: 'Tukar tema cerah/gelap',
     privacy: 'Gambar anda diproses dalam telefon anda sahaja. Tiada apa-apa dimuat naik.',
     privacyMore: 'Cara semak',
     step1: '1. Pilih gambar',
@@ -70,6 +71,7 @@ export const STRINGS = {
   },
   en: {
     tagline: 'Mark your IC before you send it',
+    themeToggle: 'Switch light/dark theme',
     privacy: 'Your photo is processed on your phone only. Nothing is uploaded.',
     privacyMore: 'How to verify',
     step1: '1. Choose photo',
