@@ -31,7 +31,7 @@ cepat dan kemas.
 
 | Mod | Penerangan |
 | --- | --- |
-| **Palang** (lalai) | Dua garis selari menyerong dengan ayat di tengah, atau bentuk silang (X). Boleh ubah tebal garis, gaya (penuh/berganda), sudut, warna dan kelegapan. |
+| **Palang** (lalai) | **Cop sudut** (lalai): dua garis pendek dengan ayat di tengah, dicop pada penjuru kad. Pilih penjuru, laraskan saiz, atau sentuh/seret pada pratonton untuk alih. Juga ada gaya **merentas** penuh dan **silang (X)**. Boleh ubah tebal garis, gaya (penuh/berganda), warna dan kelegapan. |
 | **Watermark berulang** | Ayat diulang menyerong ke seluruh gambar (sedikit / sederhana / banyak). Ia meliputi gambar muka, nama dan nombor IC, jadi tidak boleh dipotong keluar. |
 | **Gabung** | Palang dan watermark berulang serentak, untuk perlindungan maksimum. |
 
@@ -87,7 +87,7 @@ much harder to reuse for anything else. PalangIC does this quickly and neatly.
 
 | Mode | Description |
 | --- | --- |
-| **Palang** (default) | Two parallel diagonal bars with the text between them, or an X cross. Adjust line thickness, style (solid/double), angle, colour and opacity. |
+| **Palang** (default) | **Corner stamp** (default): a short double bar with the text between the lines, stamped across a corner of the card. Pick the corner, set the size, or tap/drag on the preview to move it. **Full-width** bars and an **X cross** are also available. Adjust line thickness, style (solid/double), colour and opacity. |
 | **Repeating watermark** | The text tiles diagonally over the whole image (light / medium / heavy). It covers the face, name and IC number, so it can't be cropped out. |
 | **Combined** | Palang plus repeating watermark, for maximum protection. |
 
