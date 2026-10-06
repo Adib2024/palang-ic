@@ -22,7 +22,9 @@ export const DEFAULTS = {
   angle: -30, // degrees, negative = rising left to right
   fontSize: 4.5, // % of the image's shorter side
   density: 'mid',
-  palangShape: 'parallel', // 'parallel' | 'x'
+  palangShape: 'corner', // 'corner' | 'parallel' | 'x'
+  stampSize: 40, // corner stamp bar length, % of image width
+  stampAt: { corner: 'tl' }, // preset corner, or { corner: 'custom', x, y, angle }
   lineStyle: 'solid', // 'solid' | 'double'
   thickness: 0.6, // % of the image's shorter side
 };
@@ -60,7 +62,53 @@ function drawTextStrip(ctx, text, len, y) {
   for (let i = 0; i <= count + 1; i++, x += w) ctx.fillText(unit, x, y);
 }
 
+// Diagonal angle per corner so the stamp always cuts across that corner.
+export const CORNER_ANGLE = { tl: -45, br: -45, tr: 45, bl: 45 };
+
+/** Centre of the stamp as fractions of width/height for a preset corner. */
+export function cornerCenter(corner, w, h, size) {
+  const len = w * size / 100;
+  // At 45° each half of the bar spans len/2·cos45 ≈ 0.354·len on each axis.
+  const dx = Math.min(0.5, (len * 0.4) / w);
+  const dy = Math.min(0.5, (len * 0.4) / h);
+  return {
+    x: corner === 'tr' || corner === 'br' ? 1 - dx : dx,
+    y: corner === 'bl' || corner === 'br' ? 1 - dy : dy,
+  };
+}
+
+// Classic Malaysian palang: a short double bar with the purpose text
+// between the lines, stamped across one corner (or wherever it's dragged).
+function drawStamp(ctx, w, h, o) {
+  const len = w * o.stampSize / 100;
+  const thick = Math.max(1, Math.min(w, h) * o.thickness / 100);
+  const at = o.stampAt || { corner: 'tl' };
+  const pos = at.corner === 'custom' ? at : cornerCenter(at.corner, w, h, o.stampSize);
+  const angle = at.corner === 'custom' ? (at.angle ?? -45) : (CORNER_ANGLE[at.corner] ?? -45);
+
+  // Fit the text to ~90% of the bar length.
+  ctx.font = font(100);
+  const fontPx = Math.max(6, Math.min(len * 0.12, (100 * len * 0.9) / ctx.measureText(o.text).width));
+  ctx.font = font(fontPx);
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+
+  ctx.save();
+  ctx.translate(pos.x * w, pos.y * h);
+  ctx.rotate((angle * Math.PI) / 180);
+  const half = fontPx * 0.8 + thick;
+  drawLine(ctx, len, -half, thick, o.lineStyle);
+  drawLine(ctx, len, half, thick, o.lineStyle);
+  ctx.fillText(o.text, 0, fontPx * 0.06);
+  ctx.restore();
+  ctx.textAlign = 'start';
+}
+
 function drawPalang(ctx, w, h, o) {
+  if (o.palangShape === 'corner') {
+    drawStamp(ctx, w, h, o);
+    return;
+  }
   const base = Math.min(w, h);
   const diag = Math.hypot(w, h);
   const fontPx = base * (o.fontSize * 1.15) / 100;
@@ -135,7 +183,9 @@ export function renderWatermark(ctx, w, h, options) {
       combined && o.density === 'high' ? 'mid' : o.density);
   }
   if (o.mode === 'palang' || o.mode === 'gabung') {
-    ctx.globalAlpha = Math.min(1, o.opacity * 1.35);
+    // A corner stamp stays clear of the face and IC number, so it can be
+    // much bolder than a full-width bar.
+    ctx.globalAlpha = Math.min(1, o.opacity * (o.palangShape === 'corner' ? 2.2 : 1.35));
     drawPalang(ctx, w, h, o);
   }
   ctx.restore();
