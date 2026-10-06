@@ -71,7 +71,9 @@ function serve() {
 
         // Every mode / sub-option, screenshotted from the full-size render.
         const variants = [
-          ['palang', {}], ['palang-x', { palangShape: 'x' }], ['palang-double', { lineStyle: 'double' }],
+          ['palang-corner', {}], ['palang-corner-br', { stampAt: { corner: 'br' } }],
+          ['palang-full', { palangShape: 'parallel' }], ['palang-x', { palangShape: 'x' }],
+          ['palang-double', { palangShape: 'parallel', lineStyle: 'double' }],
           ['tiled', {}], ['tiled-high', { density: 'high' }], ['gabung', {}],
         ];
         for (const [name, extra] of variants) {
@@ -90,6 +92,26 @@ function serve() {
           }, { extra });
           fs.writeFileSync(path.join(OUT, `mode-${name}.jpg`), Buffer.from(b64, 'base64'));
         }
+
+        // Corner stamp is the default palang; picking a corner and dragging move it.
+        await page.click('input[name="mode"][value="palang"] + span');
+        const shape = await page.evaluate(() => window.__palangic.state.palangShape);
+        check('default palang shape is corner stamp', () => assert.strictEqual(shape, 'corner'));
+        await page.click('input[name="corner"][value="br"] + span');
+        const preset = await page.evaluate(() => window.__palangic.state.stamp.back.corner);
+        check('corner picker applies to both sides', () => assert.strictEqual(preset, 'br'));
+        const box = await page.locator('[data-preview="front"] canvas').boundingBox();
+        await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+        await page.mouse.down();
+        await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.6, { steps: 5 });
+        await page.mouse.up();
+        const dragged = await page.evaluate(() => window.__palangic.state.stamp);
+        check('dragging moves only that side\'s stamp', () => {
+          assert.strictEqual(dragged.front.corner, 'custom');
+          assert(Math.abs(dragged.front.x - 0.5) < 0.02 && Math.abs(dragged.front.y - 0.6) < 0.02, JSON.stringify(dragged.front));
+          assert.strictEqual(dragged.back.corner, 'br');
+        });
+        await page.locator('[data-preview="front"] canvas').screenshot({ path: path.join(OUT, 'dragged-preview.png') });
 
         // Mode is remembered across reloads.
         await page.click('input[name="mode"][value="tiled"] + span');
