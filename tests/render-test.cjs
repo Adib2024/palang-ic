@@ -151,6 +151,20 @@ function serve() {
         });
         check('CSP blocks fetch() to other hosts', () => assert(blocked));
 
+        // Theme toggle flips light/dark and is remembered.
+        await page.click('#themeToggle');
+        const flipped = await page.evaluate(() => document.documentElement.dataset.theme);
+        check('theme toggle switches to dark', () => assert.strictEqual(flipped, 'dark'));
+        await page.screenshot({ path: path.join(OUT, 'page-toggled-dark.png'), fullPage: true });
+        await page.reload();
+        const kept = await page.evaluate(() => document.documentElement.dataset.theme);
+        check('theme choice remembered', () => assert.strictEqual(kept, 'dark'));
+        await page.click('#themeToggle');
+        await page.setInputFiles('[data-input="front"]', path.join(__dirname, 'fixtures/sample-front-exif6.jpg'));
+        await page.setInputFiles('[data-input="back"]', path.join(__dirname, 'fixtures/sample-back.jpg'));
+        await page.waitForSelector('[data-preview="back"]:not([hidden])');
+        await page.fill('#recipient', 'cimb');
+
         // English toggle.
         await page.click('[data-lang="en"]');
         const banner = await page.textContent('.privacy strong');
