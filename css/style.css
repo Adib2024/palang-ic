@@ -1,39 +1,68 @@
 :root {
-  --bg: #f4f6f5;
+  --bg: #f3f5fb;
   --surface: #ffffff;
-  --text: #17201d;
-  --muted: #5b6a65;
-  --border: #d8e0dd;
-  --accent: #0f5c4a;
+  --text: #0b1630;
+  --muted: #55607a;
+  --border: #d9deea;
+  --accent: #13224a;
   --accent-text: #ffffff;
-  --accent-soft: #e3f1ec;
-  --privacy-bg: #e3f1ec;
-  --privacy-text: #0b4537;
-  --warn: #7a4b00;
-  --warn-bg: #fff4dc;
-  --focus: #1b7f66;
+  --cta: #f5b301;
+  --cta-text: #0b1630;
+  --link: #1d3a8a;
+  --privacy-bg: #13224a;
+  --privacy-text: #eef2ff;
+  --privacy-icon: #f5b301;
+  --warn: #6b4a00;
+  --warn-bg: #fff4d1;
+  --focus: #1d3a8a;
   --radius: 14px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 4px 16px rgba(0, 0, 0, .04);
-  color-scheme: light dark;
+  --shadow: 0 1px 2px rgba(11, 22, 48, .06), 0 4px 16px rgba(11, 22, 48, .05);
+  color-scheme: light;
 }
 
+/* Dark: follows the phone unless the user picked light with the toggle. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0d1513;
-    --surface: #16201d;
-    --text: #e6eeeb;
-    --muted: #9db0a9;
-    --border: #2a3733;
-    --accent: #3fb894;
-    --accent-text: #06231b;
-    --accent-soft: #173229;
-    --privacy-bg: #143128;
-    --privacy-text: #bfeedd;
-    --warn: #f3cf87;
-    --warn-bg: #2d2412;
-    --focus: #6fd8b7;
+  :root:not([data-theme="light"]) {
+    --bg: #0b1630;
+    --surface: #13224a;
+    --text: #eef2ff;
+    --muted: #a9b4d0;
+    --border: #26386a;
+    --accent: #f5b301;
+    --accent-text: #0b1630;
+    --cta: #f5b301;
+    --cta-text: #0b1630;
+    --link: #f7c948;
+    --privacy-bg: #1a2d5c;
+    --privacy-text: #eef2ff;
+    --privacy-icon: #f5b301;
+    --warn: #f7d27a;
+    --warn-bg: #2c2610;
+    --focus: #f7c948;
     --shadow: none;
+    color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1630;
+  --surface: #13224a;
+  --text: #eef2ff;
+  --muted: #a9b4d0;
+  --border: #26386a;
+  --accent: #f5b301;
+  --accent-text: #0b1630;
+  --cta: #f5b301;
+  --cta-text: #0b1630;
+  --link: #f7c948;
+  --privacy-bg: #1a2d5c;
+  --privacy-text: #eef2ff;
+  --privacy-icon: #f5b301;
+  --warn: #f7d27a;
+  --warn-bg: #2c2610;
+  --focus: #f7c948;
+  --shadow: none;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -69,6 +98,11 @@ button, input, select { font: inherit; color: inherit; }
 .brand img { flex: none; }
 .tagline { margin: 0; color: var(--muted); font-size: .85rem; }
 
+.top-actions { flex: none; display: flex; gap: 8px; align-items: center; }
+.theme-toggle {
+  width: 40px; height: 38px; border-radius: 999px; border: 1px solid var(--border); background: transparent;
+  cursor: pointer; font-size: 1.1rem; line-height: 1; display: grid; place-items: center;
+}
 .lang { flex: none; display: flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
 .lang button {
   border: 0; background: transparent; padding: 6px 14px; min-height: 36px; cursor: pointer; font-weight: 600;
@@ -83,7 +117,7 @@ main { max-width: 760px; margin: 0 auto; padding: 0 16px 24px; display: grid; ga
   border-radius: var(--radius); padding: 14px 16px;
   font-size: 1.02rem;
 }
-.privacy svg { flex: none; margin-top: 2px; }
+.privacy svg { flex: none; margin-top: 2px; color: var(--privacy-icon); }
 .privacy details { margin-top: 6px; font-size: .9rem; }
 .privacy summary { cursor: pointer; text-decoration: underline; }
 .privacy ul { margin: 8px 0 0; padding-left: 18px; }
@@ -103,7 +137,7 @@ main { max-width: 760px; margin: 0 auto; padding: 0 16px 24px; display: grid; ga
   position: relative; display: grid; place-items: center; text-align: center;
   aspect-ratio: 85.6 / 54; border: 2px dashed var(--border); border-radius: 12px;
   background: var(--bg); cursor: pointer; overflow: hidden; padding: 8px;
-  color: var(--accent); font-weight: 600; font-size: .9rem;
+  color: var(--link); font-weight: 600; font-size: .9rem;
 }
 .pick:hover { border-color: var(--accent); }
 .pick input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
@@ -112,7 +146,7 @@ main { max-width: 760px; margin: 0 auto; padding: 0 16px 24px; display: grid; ga
 .pick.has-image .pick-text {
   position: relative; background: rgba(0, 0, 0, .6); color: #fff; padding: 4px 10px; border-radius: 999px; font-size: .8rem;
 }
-.link { background: none; border: 0; padding: 4px 0; color: var(--accent); text-decoration: underline; cursor: pointer; justify-self: start; font-size: .9rem; }
+.link { background: none; border: 0; padding: 4px 0; color: var(--link); text-decoration: underline; cursor: pointer; justify-self: start; font-size: .9rem; }
 
 .field { display: grid; gap: 6px; margin-bottom: 12px; font-size: .9rem; font-weight: 600; }
 .field input, .field select {
@@ -158,7 +192,7 @@ legend { font-size: .9rem; font-weight: 600; margin-bottom: 6px; padding: 0; }
 .sw input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 .advanced { border-top: 1px solid var(--border); padding-top: 10px; }
-.advanced summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; color: var(--accent); }
+.advanced summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; color: var(--link); }
 .advanced[open] summary { margin-bottom: 10px; }
 .range { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; margin-bottom: 12px; font-size: .9rem; font-weight: 600; }
 .range input { grid-column: 1 / -1; grid-row: 2; width: 100%; accent-color: var(--accent); min-height: 32px; }
@@ -188,7 +222,7 @@ legend { font-size: .9rem; font-weight: 600; margin-bottom: 6px; padding: 0; }
   min-height: 52px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg);
   font-weight: 700; cursor: pointer; font-size: 1rem;
 }
-.buttons .primary { grid-column: 1 / -1; background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.buttons .primary { grid-column: 1 / -1; background: var(--cta); color: var(--cta-text); border-color: var(--cta); }
 .buttons button:disabled { opacity: .5; cursor: not-allowed; }
 .status { min-height: 1.5em; margin: 10px 0 0; color: var(--muted); font-size: .9rem; }
 
