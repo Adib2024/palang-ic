@@ -65,10 +65,11 @@ button, input, select { font: inherit; color: inherit; }
   max-width: 760px;
   margin: 0 auto;
 }
-.brand { display: flex; align-items: center; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; }
+.brand img { flex: none; }
 .tagline { margin: 0; color: var(--muted); font-size: .85rem; }
 
-.lang { display: flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.lang { flex: none; display: flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
 .lang button {
   border: 0; background: transparent; padding: 6px 14px; min-height: 36px; cursor: pointer; font-weight: 600;
 }
