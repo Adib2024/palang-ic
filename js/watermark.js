@@ -23,7 +23,7 @@ export const DEFAULTS = {
   fontSize: 4.5, // % of the image's shorter side
   density: 'mid',
   palangShape: 'corner', // 'corner' | 'parallel' | 'x'
-  stampSize: 40, // corner stamp bar length, % of image width
+  stampSize: 40, // corner stamp length, % of the image's shorter side (diagonal)
   stampAt: { corner: 'tl' }, // preset corner, or { corner: 'custom', x, y, angle }
   lineStyle: 'solid', // 'solid' | 'double'
   thickness: 0.6, // % of the image's shorter side
@@ -65,41 +65,60 @@ function drawTextStrip(ctx, text, len, y) {
 // Diagonal angle per corner so the stamp always cuts across that corner.
 export const CORNER_ANGLE = { tl: -45, br: -45, tr: 45, bl: 45 };
 
-/** Centre of the stamp as fractions of width/height for a preset corner. */
-export function cornerCenter(corner, w, h, size) {
-  const len = w * size / 100;
-  // At 45° each half of the bar spans len/2·cos45 ≈ 0.354·len on each axis.
-  const dx = Math.min(0.5, (len * 0.4) / w);
-  const dy = Math.min(0.5, (len * 0.4) / h);
-  return {
-    x: corner === 'tr' || corner === 'br' ? 1 - dx : dx,
-    y: corner === 'bl' || corner === 'br' ? 1 - dy : dy,
-  };
+/**
+ * Size and placement of the corner stamp, in pixels.
+ * The bars are exactly as long as the text (plus a little padding), and the
+ * whole stamp is kept inside the image so nothing gets clipped at the edge.
+ */
+export function stampGeometry(ctx, w, h, o) {
+  const base = Math.min(w, h);
+  const thick = Math.max(1, base * o.thickness / 100);
+  const at = o.stampAt || { corner: 'tl' };
+  const angle = at.corner === 'custom' ? (at.angle ?? -45) : (CORNER_ANGLE[at.corner] ?? -45);
+
+  // Target length along the diagonal; 100% would span the short side corner to corner.
+  const target = base * o.stampSize / 100 * Math.SQRT2;
+  ctx.font = font(100);
+  const perPx = ctx.measureText(o.text).width / 100; // text width per px of font size
+  const pad = 0.5; // bar overhang at each end, in units of font size
+  const fontPx = Math.max(6, Math.min(base * 0.12, target / (perPx + 2 * pad)));
+  const len = fontPx * (perPx + 2 * pad);
+  const half = fontPx * 0.8 + thick; // centre line to each bar
+  const height = 2 * half + 2 * thick;
+
+  // Half-extent of the rotated stamp on each axis.
+  const rad = (angle * Math.PI) / 180;
+  const ex = Math.min(w / 2, (Math.abs(Math.cos(rad)) * len + Math.abs(Math.sin(rad)) * height) / 2);
+  const ey = Math.min(h / 2, (Math.abs(Math.sin(rad)) * len + Math.abs(Math.cos(rad)) * height) / 2);
+
+  let cx;
+  let cy;
+  if (at.corner === 'custom') {
+    cx = at.x * w;
+    cy = at.y * h;
+  } else {
+    // Push the stamp right into the corner so it cuts across it.
+    cx = at.corner === 'tr' || at.corner === 'br' ? w - ex : ex;
+    cy = at.corner === 'bl' || at.corner === 'br' ? h - ey : ey;
+  }
+  cx = Math.min(w - ex, Math.max(ex, cx));
+  cy = Math.min(h - ey, Math.max(ey, cy));
+  return { cx, cy, angle, len, fontPx, half, thick, ex, ey };
 }
 
 // Classic Malaysian palang: a short double bar with the purpose text
 // between the lines, stamped across one corner (or wherever it's dragged).
 function drawStamp(ctx, w, h, o) {
-  const len = w * o.stampSize / 100;
-  const thick = Math.max(1, Math.min(w, h) * o.thickness / 100);
-  const at = o.stampAt || { corner: 'tl' };
-  const pos = at.corner === 'custom' ? at : cornerCenter(at.corner, w, h, o.stampSize);
-  const angle = at.corner === 'custom' ? (at.angle ?? -45) : (CORNER_ANGLE[at.corner] ?? -45);
-
-  // Fit the text to ~90% of the bar length.
-  ctx.font = font(100);
-  const fontPx = Math.max(6, Math.min(len * 0.12, (100 * len * 0.9) / ctx.measureText(o.text).width));
-  ctx.font = font(fontPx);
+  const g = stampGeometry(ctx, w, h, o);
+  ctx.font = font(g.fontPx);
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
-
   ctx.save();
-  ctx.translate(pos.x * w, pos.y * h);
-  ctx.rotate((angle * Math.PI) / 180);
-  const half = fontPx * 0.8 + thick;
-  drawLine(ctx, len, -half, thick, o.lineStyle);
-  drawLine(ctx, len, half, thick, o.lineStyle);
-  ctx.fillText(o.text, 0, fontPx * 0.06);
+  ctx.translate(g.cx, g.cy);
+  ctx.rotate((g.angle * Math.PI) / 180);
+  drawLine(ctx, g.len, -g.half, g.thick, o.lineStyle);
+  drawLine(ctx, g.len, g.half, g.thick, o.lineStyle);
+  ctx.fillText(o.text, 0, g.fontPx * 0.06);
   ctx.restore();
   ctx.textAlign = 'start';
 }
