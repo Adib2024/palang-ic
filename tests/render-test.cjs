@@ -113,6 +113,56 @@ function serve() {
         });
         await page.locator('[data-preview="front"] canvas').screenshot({ path: path.join(OUT, 'dragged-preview.png') });
 
+        // Stamp bars match the text length and the stamp never leaves the
+        // image, even on a wide, short photo (regression: clipped stamp).
+        const geo = await page.evaluate(async () => {
+          const wm = await import('/js/watermark.js');
+          const out = [];
+          for (const [w, h] of [[2400, 700], [700, 2400], [1712, 1080]]) {
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            const ctx = c.getContext('2d');
+            for (const corner of ['tl', 'tr', 'bl', 'br']) {
+              for (const stampSize of [20, 40, 54, 80]) {
+                const o = { ...wm.DEFAULTS, text: 'UNTUK KEGUNAAN ASNB SAHAJA', stampSize, stampAt: { corner } };
+                const g = wm.stampGeometry(ctx, w, h, o);
+                ctx.font = `700 ${Math.round(g.fontPx)}px "Helvetica Neue", Arial, "Segoe UI", Roboto, sans-serif`;
+                out.push({ w, h, corner, stampSize, textW: ctx.measureText(o.text).width, ...g });
+              }
+            }
+          }
+          return out;
+        });
+        check('corner stamp stays fully inside the image', () => {
+          for (const g of geo) {
+            assert(g.cx - g.ex >= -0.5 && g.cx + g.ex <= g.w + 0.5 && g.cy - g.ey >= -0.5 && g.cy + g.ey <= g.h + 0.5,
+              `out of bounds: ${JSON.stringify(g)}`);
+          }
+        });
+        check('stamp bars are as long as the text (+ small padding)', () => {
+          for (const g of geo) {
+            // Bars = rendered text width + 0.5·font padding at each end.
+            const err = Math.abs(g.len - g.fontPx - g.textW) / g.textW;
+            assert(err < 0.03, `bars ${g.len.toFixed(1)} vs text ${g.textW.toFixed(1)} (+${g.fontPx.toFixed(1)})`);
+          }
+        });
+        check('stamp size slider changes stamp size', () => {
+          const wide = geo.filter((g) => g.w === 2400 && g.corner === 'tl');
+          for (let i = 1; i < wide.length; i++) assert(wide[i].len > wide[i - 1].len, JSON.stringify(wide.map((g) => g.len)));
+        });
+        const wideShot = await page.evaluate(async () => {
+          const wm = await import('/js/watermark.js');
+          const c = document.createElement('canvas');
+          c.width = 2400; c.height = 700;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#e8eef7'; ctx.fillRect(0, 0, c.width, c.height);
+          for (const corner of ['tl', 'br']) {
+            wm.renderWatermark(ctx, c.width, c.height, { mode: 'palang', text: 'UNTUK KEGUNAAN ASNB SAHAJA', stampSize: 54, stampAt: { corner } });
+          }
+          return c.toDataURL('image/png').split(',')[1];
+        });
+        fs.writeFileSync(path.join(OUT, 'stamp-wide.png'), Buffer.from(wideShot, 'base64'));
+
         // Mode is remembered across reloads.
         await page.click('input[name="mode"][value="tiled"] + span');
         await page.reload();
