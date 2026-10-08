@@ -17,6 +17,9 @@
 | **Watermark PDF**: teks atau gambar, 9 kedudukan atau mozaik / text or image, 9 positions or mosaic | ✅ `watermark-pdf/` |
 | **Nombor Muka Surat / Page Numbers** | ✅ `nombor-pdf/` |
 | **Potong PDF / Crop PDF** | ✅ `potong-pdf/` |
+| **Edit PDF**: teks, gambar, kotak, bulatan, garis, lukisan, highlight / text, images, shapes, drawing, highlight | ✅ `edit-pdf/` |
+| **Hitamkan PDF / Redact PDF**: cari No. IC, telefon, e-mel, No. akaun atau teks lain; muka surat dihitamkan jadi gambar supaya teks betul-betul hilang / find IC, phone, email, account numbers or any text; redacted pages are flattened so the text is really gone | ✅ `hitamkan-pdf/` |
+| **Isi Borang PDF / Fill PDF Form**: kotak teks, tanda, pilihan, senarai; boleh diratakan / text, checkbox, radio, dropdown; optional flatten | ✅ `isi-borang/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
@@ -167,6 +170,8 @@ js/img2pdf.js           Images -> PDF: page grid, reorder, export
 js/pdf-pages.js         shared: open PDFs, thumbnails, page cards, reorder, coordinate mapping, live preview
 js/merge.js, split.js, organize.js, rotate.js   page/file tools
 js/watermark-pdf.js, pagenum.js, crop.js        page editing tools
+js/page-viewer.js       stacked page view for overlay tools
+js/edit.js, redact.js, forms.js                 Edit PDF, Redact PDF, Fill PDF Form
 js/compress.js          Compress PDF (re-render pages as JPEG)
 js/pdf-kit.js           loads vendored pdf.js + pdf-lib, render/save helpers
 js/zip.js               tiny ZIP writer for split output
@@ -200,6 +205,7 @@ NODE_PATH="$(npm root -g)" node tests/tools-test.cjs   # dashboard + Images -> P
 NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs # compress PDF
 NODE_PATH="$(npm root -g)" node tests/more-tools-test.cjs # PDF->images, compress images, sign, scan
 NODE_PATH="$(npm root -g)" node tests/phase1-test.cjs    # merge, split, organise, rotate, watermark, page numbers, crop
+NODE_PATH="$(npm root -g)" node tests/phase2a-test.cjs   # edit, redact, fill form
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks

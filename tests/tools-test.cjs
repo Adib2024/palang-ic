@@ -46,17 +46,16 @@ function inspectPdf(file) {
       // Dashboard
       await page.goto(origin + '/');
       const cards = await page.$$eval('.tool', (els) => els.map((e) => ({ href: e.getAttribute('href'), soon: e.classList.contains('soon') })));
-      check(`${label}: dashboard lists 14 tools`, () => {
+      check(`${label}: dashboard lists 17 tools`, () => {
         assert.deepStrictEqual(cards.map((c) => c.href), [
-          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'tandatangan-pdf/',
-          'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'susun-pdf/', 'kecil-gambar/',
+          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'tandatangan-pdf/', 'edit-pdf/', 'hitamkan-pdf/', 'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'susun-pdf/', 'kecil-gambar/',
         ]);
         assert(cards.every((c) => !c.soon));
       });
       await page.click('.chip[data-cat="edit"]');
       const shown = await page.$$eval('.tool', (els) => els.filter((e) => !e.hidden).map((e) => e.getAttribute('href')));
       check(`${label}: category chip filters the tools`, () => {
-        assert.deepStrictEqual(shown, ['watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/']);
+        assert.deepStrictEqual(shown, ['edit-pdf/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/']);
       });
       await page.click('.chip[data-cat="all"]');
       const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
