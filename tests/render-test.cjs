@@ -1,33 +1,13 @@
 // End-to-end render test using the FAKE sample cards in tests/fixtures.
 // Run: NODE_PATH="$(npm root -g)" node tests/render-test.cjs [outDir]
 // Writes preview screenshots + exported JPG/PDF to outDir (default tests/output).
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 const { chromium } = require('playwright');
+const serve = require('./serve.cjs');
 
-const ROOT = path.resolve(__dirname, '..');
 const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
-const TYPES = {
-  '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml',
-  '.png': 'image/png', '.jpg': 'image/jpeg', '.webmanifest': 'application/manifest+json',
-};
-
-function serve() {
-  const server = http.createServer((req, res) => {
-    const url = new URL(req.url, 'http://x');
-    let file = path.join(ROOT, decodeURIComponent(url.pathname));
-    if (!file.startsWith(ROOT)) { res.writeHead(403).end(); return; }
-    if (file.endsWith(path.sep)) file = path.join(file, 'index.html');
-    fs.readFile(file, (err, data) => {
-      if (err) { res.writeHead(404).end(); return; }
-      res.writeHead(200, { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' });
-      res.end(data);
-    });
-  });
-  return new Promise((r) => server.listen(0, '127.0.0.1', () => r(server)));
-}
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -48,7 +28,7 @@ function serve() {
       page.on('request', (r) => { if (!r.url().startsWith(origin) && !r.url().startsWith('data:') && !r.url().startsWith('blob:')) foreign.push(r.url()); });
       page.on('pageerror', (e) => errors.push(String(e)));
 
-      await page.goto(origin + '/');
+      await page.goto(origin + '/palang/');
       await page.setInputFiles('[data-input="front"]', path.join(__dirname, 'fixtures/sample-front-exif6.jpg'));
       await page.setInputFiles('[data-input="back"]', path.join(__dirname, 'fixtures/sample-back.jpg'));
       await page.waitForSelector('[data-preview="back"]:not([hidden])');

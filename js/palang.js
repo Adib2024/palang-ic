@@ -3,6 +3,7 @@ import { loadPhoto } from './image-loader.js';
 import { buildPdf } from './pdf.js';
 import { applyI18n, t, TEMPLATES, todayDMY } from './i18n.js';
 import * as store from './storage.js';
+import { registerServiceWorker } from './pwa.js';
 
 // Per-mode slider defaults, tuned so the IC number and face stay readable.
 const MODE_DEFAULTS = {
@@ -392,9 +393,7 @@ bindControls();
 drawPreview();
 window.addEventListener('resize', schedulePreview);
 
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+registerServiceWorker();
 
 // Exposed for the automated render test only; harmless in production.
 window.__palangic = { state, renderWatermark, setPhoto, options, pdfFile, jpgFiles, schedulePreview };
