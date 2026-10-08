@@ -28,6 +28,27 @@ jobs:
           mkdir _site
           cp -r index.html manifest.webmanifest sw.js css js icons palang gambar-pdf _site/
           touch _site/.nojekyll
+      # Self-host Inter (SIL OFL 1.1): subset to Latin + punctuation and
+      # convert to WOFF2 so the site never loads fonts from another host.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build web fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-inter
+          pip install --quiet fonttools brotli
+          mkdir -p _site/fonts
+          for w in Regular Medium SemiBold Bold ExtraBold; do
+            src=$(fc-list --format '%{file}\n' | grep -E "/Inter-$w\.(otf|ttf)$" | head -n1)
+            test -n "$src" || { echo "Inter-$w not found"; exit 1; }
+            pyftsubset "$src" --flavor=woff2 \
+              --unicodes='U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+2215,U+25A0-25FF,U+2600-26FF' \
+              --layout-features='kern,liga,calt,tnum,case' \
+              --output-file="_site/fonts/inter-$(echo "$w" | tr '[:upper:]' '[:lower:]').woff2"
+          done
+          cp /usr/share/doc/fonts-inter/copyright _site/fonts/LICENSE-Inter.txt
+          ls -la _site/fonts
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

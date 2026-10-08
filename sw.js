@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v1';
+const VERSION = 'dokujaga-v2';
 const ASSETS = [
   './',
   'index.html',

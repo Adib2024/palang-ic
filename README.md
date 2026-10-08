@@ -141,7 +141,9 @@ Open the site in Chrome/Safari and choose **Add to Home Screen**. It works offli
 
 ## Development
 
-Plain HTML/CSS/JS (ES modules). There is no build step and no dependencies.
+Plain HTML/CSS/JS (ES modules). There is no build step and no runtime dependencies.
+The Inter web font (SIL OFL 1.1) is self-hosted: the deploy workflow subsets it to
+WOFF2 under `fonts/`. Locally, pages fall back to the system UI font.
 
 ```
 index.html              DokuJaga dashboard (tool grid)
