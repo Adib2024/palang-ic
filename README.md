@@ -12,6 +12,10 @@
 | **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
 | **Gabung / Pisah / Susun PDF / Merge, split, organise PDF**: gabung, pisah (setiap muka surat atau julat), susun, putar, buang / merge, split (every page or ranges), reorder, rotate, delete | ✅ `susun-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
+| **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
+| **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
+| **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
+| **Kecilkan Gambar / Compress Images**: had saiz (cth. ≤ 200 KB), saiz maksimum, buang EXIF / size limit, max dimensions, strips EXIF | ✅ `kecil-gambar/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
@@ -158,6 +162,10 @@ js/organize.js          Merge / split / organise PDF
 js/compress.js          Compress PDF (re-render pages as JPEG)
 js/pdf-kit.js           loads vendored pdf.js + pdf-lib, render/save helpers
 js/zip.js               tiny ZIP writer for split output
+js/pdf2img.js           PDF -> images
+js/imgsmall.js          compress / resize images (EXIF stripped)
+js/sign.js              sign PDF (draw / type / upload, place, pdf-lib export)
+js/scan.js, scan-core.js   document scanner: edge detection, perspective warp, filters
 vendor/                 pdf-lib 1.17.1 (MIT), pdf.js 4.10.38 (Apache-2.0); see vendor/VERSIONS.txt
 js/watermark.js         pure renderer: palang / tiled / combined
 js/image-loader.js      decode + EXIF orientation fix + size cap
@@ -182,6 +190,7 @@ python3 tests/make-samples.py                         # regenerate fixtures (Pil
 NODE_PATH="$(npm root -g)" node tests/render-test.cjs  # Palang IC (needs Playwright + Chromium)
 NODE_PATH="$(npm root -g)" node tests/tools-test.cjs   # dashboard + Images -> PDF
 NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs # merge/split/organise + compress
+NODE_PATH="$(npm root -g)" node tests/more-tools-test.cjs # PDF->images, compress images, sign, scan
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks

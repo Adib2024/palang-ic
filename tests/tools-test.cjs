@@ -46,8 +46,10 @@ function inspectPdf(file) {
       // Dashboard
       await page.goto(origin + '/');
       const cards = await page.$$eval('.tool', (els) => els.map((e) => ({ href: e.getAttribute('href'), soon: e.classList.contains('soon') })));
-      check(`${label}: dashboard lists 4 live tools`, () => {
-        assert.deepStrictEqual(cards.map((c) => c.href), ['palang/', 'gambar-pdf/', 'susun-pdf/', 'kecilkan-pdf/']);
+      check(`${label}: dashboard lists 8 live tools`, () => {
+        assert.deepStrictEqual(cards.map((c) => c.href), [
+          'palang/', 'imbas/', 'tandatangan-pdf/', 'gambar-pdf/', 'susun-pdf/', 'kecilkan-pdf/', 'pdf-gambar/', 'kecil-gambar/',
+        ]);
         assert(cards.every((c) => !c.soon));
       });
       const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
