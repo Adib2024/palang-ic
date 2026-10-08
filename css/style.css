@@ -864,3 +864,66 @@ textarea.form-input { resize: none; line-height: 1.2; }
 }
 .wf-result { margin-top: 16px; padding: 18px; border-radius: var(--radius); background: var(--safe-bg); border: 1px solid var(--safe-border); }
 .wf-result p { margin: 0 0 12px; font-weight: 700; color: var(--safe-text); }
+
+/* ---------- Banding PDF ---------- */
+.cmp-slots { display: grid; gap: 12px; grid-template-columns: 1fr; align-items: stretch; }
+@media (min-width: 700px) { .cmp-slots { grid-template-columns: 1fr auto 1fr; align-items: center; } }
+.cmp-slot {
+  position: relative; display: grid; gap: 4px; justify-items: center; text-align: center; cursor: pointer;
+  padding: 26px 16px; min-height: 150px; align-content: center; border-radius: var(--radius);
+  border: 2px dashed var(--border-strong); background: var(--surface-2);
+}
+.cmp-slot input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.cmp-slot:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+.cmp-slot.over, .cmp-slot:hover { border-color: var(--tone, var(--accent)); }
+.cmp-slot.filled { border-style: solid; background: var(--surface); }
+.cmp-slot.old.filled { border-color: color-mix(in srgb, #e11d48 55%, var(--border)); }
+.cmp-slot.new.filled { border-color: color-mix(in srgb, #059669 55%, var(--border)); }
+.cmp-tag { width: 32px; height: 32px; border-radius: 999px; display: grid; place-items: center; font-weight: 800; color: #fff; }
+.cmp-slot.old .cmp-tag { background: #e11d48; }
+.cmp-slot.new .cmp-tag { background: #059669; }
+.cmp-name { font-weight: 700; overflow-wrap: anywhere; }
+.cmp-meta { color: var(--muted); font-size: .85rem; }
+.cmp-pick { margin-top: 6px; font-weight: 700; color: var(--tone, var(--accent)); font-size: .9rem; }
+.cmp-slot.filled .cmp-pick { font-weight: 600; font-size: .82rem; }
+.cmp-swap { justify-self: center; font-size: 1.2rem; width: 44px; height: 44px; }
+.cmp-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.cmp-head h2 { margin: 0; }
+.cmp-summary { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.cmp-summary li { font-size: .82rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); }
+.cmp-summary .ins { color: #047857; background: #ecfdf5; border-color: #a7f3d0; }
+.cmp-summary .del { color: #be123c; background: #fff1f2; border-color: #fecdd3; }
+.cmp-tabs { position: relative; margin-bottom: 14px; max-width: 320px; }
+.cmp-text {
+  line-height: 1.9; font-size: .98rem; padding: 16px; border: 1px solid var(--border); border-radius: 14px;
+  background: var(--surface); max-height: 70vh; overflow-y: auto; overflow-wrap: anywhere;
+}
+.cmp-text ins { text-decoration: none; background: #d1fae5; color: #065f46; border-radius: 4px; padding: 1px 3px; }
+.cmp-text del { background: #ffe4e6; color: #9f1239; border-radius: 4px; padding: 1px 3px; }
+.cmp-gap { color: var(--muted); font-style: italic; font-size: .85rem; }
+.cmp-page { display: inline-block; font-size: .7rem; font-weight: 800; padding: 1px 7px; margin: 0 6px 0 2px; border-radius: 999px; background: var(--text); color: var(--surface); vertical-align: 2px; }
+.cmp-same { color: var(--muted); }
+:root[data-theme="dark"] .cmp-text ins { background: #064e3b; color: #a7f3d0; }
+:root[data-theme="dark"] .cmp-text del { background: #4c0519; color: #fecdd3; }
+:root[data-theme="dark"] .cmp-summary .ins { background: #064e3b; color: #a7f3d0; border-color: #065f46; }
+:root[data-theme="dark"] .cmp-summary .del { background: #4c0519; color: #fecdd3; border-color: #881337; }
+.cmp-visual { display: grid; gap: 22px; }
+.cmp-row h3 { display: flex; align-items: center; gap: 8px; font-size: .95rem; margin: 0 0 8px; }
+.cmp-badge { font-size: .72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.cmp-badge.diff { background: #fef3c7; color: #92400e; }
+.cmp-badge.same { background: var(--surface-2); color: var(--muted); }
+.cmp-pair { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+.cmp-pair figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+.cmp-pair canvas { width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.cmp-pair figcaption { font-size: .78rem; color: var(--muted); text-align: center; }
+
+/* ---------- OCR PDF ---------- */
+.ocr-langs { border: 0; padding: 0; margin: 0 0 4px; }
+.ocr-langs legend { font-size: .88rem; font-weight: 600; margin-bottom: 4px; }
+.ocr-langs .check { min-height: 40px; margin-bottom: 4px; }
+.ocr-result { margin-top: 16px; display: grid; gap: 12px; }
+.ocr-result .field { margin: 0; }
+.ocr-result textarea {
+  width: 100%; min-height: 220px; padding: 12px 14px; font: 500 .92rem/1.5 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); resize: vertical;
+}

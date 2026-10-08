@@ -1,7 +1,11 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v10';
+const VERSION = 'dokujaga-v11';
 const ASSETS = [
+  'ocr-pdf/',
+  'ocr-pdf/index.html',
+  'banding-pdf/',
+  'banding-pdf/index.html',
   'lindungi-pdf/',
   'lindungi-pdf/index.html',
   'aliran-kerja/',
@@ -74,6 +78,9 @@ const ASSETS = [
   'js/image-loader.js',
   'js/pdf.js',
   'js/i18n.js',
+  'js/ocr.js',
+  'js/compare.js',
+  'js/diff.js',
   'js/protect.js',
   'js/unlock.js',
   'js/pdf-security.js',
