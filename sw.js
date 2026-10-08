@@ -1,7 +1,13 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v5';
+const VERSION = 'dokujaga-v6';
 const ASSETS = [
+  'isi-borang/',
+  'isi-borang/index.html',
+  'hitamkan-pdf/',
+  'hitamkan-pdf/index.html',
+  'edit-pdf/',
+  'edit-pdf/index.html',
   './',
   'index.html',
   'palang/',
@@ -58,6 +64,10 @@ const ASSETS = [
   'js/image-loader.js',
   'js/pdf.js',
   'js/i18n.js',
+  'js/forms.js',
+  'js/redact.js',
+  'js/edit.js',
+  'js/page-viewer.js',
   'js/storage.js',
   'js/theme.js',
   'manifest.webmanifest',
