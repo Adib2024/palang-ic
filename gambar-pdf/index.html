@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Privacy guarantee enforced by the browser: no network connections,
+       code/styles/images only from this site. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Gambar → PDF · DokuJaga</title>
+  <meta name="description" content="Tukar gambar atau imbasan kepada satu PDF terus dalam pelayar. Tiada apa-apa dimuat naik.">
+  <meta name="theme-color" content="#13224a" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1630" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/theme.js"></script>
+  <script type="module" src="../js/img2pdf.js"></script>
+</head>
+<body class="wide">
+  <header class="top">
+    <div class="brand">
+      <a class="home-link" href="../" data-i18n-attr="aria-label:allTools,title:allTools" aria-label="Semua alat">
+        <img src="../icons/icon.svg" alt="" width="32" height="32">
+      </a>
+      <div>
+        <h1><span data-i18n="toolImgPdfTitle">Gambar → PDF</span> <span class="by">· DokuJaga</span></h1>
+        <p class="tagline"><a href="../" data-i18n="allTools">Semua alat</a></p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+              data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+      <div class="lang" role="group" aria-label="Bahasa / Language">
+        <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="privacy">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+      <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+    </section>
+
+    <div class="tool-layout">
+      <section class="card" aria-labelledby="pagesTitle">
+        <div class="dropzone" id="dropzone">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="36" height="36"><path d="M12 16V4m-5 5 5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p><span data-i18n="i2pDrop">Seret gambar ke sini, atau</span></p>
+          <div class="drop-buttons">
+            <label class="btn primary">
+              <input type="file" id="pickFiles" accept="image/*" multiple>
+              <span data-i18n="i2pChoose">Pilih gambar</span>
+            </label>
+            <label class="btn camera-only">
+              <input type="file" id="pickCamera" accept="image/*" capture="environment">
+              <span data-i18n="i2pCamera">Ambil gambar</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pages-head">
+          <h2 id="pagesTitle"><span data-i18n="i2pPages">Muka surat</span> <span class="count" id="pageCount">0</span></h2>
+          <button type="button" class="link" id="clearAll" hidden data-i18n="i2pClear">Buang semua</button>
+        </div>
+        <p class="hint" id="orderHint" hidden data-i18n="i2pOrderHint"></p>
+        <ol class="page-grid" id="pageGrid"></ol>
+        <p class="empty" id="emptyPages" data-i18n="i2pEmpty">Belum ada gambar.</p>
+      </section>
+
+      <aside class="card options" aria-labelledby="optTitle">
+        <h2 id="optTitle" data-i18n="i2pOptions">Tetapan PDF</h2>
+
+        <fieldset class="segmented small">
+          <legend data-i18n="i2pPageSize">Saiz kertas</legend>
+          <label><input type="radio" name="pageSize" value="a4" checked><span>A4</span></label>
+          <label><input type="radio" name="pageSize" value="letter"><span>Letter</span></label>
+          <label><input type="radio" name="pageSize" value="fit"><span data-i18n="i2pFitImage">Ikut gambar</span></label>
+        </fieldset>
+
+        <fieldset class="segmented small" id="orientationSet">
+          <legend data-i18n="i2pOrientation">Orientasi</legend>
+          <label><input type="radio" name="orientation" value="auto" checked><span data-i18n="i2pAuto">Auto</span></label>
+          <label><input type="radio" name="orientation" value="portrait"><span data-i18n="i2pPortrait">Menegak</span></label>
+          <label><input type="radio" name="orientation" value="landscape"><span data-i18n="i2pLandscape">Melintang</span></label>
+        </fieldset>
+
+        <fieldset class="segmented small">
+          <legend data-i18n="i2pMargin">Margin</legend>
+          <label><input type="radio" name="margin" value="none"><span data-i18n="i2pNone">Tiada</span></label>
+          <label><input type="radio" name="margin" value="small" checked><span data-i18n="i2pSmall">Kecil</span></label>
+          <label><input type="radio" name="margin" value="large"><span data-i18n="i2pLarge">Besar</span></label>
+        </fieldset>
+
+        <fieldset class="segmented small">
+          <legend data-i18n="i2pQuality">Kualiti / saiz fail</legend>
+          <label><input type="radio" name="quality" value="high"><span data-i18n="i2pQHigh">Tinggi</span></label>
+          <label><input type="radio" name="quality" value="mid" checked><span data-i18n="i2pQMid">Sederhana</span></label>
+          <label><input type="radio" name="quality" value="low"><span data-i18n="i2pQLow">Kecil</span></label>
+        </fieldset>
+
+        <label class="field">
+          <span data-i18n="i2pFileName">Nama fail</span>
+          <input type="text" id="fileName" value="dokumen" maxlength="60" autocomplete="off">
+        </label>
+
+        <div class="buttons stack">
+          <button type="button" class="primary" id="makePdf" data-i18n="i2pMake">Simpan PDF</button>
+          <button type="button" id="sharePdf" data-i18n="i2pShare">Kongsi PDF</button>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+  </footer>
+</body>
+</html>

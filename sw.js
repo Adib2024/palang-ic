@@ -1,11 +1,19 @@
 // Offline cache for the app shell. It only ever caches this site's own
-// static files; user photos never pass through here (they're never fetched).
-const VERSION = 'palangic-v4';
+// static files; user files never pass through here (they're never fetched).
+const VERSION = 'dokujaga-v1';
 const ASSETS = [
   './',
   'index.html',
+  'palang/',
+  'palang/index.html',
+  'gambar-pdf/',
+  'gambar-pdf/index.html',
   'css/style.css',
-  'js/app.js',
+  'js/home.js',
+  'js/page.js',
+  'js/pwa.js',
+  'js/palang.js',
+  'js/img2pdf.js',
   'js/watermark.js',
   'js/image-loader.js',
   'js/pdf.js',
