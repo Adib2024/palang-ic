@@ -160,6 +160,7 @@ main { max-width: 760px; margin: 0 auto; padding: 0 16px 24px; display: grid; ga
 .check input { width: 22px; height: 22px; accent-color: var(--accent); }
 
 fieldset { border: 0; padding: 0; margin: 0 0 14px; min-width: 0; }
+fieldset:disabled { opacity: .45; }
 legend { font-size: .9rem; font-weight: 600; margin-bottom: 6px; padding: 0; }
 
 .segmented { display: flex; flex-wrap: wrap; gap: 0; }
@@ -242,3 +243,104 @@ footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 8px
 @media (prefers-reduced-motion: no-preference) {
   .segmented span, .sw span, .buttons button { transition: background-color .15s, border-color .15s; }
 }
+
+/* ---------- DokuJaga shell ---------- */
+body.wide .top, body.wide main { max-width: 1080px; }
+.home-link { display: inline-flex; border-radius: 8px; }
+.by { font-weight: 500; color: var(--muted); font-size: .85em; }
+.section-title { margin: 6px 0 12px; font-size: 1.1rem; }
+
+.tool-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .tool-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.tool {
+  display: flex; gap: 14px; align-items: flex-start; padding: 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); color: inherit; text-decoration: none; min-width: 0;
+}
+a.tool:hover { border-color: var(--cta); }
+a.tool:hover .tool-icon { background: var(--cta); color: var(--cta-text); }
+.tool.soon { opacity: .6; }
+.tool-icon {
+  flex: none; width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--privacy-bg); color: var(--privacy-icon);
+}
+.tool-icon svg { width: 28px; height: 28px; }
+.tool-body { display: grid; gap: 4px; min-width: 0; }
+.tool-body strong { font-size: 1.02rem; }
+.tool-body span { color: var(--muted); font-size: .9rem; }
+.badge {
+  justify-self: start; font-style: normal; font-size: .75rem; font-weight: 700; padding: 2px 8px;
+  border-radius: 999px; background: var(--warn-bg); color: var(--warn);
+}
+
+.why ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+@media (min-width: 760px) { .why ul { grid-template-columns: repeat(3, 1fr); } }
+.why li { display: grid; gap: 2px; }
+.why li span { color: var(--muted); font-size: .92rem; }
+
+/* ---------- Tool pages (desktop two-column, phone stacked) ---------- */
+.tagline a { color: var(--link); }
+.tool-layout { display: grid; gap: 14px; align-items: start; }
+@media (min-width: 900px) {
+  .tool-layout { grid-template-columns: minmax(0, 1fr) 320px; }
+  .tool-layout .options { position: sticky; top: 14px; }
+}
+
+.dropzone {
+  display: grid; justify-items: center; gap: 8px; text-align: center; padding: 22px 16px;
+  border: 2px dashed var(--border); border-radius: 12px; background: var(--bg); color: var(--muted);
+}
+.dropzone p { margin: 0; }
+.dropzone.over { border-color: var(--cta); background: var(--warn-bg); }
+.drop-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 46px;
+  padding: 8px 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-weight: 700; cursor: pointer; overflow: hidden;
+}
+.btn.primary { background: var(--cta); color: var(--cta-text); border-color: var(--cta); }
+.btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.btn:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* The camera shortcut only makes sense on touch devices. */
+@media (hover: hover) and (pointer: fine) { .camera-only { display: none; } }
+
+.pages-head { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+.pages-head h2 { margin: 0; }
+.count {
+  display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; margin-left: 4px;
+  border-radius: 999px; background: var(--privacy-bg); color: var(--privacy-text); font-size: .85rem;
+}
+.page-grid {
+  list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+.page-grid:empty { display: none; }
+.page-card {
+  display: grid; gap: 6px; padding: 8px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--bg); min-width: 0;
+}
+.page-card[draggable="true"] { cursor: grab; }
+.page-card.dragging { opacity: .4; }
+.page-card.drop-target { border-color: var(--cta); box-shadow: 0 0 0 2px var(--cta); }
+.page-card { align-content: start; }
+.page-thumb {
+  aspect-ratio: 1 / 1.414; display: grid; place-items: center; overflow: hidden; padding: 6%;
+  background: #fff; border-radius: 6px; border: 1px solid var(--border);
+}
+.page-thumb img { max-width: 100%; max-height: 100%; }
+.page-meta { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.page-no { font-weight: 700; font-size: .85rem; }
+.page-tools { display: flex; gap: 2px; }
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid transparent; background: transparent;
+  color: var(--text); cursor: pointer; font-size: .95rem; line-height: 1; display: grid; place-items: center;
+}
+.icon-btn:hover { border-color: var(--border); background: var(--surface); }
+.icon-btn:disabled { opacity: .3; cursor: default; }
+.icon-btn.danger:hover { color: #c62828; }
+
+.options .segmented { margin-bottom: 12px; }
+.buttons.stack { grid-template-columns: 1fr; }
+@media (min-width: 640px) { .buttons.stack { grid-template-columns: 1fr; } .buttons.stack .primary { grid-column: auto; } }
