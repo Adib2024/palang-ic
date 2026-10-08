@@ -1,7 +1,8 @@
 name: Vendor PDF libraries
 
-# Run manually to (re)fetch the third-party PDF libraries into vendor/ and
-# commit them, so the site serves them itself and never loads code from a CDN.
+# Run manually to (re)fetch the third-party libraries (PDF + OCR) into vendor/
+# and commit them, so the site serves them itself and never loads code or
+# OCR models from a CDN.
 on:
   workflow_dispatch:
 
@@ -20,7 +21,9 @@ jobs:
         run: |
           mkdir -p /tmp/v && cd /tmp/v
           npm init -y >/dev/null
-          npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38
+          npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38 tesseract.js@5.1.1 tesseract.js-core@5.1.1
+          # OCR language models (Malay + English); optional packages, see fallback below.
+          npm install --no-audit --no-fund --ignore-scripts @tesseract.js-data/eng@1.0.0 @tesseract.js-data/msa@1.0.0 || true
       - name: Copy into vendor/
         run: |
           rm -rf vendor && mkdir -p vendor/pdf-lib vendor/pdfjs
@@ -31,10 +34,27 @@ jobs:
           cp -r /tmp/v/node_modules/pdfjs-dist/standard_fonts vendor/pdfjs/standard_fonts
           cp -r /tmp/v/node_modules/pdfjs-dist/cmaps vendor/pdfjs/cmaps
           cp /tmp/v/node_modules/pdfjs-dist/LICENSE vendor/pdfjs/LICENSE
+          # OCR: tesseract.js (main + worker), its WebAssembly core, and models.
+          mkdir -p vendor/tesseract/core vendor/tesseract/lang
+          cp /tmp/v/node_modules/tesseract.js/dist/tesseract.min.js vendor/tesseract/
+          cp /tmp/v/node_modules/tesseract.js/dist/worker.min.js vendor/tesseract/
+          cp /tmp/v/node_modules/tesseract.js/LICENSE.md vendor/tesseract/LICENSE.md 2>/dev/null || cp /tmp/v/node_modules/tesseract.js/LICENSE* vendor/tesseract/
+          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core*.wasm.js vendor/tesseract/core/
+          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core*.wasm vendor/tesseract/core/ 2>/dev/null || true
+          for l in eng msa; do
+            f=$(ls /tmp/v/node_modules/@tesseract.js-data/$l/4.0.0_best_int/$l.traineddata.gz 2>/dev/null || true)
+            if [ -n "$f" ]; then
+              cp "$f" vendor/tesseract/lang/
+            else
+              curl -fsSL "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -o /tmp/$l.traineddata
+              gzip -9 -c /tmp/$l.traineddata > vendor/tesseract/lang/$l.traineddata.gz
+            fi
+          done
+          ls -la vendor/tesseract vendor/tesseract/core vendor/tesseract/lang
           {
             echo "Vendored by .github/workflows/vendor.yml — do not edit by hand."
             echo
-            for p in pdf-lib pdfjs-dist; do
+            for p in pdf-lib pdfjs-dist tesseract.js tesseract.js-core; do
               node -e "const l=require('/tmp/v/package-lock.json').packages['node_modules/$p']; console.log('$p', l.version, l.integrity, l.license||'')"
             done
           } > vendor/VERSIONS.txt
@@ -46,5 +66,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add vendor
           git diff --cached --quiet && { echo "No changes"; exit 0; }
-          git commit -m "Vendor pdf-lib 1.17.1 and pdf.js 4.10.38 (legacy build)"
+          git commit -m "Vendor pdf-lib 1.17.1, pdf.js 4.10.38 (legacy) and tesseract.js 5.1.1 (eng+msa)"
           git push origin HEAD:${GITHUB_REF_NAME}
