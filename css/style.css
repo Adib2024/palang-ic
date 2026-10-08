@@ -307,7 +307,7 @@ a.tool:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border
 .btn.lg { min-height: 60px; padding: 14px 32px; font-size: 1.12rem; border-radius: 14px; }
 .btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .btn:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
-.btn:disabled, .buttons button:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.buttons button:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .buttons .primary { grid-column: 1 / -1; min-height: 56px; font-size: 1.05rem; }
 .buttons.stack { grid-template-columns: 1fr; }
@@ -774,26 +774,3 @@ textarea.form-input { resize: none; line-height: 1.2; }
 .pw-meter[data-level="1"] { color: var(--warn); }
 .pw-meter[data-level="2"] { color: var(--safe-icon); }
 .warn-text { color: #e11d48; }
-
-/* ---------- Merge: steps + optional advanced step ---------- */
-.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; color: var(--muted); font-weight: 600; font-size: .92rem; }
-.steps li { display: inline-flex; align-items: center; gap: 8px; }
-.steps li + li::before { content: ""; width: 28px; height: 2px; background: var(--border-strong); margin-right: 10px; }
-.steps .step-no { width: 26px; height: 26px; border-radius: 999px; display: grid; place-items: center; border: 2px solid var(--border-strong); font-size: .82rem; }
-.steps li.on { color: var(--text); }
-.steps li.on .step-no { background: var(--tone-rose); border-color: var(--tone-rose); color: #fff; }
-:root[data-theme="dark"] .steps li.on .step-no { color: #0b0d17; }
-.steps em { font-style: normal; font-weight: 500; color: var(--muted); }
-.adv-box {
-  margin-top: 18px; padding: 16px; border: 1px dashed color-mix(in srgb, var(--tone, var(--accent)) 55%, var(--border));
-  border-radius: 14px; background: var(--tone-bg, var(--accent-soft)); display: grid; gap: 10px;
-}
-.adv-box p { margin: 0; font-size: .92rem; }
-.adv-box button { justify-self: stretch; }
-.adv-tag {
-  justify-self: start; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-  color: var(--tone, var(--accent)); background: var(--surface); padding: 2px 9px; border-radius: 999px;
-}
-.field-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
-.field-row .field { flex: 1; min-width: 0; margin: 0; }
-.field-row button { flex: none; font-size: .88rem; }

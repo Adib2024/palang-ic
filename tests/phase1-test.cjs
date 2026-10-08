@@ -141,8 +141,8 @@ async function diffBoxes({ before, after }) {
       check(`${label}: empty tool hides list hints (regression)`, () => assert.strictEqual(hintVisible, false));
       await page.setInputFiles('#pickFiles', [pdf('a.pdf', A)]);
       await page.waitForFunction(() => window.__merge.files.length === 1);
-      const oneOnly = await page.evaluate(() => ({ disabled: document.querySelector('#savePdf').disabled, adv: document.querySelector('#annotateBtn').disabled, hint: !document.querySelector('#needTwo').hidden }));
-      check(`${label}: merge needs at least 2 files`, () => assert.deepStrictEqual(oneOnly, { disabled: true, adv: true, hint: true }));
+      const oneOnly = await page.evaluate(() => ({ disabled: document.querySelector('#savePdf').disabled, hint: !document.querySelector('#needTwo').hidden }));
+      check(`${label}: merge needs at least 2 files`, () => assert.deepStrictEqual(oneOnly, { disabled: true, hint: true }));
       await page.setInputFiles('#pickFiles', [pdf('b.pdf', B), pdf('c.pdf', C)]);
       await page.waitForFunction(() => window.__merge.files.length === 3);
       await page.evaluate(() => window.__merge.whenIdle());
@@ -157,61 +157,6 @@ async function diffBoxes({ before, after }) {
         assert.strictEqual(summary, '2 fail · 4 muka surat');
         assert.deepStrictEqual(mt.map((p) => p.first), ['C1', 'C2', 'A1', 'A2']);
       });
-
-      /* ---------- Merge, step 2: date, signature, text ---------- */
-      await page.fill('#fileName', 'permohonan');
-      await page.click('#annotateBtn');
-      await page.waitForFunction(() => window.__merge.views.length === 4);
-      const step2 = await page.evaluate(() => ({
-        step1: document.querySelector('#toolLayout').hidden, step2: !document.querySelector('#annotateLayout').hidden,
-        on: [...document.querySelectorAll('.steps li.on')].length, date: document.querySelector('#dateValue').value,
-      }));
-      const today = new Date();
-      const iso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      check(`${label}: advanced step opens the merged pages with today's date`, () => {
-        assert.deepStrictEqual(step2, { step1: true, step2: true, on: 2, date: iso });
-      });
-      // Date on every page (user's choice), a typed signature and text on page 2.
-      await page.fill('#dateValue', '2026-12-31');
-      await page.check('#allPages');
-      await page.click('#addDate');
-      await page.uncheck('#allPages');
-      await page.evaluate(() => window.__merge.setActive(1));
-      await page.click('input[name="sigTab"][value="type"] + span');
-      await page.fill('#typedName', 'Contoh Nama');
-      await page.click('#addSig');
-      await page.fill('#extraText', 'Pemohon');
-      await page.click('#addText');
-      await page.waitForFunction(() => window.__merge.items.length === 6);
-      const placedM = await page.evaluate(() => window.__merge.items.map((it) => ({ page: it.page, fx: it.fx, fy: it.fy, fw: it.fw, fh: it.fh })));
-      check(`${label}: "every page" puts the date on all 4 pages`, () => {
-        assert.deepStrictEqual(placedM.slice(0, 4).map((p) => p.page), [0, 1, 2, 3]);
-        assert.deepStrictEqual(placedM.slice(4).map((p) => p.page), [1, 1]);
-      });
-      await page.screenshot({ path: path.join(OUT, `p1-merge-step2-${label}.png`), fullPage: true });
-      const signedM = await save('#saveSigned');
-      const smt = await texts(signedM.buf);
-      const dm = await page.evaluate(diffBoxes, { before: merged.buf.toString('base64'), after: signedM.buf.toString('base64') });
-      check(`${label}: merged + signed PDF keeps order and name`, () => {
-        assert.strictEqual(signedM.name, 'permohonan.pdf');
-        assert.deepStrictEqual(smt.map((p) => p.first), ['C1', 'C2', 'A1', 'A2']);
-      });
-      check(`${label}: date/signature/text land where placed on every page`, () => {
-        for (let pg = 0; pg < 4; pg++) {
-          const its = placedM.filter((p) => p.page === pg);
-          const box = {
-            x0: Math.min(...its.map((p) => p.fx)), y0: Math.min(...its.map((p) => p.fy)),
-            x1: Math.max(...its.map((p) => p.fx + p.fw)), y1: Math.max(...its.map((p) => p.fy + p.fh)),
-          };
-          const d = dm[pg];
-          assert(d, `no change on page ${pg + 1}`);
-          assert(d.x0 >= box.x0 - 0.02 && d.y0 >= box.y0 - 0.02 && d.x1 <= box.x1 + 0.02 && d.y1 <= box.y1 + 0.02,
-            `page ${pg + 1}: ink ${JSON.stringify(d)} vs box ${JSON.stringify(box)}`);
-        }
-      });
-      await page.click('#backToFiles');
-      const back = await page.evaluate(() => ({ step1: !document.querySelector('#toolLayout').hidden, files: window.__merge.files.length, items: window.__merge.items.length }));
-      check(`${label}: back returns to the file list`, () => assert.deepStrictEqual(back, { step1: true, files: 2, items: 0 }));
 
       /* ---------- Split ---------- */
       await page.goto(origin + '/pisah-pdf/');

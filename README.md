@@ -10,7 +10,7 @@
 | --- | --- |
 | **Palang IC**: cop "UNTUK KEGUNAAN … SAHAJA" pada gambar IC / stamp your IC photo | ✅ `palang/` |
 | **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
-| **Gabung PDF / Merge PDF**: susun fail ikut urutan, gabung jadi satu; langkah lanjutan (pilihan): letak tarikh, tandatangan & teks, satu atau semua muka surat / order files, join into one; optional advanced step: place a date, signature & text on one or every page | ✅ `gabung-pdf/` |
+| **Gabung PDF / Merge PDF**: susun fail ikut urutan, gabung jadi satu / order files, join into one | ✅ `gabung-pdf/` |
 | **Pisah PDF / Split PDF**: ikut julat, setiap N muka surat, atau pilih muka surat / by ranges, every N pages, or picked pages | ✅ `pisah-pdf/` |
 | **Susun PDF / Organise PDF**: susun semula, putar, buang muka surat / reorder, rotate, delete pages | ✅ `susun-pdf/` |
 | **Putar PDF / Rotate PDF** | ✅ `putar-pdf/` |
@@ -24,7 +24,7 @@
 | **Lindungi PDF / Protect PDF**: kunci dengan kata laluan AES-256, sekat cetak/salin / lock with an AES-256 password, block printing/copying | ✅ `lindungi-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
-| **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date (any date, one or every page) | ✅ `tandatangan-pdf/` |
+| **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
 | **Kecilkan Gambar / Compress Images**: had saiz (cth. ≤ 200 KB), saiz maksimum, buang EXIF / size limit, max dimensions, strips EXIF | ✅ `kecil-gambar/` |
 
@@ -182,7 +182,6 @@ js/zip.js               tiny ZIP writer for split output
 js/pdf2img.js           PDF -> images
 js/imgsmall.js          compress / resize images (EXIF stripped)
 js/sign.js              sign PDF (draw / type / upload, place, pdf-lib export)
-js/sig-maker.js, placer.js  signature maker + item placement (shared by Sign and Merge)
 js/scan.js, scan-core.js   document scanner: edge detection, perspective warp, filters
 vendor/                 pdf-lib 1.17.1 (MIT), pdf.js 4.10.38 (Apache-2.0); see vendor/VERSIONS.txt
 js/watermark.js         pure renderer: palang / tiled / combined
