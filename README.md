@@ -34,6 +34,15 @@
 
 ## Bahasa Melayu
 
+### Mod Lanjutan: Aliran Kerja (`aliran-kerja/`)
+
+Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langkah sekali gus pada PDF dan gambar.
+
+- **Templat**: *Pakej Permohonan Pinjaman* (palang gambar IC → gabung → nombor muka surat → kecilkan ≤ 2 MB), *Tandatangan & kunci*, *Salinan sulit*.
+- **Bina sendiri**: pilih langkah — Palang IC (gambar), tarikh/tandatangan/teks, watermark, nombor muka surat, putar, kecilkan, kunci dengan kata laluan — dan susun ikut urutan.
+- Langkah tarikh/tandatangan/teks berhenti seketika supaya anda boleh letak item (pada satu atau semua muka surat), kemudian teruskan.
+- Aliran sendiri boleh disimpan dalam pelayar (kata laluan tidak disimpan).
+
 ### Gambar → PDF
 
 Tambah satu atau lebih gambar (seret ke halaman di komputer, atau pilih/ambil gambar di telefon).
@@ -96,6 +105,15 @@ Buka laman dalam Chrome/Safari, kemudian pilih **Tambah ke Skrin Utama**. Aplika
 ---
 
 ## English
+
+### Advanced mode: Workflows (`aliran-kerja/`)
+
+The **Advanced mode** button in the header opens workflows: run several steps in one go on PDFs and photos.
+
+- **Templates**: *Loan application pack* (stamp IC photos → merge → page numbers → compress ≤ 2 MB), *Sign & lock*, *Confidential copy*.
+- **Build your own**: pick steps — IC stamp (photos), date/signature/text, watermark, page numbers, rotate, compress, password — and order them.
+- The date/signature/text step pauses so you can place items (on one or every page), then continues.
+- Your own workflows can be saved in the browser (passwords are never saved).
 
 ### Images → PDF
 
@@ -175,6 +193,8 @@ js/watermark-pdf.js, pagenum.js, crop.js        page editing tools
 js/page-viewer.js       stacked page view for overlay tools
 js/edit.js, redact.js, forms.js                 Edit PDF, Redact PDF, Fill PDF Form
 js/pdf-crypto.js, pdf-security.js               PDF encryption (RC4/AES, R2–R6), unlock/protect
+js/workflow.js, workflow-ops.js                 Advanced mode: workflow builder/runner and its steps
+js/sig-maker.js, placer.js                      signature maker + item placement (workflow date/sign/text step)
 js/unlock.js, protect.js                        Unlock PDF, Protect PDF
 js/compress.js          Compress PDF (re-render pages as JPEG)
 js/pdf-kit.js           loads vendored pdf.js + pdf-lib, render/save helpers
@@ -212,6 +232,7 @@ NODE_PATH="$(npm root -g)" node tests/phase1-test.cjs    # merge, split, organis
 NODE_PATH="$(npm root -g)" node tests/phase2a-test.cjs   # edit, redact, fill form
 NODE_PATH="$(npm root -g)" node tests/phase2b-test.cjs   # unlock, protect (needs python3 + pypdf)
 node tests/crypto-test.mjs                                # encryption vs pypdf (needs python3 + pypdf)
+NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workflows (needs python3 + pypdf)
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks
