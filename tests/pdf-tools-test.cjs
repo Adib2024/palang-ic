@@ -1,4 +1,4 @@
-// Browser test for Merge/Split/Organise PDF and Compress PDF.
+// Browser test for Compress PDF.
 // Test PDFs are generated in the page with pdf-lib (no real documents).
 // Run: NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs [outDir]
 const fs = require('fs');
@@ -104,103 +104,11 @@ function zipEntries(buf) {
       page.on('pageerror', (e) => errors.push(String(e)));
       page.on('console', (m) => { if (/Content Security Policy|Refused to/i.test(m.text())) cspIssues.push(m.text()); });
 
-      /* ---------- Organise ---------- */
-      await page.goto(origin + '/susun-pdf/');
+      await page.goto(origin + '/kecilkan-pdf/');
       const samples = await page.evaluate(makeSamples);
       const buf = (b) => Buffer.from(b, 'base64');
-      await page.setInputFiles('#pickFiles', [
-        { name: 'a.pdf', mimeType: 'application/pdf', buffer: buf(samples.a) },
-        { name: 'b.pdf', mimeType: 'application/pdf', buffer: buf(samples.b) },
-        { name: 'notes.pdf', mimeType: 'application/pdf', buffer: Buffer.from('not really a pdf') },
-      ]);
-      await page.waitForFunction(() => window.__organize.pages.length === 5 && /notes\.pdf/.test(document.querySelector('#status').textContent));
-      await page.evaluate(() => window.__organize.whenIdle());
-      const status = await page.textContent('#status');
-      check(`${label}: organise loads 2 PDFs (5 pages), rejects a fake .pdf`, () => {
-        assert.strictEqual(status.includes('notes.pdf'), true, status);
-        assert.match(status, /tidak dapat dibuka sebagai PDF/);
-      });
-
-      // Thumbnails rendered, with dark text pixels (fonts loaded under CSP).
-      const inked = await page.evaluate(async () => Promise.all(window.__organize.pages.map(async (p) => {
-        if (!p.thumb) return 0;
-        const img = new Image();
-        img.src = p.thumb;
-        await img.decode();
-        const c = document.createElement('canvas');
-        c.width = img.width; c.height = img.height;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const d = ctx.getImageData(0, 0, c.width, c.height).data;
-        let dark = 0;
-        for (let i = 0; i < d.length; i += 4) if (d[i] < 80) dark++;
-        return dark;
-      })));
-      check(`${label}: every thumbnail rendered with visible text`, () => inked.forEach((n) => assert(n > 50, JSON.stringify(inked))));
-
-      // Organise: move last page (B2) to front, rotate it, delete A3.
-      for (let k = 5; k > 1; k--) await page.click(`.page-card:nth-child(${k}) .page-tools .icon-btn:nth-child(1)`);
-      await page.click('.page-card:nth-child(1) .page-tools .icon-btn:nth-child(3)');
-      await page.click('.page-card:nth-child(4) .page-tools .icon-btn:nth-child(4)');
-      await page.evaluate(() => window.__organize.whenIdle());
-      await page.screenshot({ path: path.join(OUT, `organize-${label}.png`), fullPage: true });
-
-      const merged = await page.evaluate(async () => {
-        const { file } = await window.__organize.buildOutput();
-        const b = new Uint8Array(await file.arrayBuffer());
-        let s = '';
-        for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000));
-        return btoa(s);
-      });
-      const order = await page.evaluate(pageTexts, merged);
-      check(`${label}: merged PDF has new order, rotation and deletion`, () => {
-        assert.deepStrictEqual(order.map((p) => p.text), ['B2', 'A1', 'A2', 'B1']);
-        assert.deepStrictEqual(order.map((p) => p.rotate), [90, 0, 0, 0]);
-      });
-
-      // Only selected pages.
-      await page.click('.page-card:nth-child(2) .page-thumb');
-      await page.check('.page-card:nth-child(4) .page-select');
-      await page.check('#onlySelected');
-      const [dlSel] = await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
-      const selPath = path.join(OUT, `organize-selected-${label}.pdf`);
-      await dlSel.saveAs(selPath);
-      const selOrder = await page.evaluate(pageTexts, fs.readFileSync(selPath).toString('base64'));
-      check(`${label}: "only selected" saves just the picked pages`, () => {
-        assert.deepStrictEqual(selOrder.map((p) => p.text), ['A1', 'B1']);
-      });
-      await page.uncheck('#onlySelected');
-
-      // Split: every page -> ZIP with 4 PDFs.
-      await page.click('input[name="outMode"][value="split"] + span');
-      const [dlZip] = await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
-      const zipPath = path.join(OUT, `organize-split-${label}.zip`);
-      await dlZip.saveAs(zipPath);
-      check(`${label}: split every page -> ZIP of 4 PDFs`, () => {
-        assert.strictEqual(dlZip.suggestedFilename(), 'dokumen.zip');
-        assert.deepStrictEqual(zipEntries(fs.readFileSync(zipPath)), ['dokumen-1.pdf', 'dokumen-2.pdf', 'dokumen-3.pdf', 'dokumen-4.pdf']);
-      });
-
-      // Split by ranges.
-      await page.click('input[name="splitBy"][value="ranges"] + span');
-      await page.fill('#ranges', '1-2, 4');
-      const [dlR] = await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
-      const rPath = path.join(OUT, `organize-ranges-${label}.zip`);
-      await dlR.saveAs(rPath);
-      check(`${label}: split by ranges "1-2, 4"`, () => {
-        assert.deepStrictEqual(zipEntries(fs.readFileSync(rPath)), ['dokumen-1-2.pdf', 'dokumen-4.pdf']);
-      });
-      await page.fill('#ranges', '2, 9');
-      await page.click('#savePdf');
-      await page.waitForFunction(() => /tidak sah/.test(document.querySelector('#status').textContent));
-      check(`${label}: invalid range is reported`, () => {});
-      await page.click('input[name="outMode"][value="merge"] + span');
-
-      const overflowOrg = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      check(`${label}: organise has no horizontal scroll`, () => assert(overflowOrg <= 0, `${overflowOrg}px`));
 
       /* ---------- Compress ---------- */
-      await page.goto(origin + '/kecilkan-pdf/');
       await page.setInputFiles('#pickFiles', { name: 'imbasan.pdf', mimeType: 'application/pdf', buffer: buf(samples.scan) });
       await page.waitForFunction(() => window.__compress.input);
       const meta = await page.textContent('#fileMeta');

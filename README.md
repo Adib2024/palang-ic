@@ -10,7 +10,13 @@
 | --- | --- |
 | **Palang IC**: cop "UNTUK KEGUNAAN … SAHAJA" pada gambar IC / stamp your IC photo | ✅ `palang/` |
 | **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
-| **Gabung / Pisah / Susun PDF / Merge, split, organise PDF**: gabung, pisah (setiap muka surat atau julat), susun, putar, buang / merge, split (every page or ranges), reorder, rotate, delete | ✅ `susun-pdf/` |
+| **Gabung PDF / Merge PDF**: susun fail ikut urutan, gabung jadi satu / order files, join into one | ✅ `gabung-pdf/` |
+| **Pisah PDF / Split PDF**: ikut julat, setiap N muka surat, atau pilih muka surat / by ranges, every N pages, or picked pages | ✅ `pisah-pdf/` |
+| **Susun PDF / Organise PDF**: susun semula, putar, buang muka surat / reorder, rotate, delete pages | ✅ `susun-pdf/` |
+| **Putar PDF / Rotate PDF** | ✅ `putar-pdf/` |
+| **Watermark PDF**: teks atau gambar, 9 kedudukan atau mozaik / text or image, 9 positions or mosaic | ✅ `watermark-pdf/` |
+| **Nombor Muka Surat / Page Numbers** | ✅ `nombor-pdf/` |
+| **Potong PDF / Crop PDF** | ✅ `potong-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
@@ -158,7 +164,9 @@ css/style.css           shared mobile-first styles, light/dark
 js/home.js, js/page.js  dashboard + shared page boot (language, offline)
 js/palang.js            Palang IC: state, controls, preview, export, share
 js/img2pdf.js           Images -> PDF: page grid, reorder, export
-js/organize.js          Merge / split / organise PDF
+js/pdf-pages.js         shared: open PDFs, thumbnails, page cards, reorder, coordinate mapping, live preview
+js/merge.js, split.js, organize.js, rotate.js   page/file tools
+js/watermark-pdf.js, pagenum.js, crop.js        page editing tools
 js/compress.js          Compress PDF (re-render pages as JPEG)
 js/pdf-kit.js           loads vendored pdf.js + pdf-lib, render/save helpers
 js/zip.js               tiny ZIP writer for split output
@@ -189,8 +197,9 @@ Test with the **fake** sample cards (never commit a real IC):
 python3 tests/make-samples.py                         # regenerate fixtures (Pillow)
 NODE_PATH="$(npm root -g)" node tests/render-test.cjs  # Palang IC (needs Playwright + Chromium)
 NODE_PATH="$(npm root -g)" node tests/tools-test.cjs   # dashboard + Images -> PDF
-NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs # merge/split/organise + compress
+NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs # compress PDF
 NODE_PATH="$(npm root -g)" node tests/more-tools-test.cjs # PDF->images, compress images, sign, scan
+NODE_PATH="$(npm root -g)" node tests/phase1-test.cjs    # merge, split, organise, rotate, watermark, page numbers, crop
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks

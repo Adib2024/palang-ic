@@ -46,12 +46,19 @@ function inspectPdf(file) {
       // Dashboard
       await page.goto(origin + '/');
       const cards = await page.$$eval('.tool', (els) => els.map((e) => ({ href: e.getAttribute('href'), soon: e.classList.contains('soon') })));
-      check(`${label}: dashboard lists 8 live tools`, () => {
+      check(`${label}: dashboard lists 14 tools`, () => {
         assert.deepStrictEqual(cards.map((c) => c.href), [
-          'palang/', 'imbas/', 'tandatangan-pdf/', 'gambar-pdf/', 'susun-pdf/', 'kecilkan-pdf/', 'pdf-gambar/', 'kecil-gambar/',
+          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'tandatangan-pdf/',
+          'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'susun-pdf/', 'kecil-gambar/',
         ]);
         assert(cards.every((c) => !c.soon));
       });
+      await page.click('.chip[data-cat="edit"]');
+      const shown = await page.$$eval('.tool', (els) => els.filter((e) => !e.hidden).map((e) => e.getAttribute('href')));
+      check(`${label}: category chip filters the tools`, () => {
+        assert.deepStrictEqual(shown, ['watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/']);
+      });
+      await page.click('.chip[data-cat="all"]');
       const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       check(`${label}: dashboard has no horizontal scroll`, () => assert(overflowHome <= 0, `${overflowHome}px`));
       await page.screenshot({ path: path.join(OUT, `dashboard-${label}.png`), fullPage: true });
