@@ -169,6 +169,41 @@ async function pixelDiff({ a, b }) {
         assert.match(ci.pages[1].text, /2 \/ 2/);
       });
 
+      /* ---------- Merge, text, sign & date ---------- */
+      await reset();
+      await page.click('[data-tpl="mergesign"]');
+      const ms = await page.evaluate(() => ({
+        steps: window.__wf.steps.map((s) => s.type),
+        chips: [...document.querySelectorAll('[data-tpl="mergesign"] .wf-chips li')].map((e) => e.textContent),
+      }));
+      check(`${label}: "merge, text, sign & date" template`, () => {
+        assert.deepStrictEqual(ms.steps, ['place']);
+        assert.deepStrictEqual(ms.chips, ['Gabung fail', 'Tarikh, tandatangan & teks']);
+      });
+      const docA = await page.evaluate(makePdf, { label: 'BORANG', pages: 1 });
+      await page.setInputFiles('#pickFiles', [pdf('borang.pdf', docA), pdf('surat.pdf', doc2), IC]);
+      await page.click('#runWf');
+      await page.waitForFunction(() => window.__wf.views.length === 4);
+      await page.fill('#extraText', 'Ali bin Abu');
+      await page.click('#addText');
+      await page.click('#addDate');
+      await page.evaluate(() => window.__wf.setActive(3));
+      await page.click('input[name="sigTab"][value="type"] + span');
+      await page.fill('#typedName', 'Ali');
+      await page.click('#addSig');
+      await page.waitForFunction(() => window.__wf.items.length === 3);
+      const msPlaced = await page.evaluate(() => window.__wf.items.map((it) => it.page));
+      await page.click('#placeNext');
+      await page.waitForFunction(() => !document.querySelector('#resultArea').hidden, null, { timeout: 60000 });
+      const msOut = await save();
+      const msi = await page.evaluate(inspect, { b64: msOut.b64 });
+      check(`${label}: merged 3 files (4 pages) with text, date and signature`, () => {
+        assert.deepStrictEqual(msPlaced, [0, 0, 3]);
+        assert.strictEqual(msi.pages.length, 4);
+        assert.match(msi.pages[0].text, /BORANG 1/);
+        assert.match(msi.pages[2].text, /SURAT 2/);
+      });
+
       /* ---------- Sign & lock: interactive step + password ---------- */
       await reset();
       await page.click('[data-tpl="signed"]');

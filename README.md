@@ -38,7 +38,7 @@
 
 Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langkah sekali gus pada PDF dan gambar.
 
-- **Templat**: *Pakej Permohonan Pinjaman* (palang gambar IC → gabung → nombor muka surat → kecilkan ≤ 2 MB), *Tandatangan & kunci*, *Salinan sulit*.
+- **Templat**: *Pakej Permohonan Pinjaman* (palang gambar IC → gabung → nombor muka surat → kecilkan ≤ 2 MB), *Gabung, teks, tandatangan & tarikh*, *Tandatangan & kunci*, *Salinan sulit*.
 - **Bina sendiri**: pilih langkah — Palang IC (gambar), tarikh/tandatangan/teks, watermark, nombor muka surat, putar, kecilkan, kunci dengan kata laluan — dan susun ikut urutan.
 - Langkah tarikh/tandatangan/teks berhenti seketika supaya anda boleh letak item (pada satu atau semua muka surat), kemudian teruskan.
 - Aliran sendiri boleh disimpan dalam pelayar (kata laluan tidak disimpan).
@@ -110,7 +110,7 @@ Buka laman dalam Chrome/Safari, kemudian pilih **Tambah ke Skrin Utama**. Aplika
 
 The **Advanced mode** button in the header opens workflows: run several steps in one go on PDFs and photos.
 
-- **Templates**: *Loan application pack* (stamp IC photos → merge → page numbers → compress ≤ 2 MB), *Sign & lock*, *Confidential copy*.
+- **Templates**: *Loan application pack* (stamp IC photos → merge → page numbers → compress ≤ 2 MB), *Merge, text, sign & date*, *Sign & lock*, *Confidential copy*.
 - **Build your own**: pick steps — IC stamp (photos), date/signature/text, watermark, page numbers, rotate, compress, password — and order them.
 - The date/signature/text step pauses so you can place items (on one or every page), then continues.
 - Your own workflows can be saved in the browser (passwords are never saved).

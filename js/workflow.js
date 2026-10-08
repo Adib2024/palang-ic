@@ -57,14 +57,12 @@ function setSteps(list, which) {
 function stepChips(list) {
   const ul = document.createElement('ul');
   ul.className = 'wf-chips';
-  for (const s of normalize(list)) {
+  // Merging the files is always a step: after the IC stamp (photos), before the rest.
+  const names = normalize(list).map((s) => tr(`wfStep_${s.type}`));
+  names.splice(list.some((s) => s.type === 'palang') ? 1 : 0, 0, tr('wfInput'));
+  for (const name of names) {
     const li = document.createElement('li');
-    li.textContent = tr(`wfStep_${s.type}`);
-    ul.appendChild(li);
-  }
-  if (!list.length) {
-    const li = document.createElement('li');
-    li.textContent = tr('wfInput');
+    li.textContent = name;
     ul.appendChild(li);
   }
   return ul;

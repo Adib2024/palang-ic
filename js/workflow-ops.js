@@ -35,6 +35,10 @@ export const TEMPLATES_WF = [
     ],
   },
   {
+    id: 'mergesign', icon: 'merge',
+    steps: [{ type: 'place', opts: {} }],
+  },
+  {
     id: 'signed', icon: 'sign',
     steps: [
       { type: 'place', opts: {} },
