@@ -1,10 +1,9 @@
 // Light/dark toggle. Loaded as a classic script in <head> so the saved theme
-// applies before first paint (no flash). With nothing saved, it follows the
-// phone's setting.
+// applies before first paint (no flash). Light is the default; dark only
+// when the user picks it.
 (function () {
   var KEY = 'palangic:theme';
   var root = document.documentElement;
-  var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
   function saved() {
     try {
@@ -16,7 +15,7 @@
   }
 
   function effective() {
-    return saved() || (media && media.matches ? 'dark' : 'light');
+    return saved() || 'light';
   }
 
   function apply() {
@@ -36,7 +35,6 @@
   }
 
   apply();
-  if (media && media.addEventListener) media.addEventListener('change', apply);
 
   document.addEventListener('DOMContentLoaded', function () {
     apply();

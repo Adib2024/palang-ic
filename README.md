@@ -10,7 +10,6 @@
 | --- | --- |
 | **Palang IC**: cop "UNTUK KEGUNAAN … SAHAJA" pada gambar IC / stamp your IC photo | ✅ `palang/` |
 | **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
-| **Palang PDF**: cop setiap muka surat PDF / stamp every page of a PDF | 🔜 |
 | **Gabung / Pisah / Susun PDF / Merge, split, organise PDF** | 🔜 |
 | **Kecilkan PDF / Compress PDF** | 🔜 |
 

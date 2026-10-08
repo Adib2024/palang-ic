@@ -46,42 +46,7 @@
   color-scheme: light;
 }
 
-/* Dark: follows the device unless the user chose light with the toggle. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0b0d17;
-    --bg-hero: #12152a;
-    --surface: #141729;
-    --surface-2: #1a1e34;
-    --text: #e8eaf4;
-    --muted: #a0a7c0;
-    --border: #262b45;
-    --border-strong: #353b5c;
-    --accent: #7c83ff;
-    --accent-hover: #959bff;
-    --accent-text: #0b0d17;
-    --accent-soft: #23264a;
-    --accent-soft-text: #c7caff;
-    --link: #9ea4ff;
-    --safe-bg: #0d2a22;
-    --safe-border: #14523f;
-    --safe-text: #a7f3d0;
-    --safe-icon: #34d399;
-    --warn: #fcd34d;
-    --warn-bg: #2a2110;
-    --warn-border: #5a4413;
-    --focus: #9ea4ff;
-    --shadow-sm: none;
-    --shadow: 0 1px 0 rgba(255, 255, 255, .03);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, .45);
-    --tone-indigo: #8b91ff; --tone-indigo-bg: #23264a;
-    --tone-amber: #fbbf24; --tone-amber-bg: #2d2412;
-    --tone-rose: #fb7185; --tone-rose-bg: #2f1620;
-    --tone-emerald: #34d399; --tone-emerald-bg: #0f2a22;
-    --tone-sky: #38bdf8; --tone-sky-bg: #0f2333;
-    color-scheme: dark;
-  }
-}
+/* Dark only when the user picks it with the toggle; light is the default. */
 :root[data-theme="dark"] {
   --bg: #0b0d17;
   --bg-hero: #12152a;
