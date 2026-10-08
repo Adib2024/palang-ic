@@ -22,6 +22,8 @@
 | **Isi Borang PDF / Fill PDF Form**: kotak teks, tanda, pilihan, senarai; boleh diratakan / text, checkbox, radio, dropdown; optional flatten | ✅ `isi-borang/` |
 | **Buka Kunci PDF / Unlock PDF**: buang kata laluan atau sekatan cetak/salin (anda mesti tahu kata laluan) / remove a password or print/copy restrictions (you must know the password) | ✅ `buka-kunci-pdf/` |
 | **Lindungi PDF / Protect PDF**: kunci dengan kata laluan AES-256, sekat cetak/salin / lock with an AES-256 password, block printing/copying | ✅ `lindungi-pdf/` |
+| **Banding PDF / Compare PDF**: perkataan ditambah/dibuang + kawasan berubah setiap muka surat / added/removed words + changed areas per page | ✅ `banding-pdf/` |
+| **OCR PDF**: imbasan/gambar → PDF boleh dicari & disalin + teks (.txt); BM & English, enjin dihos sendiri / scans/photos → searchable, copyable PDF + text; Malay & English, self-hosted engine | ✅ `ocr-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
@@ -194,6 +196,9 @@ js/page-viewer.js       stacked page view for overlay tools
 js/edit.js, redact.js, forms.js                 Edit PDF, Redact PDF, Fill PDF Form
 js/pdf-crypto.js, pdf-security.js               PDF encryption (RC4/AES, R2–R6), unlock/protect
 js/workflow.js, workflow-ops.js                 Advanced mode: workflow builder/runner and its steps
+js/compare.js, diff.js                          Compare PDF (Myers word diff + pixel diff)
+js/ocr.js                                       OCR PDF (tesseract.js, invisible text layer)
+vendor/tesseract/                               tesseract.js 5.1.1 + core + eng/msa models (vendor workflow)
 js/sig-maker.js, placer.js                      signature maker + item placement (workflow date/sign/text step)
 js/unlock.js, protect.js                        Unlock PDF, Protect PDF
 js/compress.js          Compress PDF (re-render pages as JPEG)
@@ -233,6 +238,7 @@ NODE_PATH="$(npm root -g)" node tests/phase2a-test.cjs   # edit, redact, fill fo
 NODE_PATH="$(npm root -g)" node tests/phase2b-test.cjs   # unlock, protect (needs python3 + pypdf)
 node tests/crypto-test.mjs                                # encryption vs pypdf (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workflows (needs python3 + pypdf)
+NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks

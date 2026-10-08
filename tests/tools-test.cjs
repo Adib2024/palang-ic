@@ -46,9 +46,9 @@ function inspectPdf(file) {
       // Dashboard
       await page.goto(origin + '/');
       const cards = await page.$$eval('.tool', (els) => els.map((e) => ({ href: e.getAttribute('href'), soon: e.classList.contains('soon') })));
-      check(`${label}: dashboard lists 19 tools`, () => {
+      check(`${label}: dashboard lists 21 tools`, () => {
         assert.deepStrictEqual(cards.map((c) => c.href), [
-          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'tandatangan-pdf/', 'edit-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/', 'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'susun-pdf/', 'kecil-gambar/',
+          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'ocr-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'tandatangan-pdf/', 'edit-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/', 'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'banding-pdf/', 'susun-pdf/', 'kecil-gambar/',
         ]);
         assert(cards.every((c) => !c.soon));
       });
@@ -61,7 +61,7 @@ function inspectPdf(file) {
       await page.click('.chip[data-cat="edit"]');
       const shown = await page.$$eval('.tool', (els) => els.filter((e) => !e.hidden).map((e) => e.getAttribute('href')));
       check(`${label}: category chip filters the tools`, () => {
-        assert.deepStrictEqual(shown, ['edit-pdf/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/']);
+        assert.deepStrictEqual(shown, ['edit-pdf/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'banding-pdf/']);
       });
       await page.click('.chip[data-cat="security"]');
       const secure = await page.$$eval('.tool', (els) => els.filter((e) => !e.hidden).map((e) => e.getAttribute('href')));
