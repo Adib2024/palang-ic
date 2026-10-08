@@ -10,8 +10,8 @@
 | --- | --- |
 | **Palang IC**: cop "UNTUK KEGUNAAN … SAHAJA" pada gambar IC / stamp your IC photo | ✅ `palang/` |
 | **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
-| **Gabung / Pisah / Susun PDF / Merge, split, organise PDF** | 🔜 |
-| **Kecilkan PDF / Compress PDF** | 🔜 |
+| **Gabung / Pisah / Susun PDF / Merge, split, organise PDF**: gabung, pisah (setiap muka surat atau julat), susun, putar, buang / merge, split (every page or ranges), reorder, rotate, delete | ✅ `susun-pdf/` |
+| **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
@@ -140,7 +140,9 @@ Open the site in Chrome/Safari and choose **Add to Home Screen**. It works offli
 
 ## Development
 
-Plain HTML/CSS/JS (ES modules). There is no build step and no runtime dependencies.
+Plain HTML/CSS/JS (ES modules), no build step. The PDF tools use pdf-lib and pdf.js,
+vendored into `vendor/` by `.github/workflows/vendor.yml` (pinned versions, npm
+integrity hashes recorded) so the site never loads code from a CDN.
 The Inter web font (SIL OFL 1.1) is self-hosted: the deploy workflow subsets it to
 WOFF2 under `fonts/`. Locally, pages fall back to the system UI font.
 
@@ -152,6 +154,11 @@ css/style.css           shared mobile-first styles, light/dark
 js/home.js, js/page.js  dashboard + shared page boot (language, offline)
 js/palang.js            Palang IC: state, controls, preview, export, share
 js/img2pdf.js           Images -> PDF: page grid, reorder, export
+js/organize.js          Merge / split / organise PDF
+js/compress.js          Compress PDF (re-render pages as JPEG)
+js/pdf-kit.js           loads vendored pdf.js + pdf-lib, render/save helpers
+js/zip.js               tiny ZIP writer for split output
+vendor/                 pdf-lib 1.17.1 (MIT), pdf.js 4.10.38 (Apache-2.0); see vendor/VERSIONS.txt
 js/watermark.js         pure renderer: palang / tiled / combined
 js/image-loader.js      decode + EXIF orientation fix + size cap
 js/pdf.js               tiny multi-page PDF writer (JPEG embed)
@@ -174,6 +181,7 @@ Test with the **fake** sample cards (never commit a real IC):
 python3 tests/make-samples.py                         # regenerate fixtures (Pillow)
 NODE_PATH="$(npm root -g)" node tests/render-test.cjs  # Palang IC (needs Playwright + Chromium)
 NODE_PATH="$(npm root -g)" node tests/tools-test.cjs   # dashboard + Images -> PDF
+NODE_PATH="$(npm root -g)" node tests/pdf-tools-test.cjs # merge/split/organise + compress
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks
