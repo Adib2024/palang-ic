@@ -228,6 +228,30 @@ a.tool:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border
   font-size: .88rem; font-weight: 700; color: var(--tone, var(--accent)); display: inline-flex; gap: 6px; align-items: center;
 }
 .tool.soon { box-shadow: none; background: var(--surface-2); }
+
+/* Highlighted tools: "Popular" badge; Palang IC as a wide hero card. */
+.tool.popular { border-color: color-mix(in srgb, var(--tone) 45%, var(--border)); }
+.pop-badge {
+  position: absolute; top: 14px; right: 14px; font-style: normal; font-size: .72rem; font-weight: 700;
+  letter-spacing: .02em; padding: 3px 10px; border-radius: 999px; background: var(--tone-bg); color: var(--tone);
+}
+.tool.hero-tool {
+  background: linear-gradient(135deg, var(--tone-bg), var(--surface) 70%);
+  border-color: var(--tone); border-width: 2px; align-content: center;
+}
+.tool.hero-tool .tool-icon { width: 60px; height: 60px; border-radius: 16px; }
+.tool.hero-tool .tool-icon svg { width: 32px; height: 32px; }
+.tool.hero-tool .tool-body strong { font-size: 1.3rem; }
+.tool.hero-tool .tool-body span { font-size: 1rem; color: var(--text); opacity: .8; }
+.tool.hero-tool .go {
+  justify-self: start; background: var(--tone); color: #fff; padding: 9px 16px; border-radius: 999px; font-size: .92rem;
+}
+:root[data-theme="dark"] .tool.hero-tool .go { color: #0b0d17; }
+@media (min-width: 560px) {
+  .tool.hero-tool { grid-column: span 2; grid-template-columns: auto 1fr; column-gap: 20px; padding: 26px 28px; }
+  .tool.hero-tool .tool-body, .tool.hero-tool .go { grid-column: 2; }
+  .tool.hero-tool .tool-icon { grid-row: span 2; align-self: center; }
+}
 .tool.soon .tool-icon { filter: grayscale(.4); opacity: .75; }
 .badge {
   position: absolute; top: 16px; right: 16px; font-style: normal; font-size: .72rem; font-weight: 700;

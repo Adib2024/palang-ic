@@ -52,6 +52,12 @@ function inspectPdf(file) {
         ]);
         assert(cards.every((c) => !c.soon));
       });
+      const pops = await page.$$eval('.tool.popular', (els) => els.map((e) => e.getAttribute('href')));
+      const hero = await page.$$eval('.tool.hero-tool', (els) => els.map((e) => e.getAttribute('href')));
+      check(`${label}: Palang IC, Merge and Sign are highlighted as Popular`, () => {
+        assert.deepStrictEqual(pops, ['palang/', 'gabung-pdf/', 'tandatangan-pdf/']);
+        assert.deepStrictEqual(hero, ['palang/']);
+      });
       await page.click('.chip[data-cat="edit"]');
       const shown = await page.$$eval('.tool', (els) => els.filter((e) => !e.hidden).map((e) => e.getAttribute('href')));
       check(`${label}: category chip filters the tools`, () => {

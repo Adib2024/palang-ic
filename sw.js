@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v7';
+const VERSION = 'dokujaga-v8';
 const ASSETS = [
   'lindungi-pdf/',
   'lindungi-pdf/index.html',
