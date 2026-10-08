@@ -1,0 +1,50 @@
+name: Vendor PDF libraries
+
+# Run manually to (re)fetch the third-party PDF libraries into vendor/ and
+# commit them, so the site serves them itself and never loads code from a CDN.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install pinned versions
+        run: |
+          mkdir -p /tmp/v && cd /tmp/v
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38
+      - name: Copy into vendor/
+        run: |
+          rm -rf vendor && mkdir -p vendor/pdf-lib vendor/pdfjs
+          cp /tmp/v/node_modules/pdf-lib/dist/pdf-lib.esm.min.js vendor/pdf-lib/
+          cp /tmp/v/node_modules/pdf-lib/LICENSE.md vendor/pdf-lib/LICENSE.md
+          cp /tmp/v/node_modules/pdfjs-dist/legacy/build/pdf.min.mjs vendor/pdfjs/
+          cp /tmp/v/node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs vendor/pdfjs/
+          cp -r /tmp/v/node_modules/pdfjs-dist/standard_fonts vendor/pdfjs/standard_fonts
+          cp -r /tmp/v/node_modules/pdfjs-dist/cmaps vendor/pdfjs/cmaps
+          cp /tmp/v/node_modules/pdfjs-dist/LICENSE vendor/pdfjs/LICENSE
+          {
+            echo "Vendored by .github/workflows/vendor.yml — do not edit by hand."
+            echo
+            for p in pdf-lib pdfjs-dist; do
+              node -e "const l=require('/tmp/v/package-lock.json').packages['node_modules/$p']; console.log('$p', l.version, l.integrity, l.license||'')"
+            done
+          } > vendor/VERSIONS.txt
+          cat vendor/VERSIONS.txt
+          du -sh vendor/*
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git commit -m "Vendor pdf-lib 1.17.1 and pdf.js 4.10.38 (legacy build)"
+          git push origin HEAD:${GITHUB_REF_NAME}
