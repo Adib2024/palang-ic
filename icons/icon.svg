@@ -1,10 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#13224a"/>
-  <path d="M136 88h168l84 84v232a24 24 0 0 1-24 24H136a24 24 0 0 1-24-24V112a24 24 0 0 1 24-24Z" fill="#ffffff"/>
-  <path d="M304 88v60a24 24 0 0 0 24 24h60Z" fill="#b8c3e0"/>
-  <rect x="156" y="196" width="156" height="18" rx="9" fill="#b8c3e0"/>
-  <rect x="156" y="240" width="120" height="18" rx="9" fill="#b8c3e0"/>
-  <rect x="156" y="284" width="96" height="18" rx="9" fill="#b8c3e0"/>
-  <path d="M352 268l84 30v62c0 52-36 92-84 106-48-14-84-54-84-106v-62Z" fill="#f5b301" stroke="#13224a" stroke-width="14" stroke-linejoin="round"/>
-  <path d="m314 362 28 28 52-56" fill="none" stroke="#13224a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#g)"/>
+  <path d="M148 92h156l88 88v220a28 28 0 0 1-28 28H148a28 28 0 0 1-28-28V120a28 28 0 0 1 28-28Z" fill="#ffffff"/>
+  <path d="M304 92v60a28 28 0 0 0 28 28h60Z" fill="#c7d2fe"/>
+  <rect x="164" y="204" width="150" height="20" rx="10" fill="#c7d2fe"/>
+  <rect x="164" y="250" width="112" height="20" rx="10" fill="#c7d2fe"/>
+  <rect x="164" y="296" width="84" height="20" rx="10" fill="#c7d2fe"/>
+  <path d="M356 262l86 30v64c0 54-37 95-86 110-49-15-86-56-86-110v-64Z" fill="#10b981" stroke="#ffffff" stroke-width="16" stroke-linejoin="round"/>
+  <path d="m318 360 28 28 50-54" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
