@@ -1,0 +1,4 @@
+Vendored by .github/workflows/vendor.yml — do not edit by hand.
+
+pdf-lib 1.17.1 sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw== MIT
+pdfjs-dist 4.10.38 sha512-/Y3fcFrXEAsMjJXeL9J8+ZG9U01LbuWaYypvDW2ycW1jL269L3js3DVBjDJ0Up9Np1uqDXsDrRihHANhZOlwdQ== Apache-2.0
