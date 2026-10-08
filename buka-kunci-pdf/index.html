@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Privacy guarantee enforced by the browser: this page cannot open any
+       network connection, and loads code, styles, fonts and images only
+       from this site. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Buka Kunci PDF · DokuJaga</title>
+  <meta name="description" content="Buang kata laluan daripada PDF anda terus dalam pelayar. Tiada apa-apa dimuat naik.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="preload" href="../fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/theme.js"></script>
+  <script type="module" src="../js/unlock.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <nav class="nav-links" aria-label="Utama">
+        <a href="../#tools" data-i18n="navTools">Alat</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      </nav>
+      <div class="top-actions">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+        <div class="lang" role="group" aria-label="Bahasa / Language">
+          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero tool-hero tone-indigo">
+    <div class="container">
+      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V7a4 4 0 0 1 7.6-1.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.6" fill="currentColor"/></svg></span>
+      <h1 data-i18n="toolUnlockTitle">Buka Kunci PDF</h1>
+      <p class="lead" data-i18n="unlockLead"></p>
+    </div>
+  </section>
+
+  <main class="page">
+    <div class="container stack">
+      <section class="privacy">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+      </section>
+
+      <div class="tool-layout narrow tone-indigo is-empty" id="toolLayout">
+        <section class="card">
+          <div class="dropzone" id="dropzone">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><strong data-i18n="pdfDropBig"></strong></p>
+            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <div class="drop-buttons">
+              <label class="btn primary lg">
+                <input type="file" id="pickFiles" accept="application/pdf,.pdf">
+                <span data-i18n="pdfChoose"></span>
+              </label>
+            </div>
+          </div>
+          <div class="file-card after-load">
+            <div class="file-info">
+              <h2 id="docTitle" class="file-name"></h2>
+              <p class="file-meta" id="docMeta"></p>
+              <button type="button" class="link" id="another" data-i18n="cmpAnother">Pilih PDF lain</button>
+            </div>
+          </div>
+          <div class="after-load lock-panel">
+            <p class="note ok-note" id="notLocked" hidden data-i18n="unlockNotLocked"></p>
+            <div id="pwBlock" hidden>
+              <label class="field">
+                <span data-i18n="unlockPw">Kata laluan PDF</span>
+                <input type="password" id="password" autocomplete="current-password" spellcheck="false">
+              </label>
+              <label class="check"><input type="checkbox" id="showPw"><span data-i18n="showPw">Tunjuk kata laluan</span></label>
+              <div class="buttons stack">
+                <button type="button" class="primary" id="unlockBtn" data-i18n="unlockBtn">Buka kunci</button>
+              </div>
+            </div>
+            <div id="result" hidden>
+              <div class="buttons">
+                <button type="button" class="primary" id="savePdf" data-i18n="pdfSave">Simpan</button>
+                <button type="button" id="sharePdf" data-i18n="pdfShare">Kongsi</button>
+              </div>
+            </div>
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+            <p class="hint" data-i18n="unlockNote"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+      </div>
+      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+    </div>
+  </footer>
+</body>
+</html>
