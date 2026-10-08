@@ -1,10 +1,18 @@
-# PalangIC
+# DokuJaga
 
-**Palang & watermark gambar IC (MyKad) anda sebelum hantar — terus dalam telefon.**
-**Mark your IC photo before sending it to a bank, telco, agent or shop — entirely on your phone.**
+**Alat dokumen yang jaga privasi anda: palang IC, gambar → PDF dan lain-lain, terus dalam pelayar.**
+**Document tools that keep your files private: IC watermarking, images → PDF and more, right in your browser.**
 
-> Gambar anda diproses dalam telefon anda sahaja. Tiada apa-apa dimuat naik.
-> Your photo is processed on your device only. Nothing is uploaded.
+> Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.
+> Your files are processed on your device only. Nothing is uploaded.
+
+| Alat / Tool | Status |
+| --- | --- |
+| **Palang IC**: cop "UNTUK KEGUNAAN … SAHAJA" pada gambar IC / stamp your IC photo | ✅ `palang/` |
+| **Gambar → PDF / Images → PDF**: gabung gambar atau imbasan jadi satu PDF / combine photos and scans into one PDF | ✅ `gambar-pdf/` |
+| **Palang PDF**: cop setiap muka surat PDF / stamp every page of a PDF | 🔜 |
+| **Gabung / Pisah / Susun PDF / Merge, split, organise PDF** | 🔜 |
+| **Kecilkan PDF / Compress PDF** | 🔜 |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
@@ -12,11 +20,17 @@
 
 ## Bahasa Melayu
 
-### Apa ini?
+### Gambar → PDF
+
+Tambah satu atau lebih gambar (seret ke halaman di komputer, atau pilih/ambil gambar di telefon).
+Susun semula dengan seret atau butang ◀ ▶, putar dan buang muka surat, kemudian pilih saiz kertas
+(A4 / Letter / ikut gambar), orientasi, margin dan kualiti. Klik **Simpan PDF** atau **Kongsi PDF**.
+
+### Palang IC: apa ini?
 
 Bila bank, telco, ejen hartanah atau kedai minta salinan IC, amalan selamat ialah
 "palang" gambar itu dengan ayat seperti **UNTUK KEGUNAAN CIMB SAHAJA**. Kalau gambar
-itu bocor, ia sukar disalah guna untuk tujuan lain. PalangIC buat kerja ini dengan
+itu bocor, ia sukar disalah guna untuk tujuan lain. Palang IC buat kerja ini dengan
 cepat dan kemas.
 
 ### Cara guna
@@ -69,11 +83,17 @@ Buka laman dalam Chrome/Safari, kemudian pilih **Tambah ke Skrin Utama**. Aplika
 
 ## English
 
-### What is it?
+### Images → PDF
+
+Add one or more images (drag them onto the page on desktop, or choose/take photos on a phone).
+Reorder by dragging or with the ◀ ▶ buttons, rotate or remove pages, then pick paper size
+(A4 / Letter / fit image), orientation, margin and quality. Click **Save PDF** or **Share PDF**.
+
+### Palang IC: what is it?
 
 When a bank, telco, property agent or shop asks for a copy of your IC, the safe habit
 is to mark the photo with something like **FOR CIMB USE ONLY**. If the copy leaks, it is
-much harder to reuse for anything else. PalangIC does this quickly and neatly.
+much harder to reuse for anything else. Palang IC does this quickly and neatly.
 
 ### How to use
 
@@ -124,16 +144,21 @@ Open the site in Chrome/Safari and choose **Add to Home Screen**. It works offli
 Plain HTML/CSS/JS (ES modules). There is no build step and no dependencies.
 
 ```
-index.html              UI + CSP
-css/style.css           mobile-first styles, light/dark
-js/app.js               state, controls, preview, export, share
+index.html              DokuJaga dashboard (tool grid)
+palang/index.html       Palang IC tool
+gambar-pdf/index.html   Images -> PDF tool
+css/style.css           shared mobile-first styles, light/dark
+js/home.js, js/page.js  dashboard + shared page boot (language, offline)
+js/palang.js            Palang IC: state, controls, preview, export, share
+js/img2pdf.js           Images -> PDF: page grid, reorder, export
 js/watermark.js         pure renderer: palang / tiled / combined
 js/image-loader.js      decode + EXIF orientation fix + size cap
-js/pdf.js               tiny A4 PDF writer (JPEG embed)
+js/pdf.js               tiny multi-page PDF writer (JPEG embed)
 js/i18n.js              BM/EN strings + templates
-js/storage.js           try/catch-wrapped localStorage
+js/theme.js             light/dark toggle (runs before first paint)
+js/storage.js, js/pwa.js   localStorage wrapper, service worker registration
 sw.js, manifest.webmanifest, icons/   PWA
-tests/                  fake sample cards + Playwright test
+tests/                  fake sample cards + Playwright tests
 ```
 
 Run locally (a service worker needs `localhost` or HTTPS):
@@ -146,7 +171,8 @@ Test with the **fake** sample cards (never commit a real IC):
 
 ```sh
 python3 tests/make-samples.py                         # regenerate fixtures (Pillow)
-NODE_PATH="$(npm root -g)" node tests/render-test.cjs  # needs Playwright + Chromium
+NODE_PATH="$(npm root -g)" node tests/render-test.cjs  # Palang IC (needs Playwright + Chromium)
+NODE_PATH="$(npm root -g)" node tests/tools-test.cjs   # dashboard + Images -> PDF
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks
