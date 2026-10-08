@@ -741,3 +741,12 @@ button.page-thumb { font: inherit; color: inherit; cursor: pointer; width: 100%;
 .form-input:focus { outline: 2px solid var(--accent); background: #fff; }
 textarea.form-input { resize: none; line-height: 1.2; }
 .form-checkbox, .form-radio { padding: 0; accent-color: var(--accent); cursor: pointer; }
+
+/* ---------- Unlock / Protect ---------- */
+.tool-layout.narrow { max-width: 640px; margin: 0 auto; width: 100%; grid-template-columns: 1fr !important; }
+.lock-panel { margin-top: 18px; }
+.pw-meter { margin: -8px 0 12px; font-size: .82rem; font-weight: 700; min-height: 1.2em; }
+.pw-meter[data-level="0"] { color: #e11d48; }
+.pw-meter[data-level="1"] { color: var(--warn); }
+.pw-meter[data-level="2"] { color: var(--safe-icon); }
+.warn-text { color: #e11d48; }
