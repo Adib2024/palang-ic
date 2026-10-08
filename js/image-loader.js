@@ -77,10 +77,10 @@ function applyOrientation(ctx, o, w, h) {
 }
 
 /**
- * Decode `file` into an upright canvas no larger than MAX_SIDE.
+ * Decode `file` into an upright canvas no larger than `maxSide`.
  * @returns {Promise<HTMLCanvasElement>}
  */
-export async function loadPhoto(file) {
+export async function loadPhoto(file, maxSide = MAX_SIDE) {
   const url = URL.createObjectURL(file);
   try {
     const [img, auto] = await Promise.all([loadImage(url), browserAutoOrients()]);
@@ -94,7 +94,7 @@ export async function loadPhoto(file) {
     const srcH = img.naturalHeight;
     const outW0 = swap ? srcH : srcW;
     const outH0 = swap ? srcW : srcH;
-    const scale = Math.min(1, MAX_SIDE / Math.max(outW0, outH0));
+    const scale = Math.min(1, maxSide / Math.max(outW0, outH0));
     const outW = Math.round(outW0 * scale);
     const outH = Math.round(outH0 * scale);
 

@@ -94,6 +94,20 @@ export async function shareOrDownload(file) {
   return 'downloaded';
 }
 
+/**
+ * Share several files at once (e.g. images to WhatsApp) if the browser can.
+ * @returns {Promise<'shared'|'cancelled'|'unsupported'>}
+ */
+export async function shareFiles(files, title) {
+  if (!(navigator.canShare && navigator.canShare({ files }))) return 'unsupported';
+  try {
+    await navigator.share({ files, title });
+    return 'shared';
+  } catch (err) {
+    return err && err.name === 'AbortError' ? 'cancelled' : 'unsupported';
+  }
+}
+
 /** Friendly message key for a PDF that couldn't be opened. */
 export function openErrorKey(err) {
   const msg = String((err && (err.name || err.message)) || '');
