@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v4';
+const VERSION = 'dokujaga-v5';
 const ASSETS = [
   './',
   'index.html',
@@ -20,6 +20,18 @@ const ASSETS = [
   'tandatangan-pdf/index.html',
   'imbas/',
   'imbas/index.html',
+  'gabung-pdf/',
+  'gabung-pdf/index.html',
+  'pisah-pdf/',
+  'pisah-pdf/index.html',
+  'putar-pdf/',
+  'putar-pdf/index.html',
+  'watermark-pdf/',
+  'watermark-pdf/index.html',
+  'nombor-pdf/',
+  'nombor-pdf/index.html',
+  'potong-pdf/',
+  'potong-pdf/index.html',
   'css/style.css',
   'js/home.js',
   'js/page.js',
@@ -35,6 +47,13 @@ const ASSETS = [
   'js/sign.js',
   'js/scan.js',
   'js/scan-core.js',
+  'js/pdf-pages.js',
+  'js/merge.js',
+  'js/split.js',
+  'js/rotate.js',
+  'js/watermark-pdf.js',
+  'js/pagenum.js',
+  'js/crop.js',
   'js/watermark.js',
   'js/image-loader.js',
   'js/pdf.js',

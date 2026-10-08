@@ -18,7 +18,8 @@
     { "name": "Imbas Dokumen", "url": "imbas/" },
     { "name": "Tandatangan PDF", "url": "tandatangan-pdf/" },
     { "name": "Gambar → PDF", "url": "gambar-pdf/" },
-    { "name": "Gabung / Pisah / Susun PDF", "url": "susun-pdf/" },
+    { "name": "Gabung PDF", "url": "gabung-pdf/" },
+    { "name": "Pisah PDF", "url": "pisah-pdf/" },
     { "name": "Kecilkan PDF", "url": "kecilkan-pdf/" }
   ]
 }
