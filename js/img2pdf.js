@@ -157,7 +157,7 @@ function render() {
 
   const n = items.length;
   $('#pageCount').textContent = String(n);
-  $('#emptyPages').hidden = n > 0;
+  $('#toolLayout').classList.toggle('is-empty', n === 0);
   $('#clearAll').hidden = n === 0;
   $('#orderHint').hidden = n < 2;
   $('#makePdf').disabled = n === 0;

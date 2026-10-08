@@ -4,202 +4,228 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!-- Privacy guarantee enforced by the browser: this page cannot open any
-       network connection (fetch/XHR/WebSocket/beacon), and loads code,
-       styles and images only from its own origin. -->
+       network connection, and loads code, styles, fonts and images only
+       from this site. -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Palang IC · DokuJaga</title>
   <meta name="description" content="Palang dan watermark gambar IC (MyKad) anda terus dalam telefon. Tiada apa-apa dimuat naik.">
-  <meta name="theme-color" content="#13224a" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0b1630" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0d17" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="../manifest.webmanifest">
   <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="preload" href="../fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../css/style.css">
   <script src="../js/theme.js"></script>
   <script type="module" src="../js/palang.js"></script>
 </head>
 <body>
-  <header class="top">
-    <div class="brand">
-      <a class="home-link" href="../" data-i18n-attr="aria-label:allTools,title:allTools" aria-label="Semua alat">
-        <img src="../icons/icon.svg" alt="" width="32" height="32">
-      </a>
-      <div>
-        <h1>Palang IC <span class="by">· DokuJaga</span></h1>
-        <p class="tagline" data-i18n="tagline">Palang &amp; watermark IC anda sebelum hantar</p>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <nav class="nav-links" aria-label="Utama">
+        <a href="../#tools" data-i18n="navTools">Alat</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      </nav>
+      <div class="top-actions">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+        <div class="lang" role="group" aria-label="Bahasa / Language">
+          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
       </div>
-    </div>
-    <div class="top-actions">
-    <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-            data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
-    <div class="lang" role="group" aria-label="Bahasa / Language">
-      <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-      <button type="button" data-lang="en" aria-pressed="false">EN</button>
-    </div>
     </div>
   </header>
 
-  <main>
-    <section class="privacy" aria-live="polite">
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-      <div>
-        <strong data-i18n="privacy">Gambar anda diproses dalam telefon anda sahaja. Tiada apa-apa dimuat naik.</strong>
-        <details>
-          <summary data-i18n="privacyMore">Cara semak</summary>
-          <h2 class="sr-title" data-i18n="howTitle">Bagaimana kami jaga privasi anda</h2>
-          <ul>
-            <li data-i18n="how1"></li>
-            <li data-i18n="how2"></li>
-            <li data-i18n="how3"></li>
-            <li data-i18n="how4"></li>
-          </ul>
-        </details>
-      </div>
-    </section>
+  <section class="hero tool-hero tone-indigo">
+    <div class="container">
+      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 13.5 11 7M6.5 16.5 14 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16.5" cy="13" r="1.6" fill="currentColor"/></svg></span>
+      <h1 data-i18n="toolPalangTitle">Palang IC</h1>
+      <p class="lead" data-i18n="palangLead"></p>
+    </div>
+  </section>
 
-    <!-- Step 1 -->
-    <section class="card" aria-labelledby="s1">
-      <h2 id="s1" data-i18n="step1">1. Pilih gambar</h2>
-      <div class="slots">
-        <div class="slot" data-side="front">
-          <span class="slot-label" data-i18n="front">Depan IC</span>
-          <label class="pick">
-            <input type="file" accept="image/*" data-input="front">
-            <img class="thumb" alt="" hidden>
-            <span class="pick-text" data-i18n="pick">Pilih / ambil gambar</span>
-          </label>
-          <button type="button" class="link remove" data-remove="front" hidden data-i18n="remove">Buang</button>
+  <main class="page">
+    <div class="container stack">
+      <section class="privacy" aria-live="polite">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+        <div>
+          <strong data-i18n="privacy">Gambar anda diproses dalam telefon anda sahaja. Tiada apa-apa dimuat naik.</strong>
+          <details>
+            <summary data-i18n="privacyMore">Cara semak</summary>
+            <h2 class="sr-title" data-i18n="howTitle">Bagaimana kami jaga privasi anda</h2>
+            <ul>
+              <li data-i18n="how1"></li>
+              <li data-i18n="how2"></li>
+              <li data-i18n="how3"></li>
+              <li data-i18n="how4"></li>
+            </ul>
+          </details>
         </div>
-        <div class="slot" data-side="back">
-          <span class="slot-label" data-i18n="back">Belakang IC (pilihan)</span>
-          <label class="pick">
-            <input type="file" accept="image/*" data-input="back">
-            <img class="thumb" alt="" hidden>
-            <span class="pick-text" data-i18n="pick">Pilih / ambil gambar</span>
-          </label>
-          <button type="button" class="link remove" data-remove="back" hidden data-i18n="remove">Buang</button>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Step 2 -->
-    <section class="card" aria-labelledby="s2">
-      <h2 id="s2" data-i18n="step2">2. Tulis tujuan</h2>
-      <label class="field">
-        <span data-i18n="recipient">Untuk siapa / tujuan</span>
-        <input id="recipient" type="text" autocomplete="off" autocapitalize="characters" maxlength="40"
-               data-i18n-attr="placeholder:recipientPh" placeholder="cth. CIMB, Maxis, ejen hartanah">
-      </label>
-      <div class="row">
-        <label class="field grow">
-          <span data-i18n="template">Templat ayat</span>
-          <select id="template">
-            <option value="ms">UNTUK KEGUNAAN … SAHAJA</option>
-            <option value="en">FOR … USE ONLY</option>
-          </select>
-        </label>
-        <label class="check">
-          <input id="addDate" type="checkbox">
-          <span data-i18n="addDate">Tambah tarikh hari ini</span>
-        </label>
-      </div>
+      <div class="workspace">
+        <div class="col-main">
+          <section class="card ws-photos" aria-labelledby="s1">
+            <h2 id="s1"><span class="step">1</span><span data-i18n="step1">Pilih gambar</span></h2>
 
-      <fieldset class="segmented" id="mode">
-        <legend data-i18n="mode">Jenis tanda</legend>
-        <label><input type="radio" name="mode" value="palang" checked><span data-i18n="modePalang">Palang</span></label>
-        <label><input type="radio" name="mode" value="tiled"><span data-i18n="modeTiled">Watermark berulang</span></label>
-        <label><input type="radio" name="mode" value="gabung"><span data-i18n="modeGabung">Gabung</span></label>
-      </fieldset>
-
-      <div data-for="palang gabung">
-        <fieldset class="segmented small">
-          <legend data-i18n="shape">Bentuk palang</legend>
-          <label><input type="radio" name="palangShape" value="corner" checked><span data-i18n="shapeCorner">Cop sudut</span></label>
-          <label><input type="radio" name="palangShape" value="parallel"><span data-i18n="shapeParallel">Merentas</span></label>
-          <label><input type="radio" name="palangShape" value="x"><span data-i18n="shapeX">Silang (X)</span></label>
-        </fieldset>
-        <div data-shape="corner">
-          <fieldset class="corners">
-            <legend data-i18n="corner">Penjuru</legend>
-            <div class="corner-grid">
-              <label><input type="radio" name="corner" value="tl"><span data-i18n-attr="aria-label:cornerTL,title:cornerTL" aria-label="Atas kiri">◤</span></label>
-              <label><input type="radio" name="corner" value="tr"><span data-i18n-attr="aria-label:cornerTR,title:cornerTR" aria-label="Atas kanan">◥</span></label>
-              <label><input type="radio" name="corner" value="bl"><span data-i18n-attr="aria-label:cornerBL,title:cornerBL" aria-label="Bawah kiri">◣</span></label>
-              <label><input type="radio" name="corner" value="br"><span data-i18n-attr="aria-label:cornerBR,title:cornerBR" aria-label="Bawah kanan">◢</span></label>
+            <div class="slots">
+              <div class="slot" data-side="front">
+                <span class="slot-label" data-i18n="front">Depan IC</span>
+                <label class="pick">
+                  <input type="file" accept="image/*" data-input="front">
+                  <img class="thumb" alt="" hidden>
+                  <span class="pick-text" data-i18n="pick">Pilih / ambil gambar</span>
+                </label>
+                <button type="button" class="link remove" data-remove="front" hidden data-i18n="remove">Buang</button>
+              </div>
+              <div class="slot" data-side="back">
+                <span class="slot-label" data-i18n="back">Belakang IC (pilihan)</span>
+                <label class="pick">
+                  <input type="file" accept="image/*" data-input="back">
+                  <img class="thumb" alt="" hidden>
+                  <span class="pick-text" data-i18n="pick">Pilih / ambil gambar</span>
+                </label>
+                <button type="button" class="link remove" data-remove="back" hidden data-i18n="remove">Buang</button>
+              </div>
             </div>
-          </fieldset>
-          <label class="range"><span data-i18n="stampSize">Saiz cop</span>
-            <input type="range" id="stampSize" min="20" max="80" step="1"><output></output></label>
-          <p class="hint" data-i18n="dragHint">Tip: sentuh atau seret pada pratonton untuk alih cop.</p>
-        </div>
-      </div>
 
-      <fieldset class="swatches">
-        <legend data-i18n="color">Warna</legend>
-        <label class="sw sw-black"><input type="radio" name="color" value="black" checked><span data-i18n="black">Hitam</span></label>
-        <label class="sw sw-red"><input type="radio" name="color" value="red"><span data-i18n="red">Merah</span></label>
-        <label class="sw sw-blue"><input type="radio" name="color" value="blue"><span data-i18n="blue">Biru</span></label>
-      </fieldset>
+          </section>
 
-      <details class="advanced">
-        <summary data-i18n="advanced">Tetapan lanjut</summary>
+          <section class="card ws-preview preview-card" aria-labelledby="pv">
+            <h2 id="pv" data-i18n="preview">Pratonton</h2>
 
-        <div data-for="palang gabung">
-          <fieldset class="segmented small">
-            <legend data-i18n="lineStyle">Gaya garis</legend>
-            <label><input type="radio" name="lineStyle" value="solid" checked><span data-i18n="solid">Penuh</span></label>
-            <label><input type="radio" name="lineStyle" value="double"><span data-i18n="double">Berganda</span></label>
-          </fieldset>
-          <label class="range"><span data-i18n="thickness">Tebal garis</span>
-            <input type="range" id="thickness" min="0.2" max="2" step="0.1"><output></output></label>
+            <div class="previews">
+              <figure data-preview="front" hidden><canvas></canvas><figcaption data-i18n="front">Depan IC</figcaption></figure>
+              <figure data-preview="back" hidden><canvas></canvas><figcaption data-i18n="back">Belakang IC</figcaption></figure>
+              <p class="empty" id="emptyPreview" data-i18n="noImage">Pilih gambar IC dahulu.</p>
+            </div>
+            <p class="note" data-i18n="readableNote">Sesetengah bank/agensi mungkin menolak IC yang terlalu banyak tanda. Pastikan nombor IC dan muka masih boleh dibaca.</p>
+
+          </section>
         </div>
 
-        <div data-for="tiled gabung">
-          <fieldset class="segmented small">
-            <legend data-i18n="density">Kepadatan</legend>
-            <label><input type="radio" name="density" value="low"><span data-i18n="low">Sedikit</span></label>
-            <label><input type="radio" name="density" value="mid" checked><span data-i18n="mid">Sederhana</span></label>
-            <label><input type="radio" name="density" value="high"><span data-i18n="high">Banyak</span></label>
-          </fieldset>
+        <div class="col-side">
+          <section class="card ws-text" aria-labelledby="s2">
+            <h2 id="s2"><span class="step">2</span><span data-i18n="step2">Tulis tujuan</span></h2>
+
+            <label class="field">
+              <span data-i18n="recipient">Untuk siapa / tujuan</span>
+              <input id="recipient" type="text" autocomplete="off" autocapitalize="characters" maxlength="40"
+                     data-i18n-attr="placeholder:recipientPh" placeholder="cth. CIMB, Maxis, ejen hartanah">
+            </label>
+            <div class="row">
+              <label class="field grow">
+                <span data-i18n="template">Templat ayat</span>
+                <select id="template">
+                  <option value="ms">UNTUK KEGUNAAN … SAHAJA</option>
+                  <option value="en">FOR … USE ONLY</option>
+                </select>
+              </label>
+              <label class="check">
+                <input id="addDate" type="checkbox">
+                <span data-i18n="addDate">Tambah tarikh hari ini</span>
+              </label>
+            </div>
+
+            <fieldset class="segmented" id="mode">
+              <legend data-i18n="mode">Jenis tanda</legend>
+              <label><input type="radio" name="mode" value="palang" checked><span data-i18n="modePalang">Palang</span></label>
+              <label><input type="radio" name="mode" value="tiled"><span data-i18n="modeTiled">Watermark berulang</span></label>
+              <label><input type="radio" name="mode" value="gabung"><span data-i18n="modeGabung">Gabung</span></label>
+            </fieldset>
+
+            <div data-for="palang gabung">
+              <fieldset class="segmented small">
+                <legend data-i18n="shape">Bentuk palang</legend>
+                <label><input type="radio" name="palangShape" value="corner" checked><span data-i18n="shapeCorner">Cop sudut</span></label>
+                <label><input type="radio" name="palangShape" value="parallel"><span data-i18n="shapeParallel">Merentas</span></label>
+                <label><input type="radio" name="palangShape" value="x"><span data-i18n="shapeX">Silang (X)</span></label>
+              </fieldset>
+              <div data-shape="corner">
+                <fieldset class="corners">
+                  <legend data-i18n="corner">Penjuru</legend>
+                  <div class="corner-grid">
+                    <label><input type="radio" name="corner" value="tl"><span data-i18n-attr="aria-label:cornerTL,title:cornerTL" aria-label="Atas kiri">◤</span></label>
+                    <label><input type="radio" name="corner" value="tr"><span data-i18n-attr="aria-label:cornerTR,title:cornerTR" aria-label="Atas kanan">◥</span></label>
+                    <label><input type="radio" name="corner" value="bl"><span data-i18n-attr="aria-label:cornerBL,title:cornerBL" aria-label="Bawah kiri">◣</span></label>
+                    <label><input type="radio" name="corner" value="br"><span data-i18n-attr="aria-label:cornerBR,title:cornerBR" aria-label="Bawah kanan">◢</span></label>
+                  </div>
+                </fieldset>
+                <label class="range"><span data-i18n="stampSize">Saiz cop</span>
+                  <input type="range" id="stampSize" min="20" max="80" step="1"><output></output></label>
+                <p class="hint" data-i18n="dragHint">Tip: sentuh atau seret pada pratonton untuk alih cop.</p>
+              </div>
+            </div>
+
+            <fieldset class="swatches">
+              <legend data-i18n="color">Warna</legend>
+              <label class="sw sw-black"><input type="radio" name="color" value="black" checked><span data-i18n="black">Hitam</span></label>
+              <label class="sw sw-red"><input type="radio" name="color" value="red"><span data-i18n="red">Merah</span></label>
+              <label class="sw sw-blue"><input type="radio" name="color" value="blue"><span data-i18n="blue">Biru</span></label>
+            </fieldset>
+
+            <details class="advanced">
+              <summary data-i18n="advanced">Tetapan lanjut</summary>
+
+              <div data-for="palang gabung">
+                <fieldset class="segmented small">
+                  <legend data-i18n="lineStyle">Gaya garis</legend>
+                  <label><input type="radio" name="lineStyle" value="solid" checked><span data-i18n="solid">Penuh</span></label>
+                  <label><input type="radio" name="lineStyle" value="double"><span data-i18n="double">Berganda</span></label>
+                </fieldset>
+                <label class="range"><span data-i18n="thickness">Tebal garis</span>
+                  <input type="range" id="thickness" min="0.2" max="2" step="0.1"><output></output></label>
+              </div>
+
+              <div data-for="tiled gabung">
+                <fieldset class="segmented small">
+                  <legend data-i18n="density">Kepadatan</legend>
+                  <label><input type="radio" name="density" value="low"><span data-i18n="low">Sedikit</span></label>
+                  <label><input type="radio" name="density" value="mid" checked><span data-i18n="mid">Sederhana</span></label>
+                  <label><input type="radio" name="density" value="high"><span data-i18n="high">Banyak</span></label>
+                </fieldset>
+              </div>
+
+              <label class="range"><span data-i18n="fontSize">Saiz tulisan</span>
+                <input type="range" id="fontSize" min="2" max="9" step="0.25"><output></output></label>
+              <label class="range"><span data-i18n="opacity">Kelegapan</span>
+                <input type="range" id="opacity" min="0.1" max="0.8" step="0.05"><output></output></label>
+              <label class="range" data-angle><span data-i18n="angle">Sudut</span>
+                <input type="range" id="angle" min="-60" max="60" step="1"><output></output></label>
+              <button type="button" class="link" id="reset" data-i18n="reset">Set semula</button>
+            </details>
+
+          </section>
+
+          <section class="card ws-save actions" aria-labelledby="s3">
+            <h2 id="s3"><span class="step">3</span><span data-i18n="step3">Simpan / Kongsi</span></h2>
+
+            <div class="buttons">
+              <button type="button" class="primary" id="share" data-i18n="share">Kongsi</button>
+              <button type="button" id="saveJpg" data-i18n="saveJpg">Simpan JPG</button>
+              <button type="button" id="savePdf" data-i18n="savePdf">Simpan PDF (A4)</button>
+            </div>
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+
+          </section>
         </div>
-
-        <label class="range"><span data-i18n="fontSize">Saiz tulisan</span>
-          <input type="range" id="fontSize" min="2" max="9" step="0.25"><output></output></label>
-        <label class="range"><span data-i18n="opacity">Kelegapan</span>
-          <input type="range" id="opacity" min="0.1" max="0.8" step="0.05"><output></output></label>
-        <label class="range" data-angle><span data-i18n="angle">Sudut</span>
-          <input type="range" id="angle" min="-60" max="60" step="1"><output></output></label>
-        <button type="button" class="link" id="reset" data-i18n="reset">Set semula</button>
-      </details>
-    </section>
-
-    <!-- Preview -->
-    <section class="card preview-card" aria-labelledby="pv">
-      <h2 id="pv" data-i18n="preview">Pratonton</h2>
-      <div class="previews">
-        <figure data-preview="front" hidden><canvas></canvas><figcaption data-i18n="front">Depan IC</figcaption></figure>
-        <figure data-preview="back" hidden><canvas></canvas><figcaption data-i18n="back">Belakang IC</figcaption></figure>
-        <p class="empty" id="emptyPreview" data-i18n="noImage">Pilih gambar IC dahulu.</p>
       </div>
-      <p class="note" data-i18n="readableNote">Sesetengah bank/agensi mungkin menolak IC yang terlalu banyak tanda. Pastikan nombor IC dan muka masih boleh dibaca.</p>
-    </section>
-
-    <!-- Step 3 -->
-    <section class="card actions" aria-labelledby="s3">
-      <h2 id="s3" data-i18n="step3">3. Simpan / Kongsi</h2>
-      <div class="buttons">
-        <button type="button" class="primary" id="share" data-i18n="share">Kongsi</button>
-        <button type="button" id="saveJpg" data-i18n="saveJpg">Simpan JPG</button>
-        <button type="button" id="savePdf" data-i18n="savePdf">Simpan PDF (A4)</button>
-      </div>
-      <p class="status" id="status" role="status" aria-live="polite"></p>
-    </section>
+    </div>
   </main>
 
-  <footer>
-    <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+      </div>
+      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+    </div>
   </footer>
 </body>
 </html>

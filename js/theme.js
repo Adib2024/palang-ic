@@ -25,7 +25,7 @@
     else root.removeAttribute('data-theme');
     var dark = effective() === 'dark';
     document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
-      m.setAttribute('content', dark ? '#0b1630' : '#13224a');
+      m.setAttribute('content', dark ? '#0b0d17' : '#ffffff');
       m.removeAttribute('media');
     });
     var btn = document.getElementById('themeToggle');

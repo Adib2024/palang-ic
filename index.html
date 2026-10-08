@@ -3,113 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <!-- Privacy guarantee enforced by the browser: no network connections,
-       code/styles/images only from this site. -->
+  <!-- Privacy guarantee enforced by the browser: this page cannot open any
+       network connection, and loads code, styles, fonts and images only
+       from this site. -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>DokuJaga</title>
+  <title>DokuJaga — Alat dokumen yang jaga privasi</title>
   <meta name="description" content="Alat dokumen percuma yang jaga privasi: palang IC, gambar ke PDF dan lain-lain. Semua diproses dalam peranti anda — tiada apa-apa dimuat naik.">
-  <meta name="theme-color" content="#13224a" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0b1630" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0d17" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/theme.js"></script>
   <script type="module" src="js/home.js"></script>
 </head>
-<body class="wide">
-  <header class="top">
-    <div class="brand">
-      <img src="icons/icon.svg" alt="" width="36" height="36">
-      <div>
-        <h1>DokuJaga</h1>
-        <p class="tagline" data-i18n="appTagline">Alat dokumen yang jaga privasi anda</p>
-      </div>
-    </div>
-    <div class="top-actions">
-      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-              data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
-      <div class="lang" role="group" aria-label="Bahasa / Language">
-        <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href=""><img src="icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <nav class="nav-links" aria-label="Utama">
+        <a href="#tools" aria-current="page" data-i18n="navTools">Alat</a>
+        <a href="#privacy" data-i18n="navPrivacy">Privasi</a>
+      </nav>
+      <div class="top-actions">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+        <div class="lang" role="group" aria-label="Bahasa / Language">
+          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
       </div>
     </div>
   </header>
 
-  <main>
-    <section class="privacy">
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-      <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
-    </section>
+  <section class="hero">
+    <div class="container">
+      <h1><span data-i18n="heroTitleA">Semua alat dokumen anda.</span> <span class="grad" data-i18n="heroTitleB">Tanpa muat naik.</span></h1>
+      <p class="lead" data-i18n="heroLead"></p>
+      <div class="pills">
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillLocal">100% dalam peranti</span></span>
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillFree">Percuma, tanpa daftar</span></span>
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillOffline">Boleh guna luar talian</span></span>
+      </div>
+    </div>
+  </section>
 
-    <section aria-labelledby="tools">
-      <h2 id="tools" class="section-title" data-i18n="toolsHeading">Pilih alat</h2>
-      <div class="tool-grid">
-        <a class="tool" href="palang/">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 15 13 7M7 17l8-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
+  <main class="page">
+    <div class="container stack">
+      <section id="tools" aria-labelledby="toolsTitle">
+        <h2 id="toolsTitle" class="section-title" data-i18n="toolsHeading">Pilih alat</h2>
+        <p class="section-sub" data-i18n="toolsSub"></p>
+        <div class="tool-grid">
+        <a class="tool tone-indigo" href="palang/">
+          <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 13.5 11 7M6.5 16.5 14 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16.5" cy="13" r="1.6" fill="currentColor"/></svg></span>
           <span class="tool-body">
-            <strong data-i18n="toolPalangTitle">Palang IC</strong>
+            <strong data-i18n="toolPalangTitle"></strong>
             <span data-i18n="toolPalangDesc"></span>
           </span>
+          <span class="go"><span data-i18n="openTool">Buka alat</span> →</span>
         </a>
-        <a class="tool" href="gambar-pdf/">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m4.5 11.5 2.5-3 2 2 1-1 1.5 2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M14 8h3.5L21 11.5V20a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15.5h4m-1.5-1.5 1.5 1.5-1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+        <a class="tool tone-amber" href="gambar-pdf/">
+          <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 11.5 3-3.2 2.2 2.2 1.3-1.2 1.5 1.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 8h2.5L21 11.5V20a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 17.5h5m-1.7-1.7 1.7 1.7-1.7 1.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="tool-body">
-            <strong data-i18n="toolImgPdfTitle">Gambar → PDF</strong>
+            <strong data-i18n="toolImgPdfTitle"></strong>
             <span data-i18n="toolImgPdfDesc"></span>
           </span>
+          <span class="go"><span data-i18n="openTool">Buka alat</span> →</span>
         </a>
-        <div class="tool soon" aria-disabled="true">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m7 15 6-6m-4 8 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
+        <div class="tool tone-rose soon" aria-disabled="true">
+          <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m7.5 15.5 6-6m-3.5 8.5 6-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
           <span class="tool-body">
-            <strong data-i18n="toolPalangPdfTitle">Palang PDF</strong>
+            <strong data-i18n="toolPalangPdfTitle"></strong>
             <span data-i18n="toolPalangPdfDesc"></span>
-            <em class="badge" data-i18n="soon">Akan datang</em>
           </span>
+          <em class="badge" data-i18n="soon">Akan datang</em>
         </div>
-        <div class="tool soon" aria-disabled="true">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="8.5" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 12v1.5h11V12M12 13.5V14" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-          </span>
+        <div class="tool tone-emerald soon" aria-disabled="true">
+          <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="13.5" y="3" width="7.5" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="8.25" y="14.5" width="7.5" height="6.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.75 12v1.25h10.5V12M12 13.25v1.25" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
           <span class="tool-body">
-            <strong data-i18n="toolOrganizeTitle">Gabung / Pisah / Susun PDF</strong>
+            <strong data-i18n="toolOrganizeTitle"></strong>
             <span data-i18n="toolOrganizeDesc"></span>
-            <em class="badge" data-i18n="soon">Akan datang</em>
           </span>
+          <em class="badge" data-i18n="soon">Akan datang</em>
         </div>
-        <div class="tool soon" aria-disabled="true">
-          <span class="tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8v8m-3-3 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+        <div class="tool tone-sky soon" aria-disabled="true">
+          <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 7.5v4m-2-2 2 2 2-2M12 18v-4m-2 2 2-2 2 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="tool-body">
-            <strong data-i18n="toolCompressTitle">Kecilkan PDF</strong>
+            <strong data-i18n="toolCompressTitle"></strong>
             <span data-i18n="toolCompressDesc"></span>
-            <em class="badge" data-i18n="soon">Akan datang</em>
           </span>
+          <em class="badge" data-i18n="soon">Akan datang</em>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <section class="card why" aria-labelledby="why">
-      <h2 id="why" data-i18n="whyHeading">Kenapa DokuJaga?</h2>
-      <ul>
-        <li><strong data-i18n="why1Title"></strong><span data-i18n="why1"></span></li>
-        <li><strong data-i18n="why2Title"></strong><span data-i18n="why2"></span></li>
-        <li><strong data-i18n="why3Title"></strong><span data-i18n="why3"></span></li>
-      </ul>
-    </section>
+      <section id="privacy" class="card why" aria-labelledby="privacyTitle">
+        <h2 id="privacyTitle" class="section-title" data-i18n="privacyHeading">Privasi bukan sekadar janji</h2>
+        <p class="section-sub" data-i18n="privacySub"></p>
+        <ul class="features">
+          <li class="feature tone-emerald"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><strong data-i18n="why1Title"></strong><span data-i18n="why1"></span></li>
+          <li class="feature tone-indigo"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9ZM3 7h18v4H3zM12 7v14M12 7S10.5 3 8 3.8C6 4.5 7.5 7 12 7Zm0 0s1.5-4 4-3.2C18 4.5 16.5 7 12 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><strong data-i18n="why2Title"></strong><span data-i18n="why2"></span></li>
+          <li class="feature tone-sky"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10.5 21 12 17.5l1.5 3.5M12 3c.8 0 1.5.7 1.5 1.5V9l7 4.5v2L13.5 13v4.5h-3V13l-7 2.5v-2l7-4.5V4.5C10.5 3.7 11.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><strong data-i18n="why3Title"></strong><span data-i18n="why3"></span></li>
+        </ul>
+        <details class="verify">
+          <summary data-i18n="verifyTitle">Cara semak sendiri</summary>
+          <ul>
+            <li data-i18n="how1"></li>
+            <li data-i18n="how2"></li>
+            <li data-i18n="how3"></li>
+            <li data-i18n="how4"></li>
+          </ul>
+        </details>
+      </section>
+    </div>
   </main>
 
-  <footer>
-    <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href=""><img src="icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+      </div>
+      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+    </div>
   </footer>
 </body>
 </html>
