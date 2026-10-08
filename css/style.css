@@ -190,7 +190,7 @@ main.page { padding: 28px 0 48px; }
 /* ---------- Dashboard tool grid ---------- */
 .tool-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
 @media (min-width: 620px) { .tool-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 980px) { .tool-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1080px) { .tool-grid { grid-template-columns: repeat(4, 1fr); } }
 .tool {
   position: relative; display: grid; gap: 14px; align-content: start; padding: 22px;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -409,7 +409,8 @@ legend { font-size: .88rem; font-weight: 600; margin-bottom: 8px; padding: 0; }
 /* The camera shortcut only makes sense on touch devices. */
 @media (hover: hover) and (pointer: fine) { .camera-only { display: none; } }
 
-.pages-head { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.pages-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 20px; }
+.pages-head h2 { white-space: nowrap; }
 .pages-head h2 { margin: 0; }
 .count {
   display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px; margin-left: 6px;
@@ -449,3 +450,50 @@ legend { font-size: .88rem; font-weight: 600; margin-bottom: 8px; padding: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* ---------- PDF tools ---------- */
+.file-chips { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.file-chips:empty { display: none; }
+.file-chip {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 4px 4px 4px 12px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); font-size: .85rem;
+}
+.file-chip::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: hsl(var(--hue) 65% 45%); }
+.chip-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.chip-meta { color: var(--muted); white-space: nowrap; }
+.sel-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; justify-content: flex-end; }
+.sel-count { font-size: .85rem; font-weight: 700; color: var(--accent); }
+
+.page-card { position: relative; border-left: 4px solid hsl(var(--hue, 230) 65% 50%); }
+.page-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.page-select {
+  position: absolute; top: 14px; left: 14px; z-index: 1; width: 20px; height: 20px; margin: 0;
+  accent-color: var(--accent); cursor: pointer;
+}
+button.page-thumb { font: inherit; color: inherit; cursor: pointer; width: 100%; }
+.page-card.selected .page-thumb { outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.help { display: block; font-weight: 500; color: var(--muted); font-size: .8rem; }
+
+.file-card { display: flex; gap: 16px; align-items: center; }
+.file-thumb {
+  flex: none; width: 120px; padding: 6px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.file-thumb canvas { display: block; width: 100%; height: auto; }
+.file-info { display: grid; gap: 4px; min-width: 0; }
+.file-name { margin: 0; font-size: 1.05rem; overflow-wrap: anywhere; }
+.file-meta { margin: 0; color: var(--muted); font-size: .9rem; }
+
+.result { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: grid; gap: 16px; }
+.result-sizes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.result-sizes > div { display: grid; }
+.result-label { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.result-sizes strong { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.result-arrow { font-size: 1.4rem; color: var(--muted); }
+.result-pct {
+  padding: 4px 10px; border-radius: 999px; background: var(--safe-bg); color: var(--safe-text);
+  border: 1px solid var(--safe-border); font-weight: 800;
+}
+.progress { height: 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; margin-top: 12px; }
+.progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.options .note { margin: 0 0 14px; }

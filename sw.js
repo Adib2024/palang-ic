@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v2';
+const VERSION = 'dokujaga-v3';
 const ASSETS = [
   './',
   'index.html',
@@ -8,12 +8,20 @@ const ASSETS = [
   'palang/index.html',
   'gambar-pdf/',
   'gambar-pdf/index.html',
+  'susun-pdf/',
+  'susun-pdf/index.html',
+  'kecilkan-pdf/',
+  'kecilkan-pdf/index.html',
   'css/style.css',
   'js/home.js',
   'js/page.js',
   'js/pwa.js',
   'js/palang.js',
   'js/img2pdf.js',
+  'js/organize.js',
+  'js/compress.js',
+  'js/pdf-kit.js',
+  'js/zip.js',
   'js/watermark.js',
   'js/image-loader.js',
   'js/pdf.js',
@@ -38,6 +46,8 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// The PDF libraries under vendor/ are big, so they're cached the first time a
+// PDF tool is used rather than up front.
 // Network-first for same-origin GETs so updates land quickly, falling back
 // to the cache when offline. Anything else is left alone.
 self.addEventListener('fetch', (event) => {
