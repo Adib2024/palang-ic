@@ -80,6 +80,7 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
         await page.click('input[name="corner"][value="br"] + span');
         const preset = await page.evaluate(() => window.__palangic.state.stamp.back.corner);
         check('corner picker applies to both sides', () => assert.strictEqual(preset, 'br'));
+        await page.locator('[data-preview="front"] canvas').evaluate((el) => el.scrollIntoView({ block: 'center' }));
         const box = await page.locator('[data-preview="front"] canvas').boundingBox();
         await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
         await page.mouse.down();
