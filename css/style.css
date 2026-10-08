@@ -43,6 +43,9 @@
   --tone-rose: #e11d48; --tone-rose-bg: #fff1f3;
   --tone-emerald: #059669; --tone-emerald-bg: #e9fbf3;
   --tone-sky: #0284c7; --tone-sky-bg: #e8f6fd;
+  --tone-violet: #7c3aed; --tone-violet-bg: #f3eeff;
+  --tone-teal: #0d9488; --tone-teal-bg: #e6f7f5;
+  --tone-orange: #ea580c; --tone-orange-bg: #fff1e8;
   color-scheme: light;
 }
 
@@ -78,6 +81,9 @@
   --tone-rose: #fb7185; --tone-rose-bg: #2f1620;
   --tone-emerald: #34d399; --tone-emerald-bg: #0f2a22;
   --tone-sky: #38bdf8; --tone-sky-bg: #0f2333;
+  --tone-violet: #a78bfa; --tone-violet-bg: #251a40;
+  --tone-teal: #2dd4bf; --tone-teal-bg: #0d2a28;
+  --tone-orange: #fb923c; --tone-orange-bg: #2e1c10;
   color-scheme: dark;
 }
 
@@ -181,6 +187,9 @@ main.page { padding: 28px 0 48px; }
 .tone-rose { --tone: var(--tone-rose); --tone-bg: var(--tone-rose-bg); }
 .tone-emerald { --tone: var(--tone-emerald); --tone-bg: var(--tone-emerald-bg); }
 .tone-sky { --tone: var(--tone-sky); --tone-bg: var(--tone-sky-bg); }
+.tone-violet { --tone: var(--tone-violet); --tone-bg: var(--tone-violet-bg); }
+.tone-teal { --tone: var(--tone-teal); --tone-bg: var(--tone-teal-bg); }
+.tone-orange { --tone: var(--tone-orange); --tone-bg: var(--tone-orange-bg); }
 .tool-icon {
   flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center;
   background: var(--tone-bg, var(--accent-soft)); color: var(--tone, var(--accent));
@@ -497,3 +506,112 @@ button.page-thumb { font: inherit; color: inherit; cursor: pointer; width: 100%;
 .progress { height: 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; margin-top: 12px; }
 .progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
 .options .note { margin: 0 0 14px; }
+
+/* ---------- Image list (Kecilkan Gambar) ---------- */
+.img-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.img-list:empty { display: none; }
+.img-item {
+  display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+}
+.img-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); }
+.img-info { display: grid; gap: 2px; min-width: 0; }
+.img-info strong { font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.img-meta { font-size: .82rem; color: var(--muted); }
+.img-result { font-size: .85rem; font-weight: 700; color: var(--safe-text); }
+.img-result.warn { color: var(--warn); }
+.img-actions { display: flex; gap: 6px; align-items: center; }
+.btn.small { min-height: 36px; padding: 6px 12px; font-size: .85rem; border-radius: 10px; }
+.note.ok-note { background: var(--safe-bg); color: var(--safe-text); border-color: var(--safe-border); }
+
+/* ---------- Tandatangan PDF ---------- */
+@media (min-width: 980px) {
+  .sign-layout { grid-template-columns: minmax(0, 1fr) 380px; }
+  .sign-layout .sign-panel { max-height: calc(100vh - 100px); overflow-y: auto; }
+}
+.sign-pages { display: grid; gap: 22px; margin-top: 18px; }
+.sign-pages:empty { display: none; }
+.sign-page {
+  position: relative; background: #fff; border: 1px solid var(--border); border-radius: 6px;
+  box-shadow: var(--shadow); overflow: hidden; touch-action: pan-y;
+}
+.sign-page.active { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone, var(--accent)) 55%, transparent), var(--shadow); }
+.sign-canvas { display: block; width: 100%; height: 100%; }
+.sign-page-no {
+  position: absolute; left: 8px; bottom: 8px; padding: 2px 8px; border-radius: 999px;
+  background: rgba(15, 23, 42, .7); color: #fff; font-size: .72rem; font-weight: 700; pointer-events: none;
+}
+.sig-item {
+  position: absolute; cursor: move; touch-action: none; outline: 1px dashed transparent; outline-offset: 2px;
+}
+.sig-item:hover, .sig-item.selected, .sig-item:focus-visible { outline-color: var(--tone, var(--accent)); }
+.sig-item img { display: block; width: 100%; height: 100%; pointer-events: none; user-select: none; }
+.sig-del, .sig-handle { position: absolute; display: none; }
+.sig-item.selected .sig-del, .sig-item.selected .sig-handle,
+.sig-item:hover .sig-del, .sig-item:hover .sig-handle { display: grid; }
+.sig-del {
+  top: -14px; right: -14px; width: 26px; height: 26px; place-items: center; border-radius: 50%;
+  border: 0; background: #e11d48; color: #fff; font-size: .75rem; cursor: pointer; box-shadow: var(--shadow);
+}
+.sig-handle {
+  right: -8px; bottom: -8px; width: 16px; height: 16px; border-radius: 4px; cursor: nwse-resize;
+  background: var(--tone, var(--accent)); border: 2px solid #fff; box-shadow: var(--shadow-sm);
+}
+@media (pointer: coarse) {
+  .sig-handle { width: 26px; height: 26px; right: -13px; bottom: -13px; }
+  .sig-del { width: 32px; height: 32px; }
+}
+.sig-pad {
+  display: block; width: 100%; height: auto; aspect-ratio: 900 / 360; background: #fff;
+  border: 2px dashed var(--border-strong); border-radius: 12px; touch-action: none; cursor: crosshair;
+}
+.sig-pad.preview { aspect-ratio: auto; cursor: default; margin-top: 10px; }
+.pad-tools { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 14px; }
+.ink { display: flex; gap: 8px; margin: 0; }
+.ink input { position: absolute; opacity: 0; pointer-events: none; }
+.ink span { display: block; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--border-strong); }
+.ink-black span { background: #111; }
+.ink-blue span { background: #1d3a8a; }
+.ink input:checked + span { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
+.ink input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 3px; }
+.sig-font-0 { font: italic 400 1.15rem "Segoe Script", "Brush Script MT", "Snell Roundhand", cursive; }
+.sig-font-1 { font: italic 600 1.05rem Georgia, "Times New Roman", serif; }
+.sig-font-2 { font: 600 1rem Inter, system-ui, sans-serif; }
+[data-tab] > .btn { width: 100%; }
+.sign-text { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.sign-text .buttons button { font-size: .88rem; }
+.sign-panel .buttons + .status { margin-top: 10px; }
+
+/* ---------- Imbas Dokumen ---------- */
+.scan-editor { margin-top: 4px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.editor-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.editor-head h2 { margin: 0; }
+.editor-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+.crop-stage {
+  position: relative; margin: 12px auto 16px; max-width: 100%; max-height: 70vh; width: fit-content;
+  touch-action: none; user-select: none; background: #111; border-radius: 8px;
+}
+.crop-stage canvas { display: block; max-width: 100%; max-height: 70vh; width: auto; height: auto; border-radius: 8px; }
+.crop-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.crop-svg polygon {
+  fill: color-mix(in srgb, var(--tone, var(--accent)) 18%, transparent);
+  stroke: var(--tone, var(--accent)); stroke-width: 3; vector-effect: non-scaling-stroke;
+}
+.crop-handle {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; padding: 0;
+  background: #fff; border: 3px solid var(--tone, var(--accent)); box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  cursor: grab; touch-action: none;
+}
+.crop-handle:active { cursor: grabbing; transform: scale(1.15); }
+@media (pointer: coarse) { .crop-handle { width: 40px; height: 40px; margin: -20px 0 0 -20px; } }
+.scan-editor .segmented { margin-bottom: 12px; }
+.pages-head .btn.small { overflow: hidden; }
+
+/* Once files are loaded, the upload area shrinks to a compact "add more" bar. */
+.tool-layout:not(.is-empty) .dropzone { grid-auto-flow: column; justify-content: center; align-items: center; padding: 12px 16px; gap: 12px; }
+.tool-layout:not(.is-empty) .dropzone > svg { width: 24px; height: 24px; }
+.tool-layout:not(.is-empty) .dropzone .drop-or { display: none; }
+.tool-layout:not(.is-empty) .dropzone .btn.lg { min-height: 42px; padding: 8px 16px; font-size: .95rem; }
+@media (max-width: 520px) {
+  .tool-layout:not(.is-empty) .dropzone { grid-auto-flow: row; }
+}
