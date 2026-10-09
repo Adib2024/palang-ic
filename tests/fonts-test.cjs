@@ -66,9 +66,8 @@ async function readPdf(b64) {
         return { path: p, b64: fs.readFileSync(p).toString('base64') };
       };
       const textAt = async (x, y, text) => {
-        await page.click('[data-tool="text"]');
         const ov = page.locator('.edit-overlay').first();
-        await ov.scrollIntoViewIfNeeded();
+        await ov.evaluate((e) => e.scrollIntoView({ block: 'center' })); // keep clicks clear of the sticky header
         const b = await ov.boundingBox();
         await page.mouse.click(b.x + b.width * x, b.y + b.height * y);
         await page.keyboard.type(text);
@@ -85,20 +84,24 @@ async function readPdf(b64) {
       const pdf = await page.evaluate(makePdf);
       await page.setInputFiles('#pickFiles', { name: 'kosong.pdf', mimeType: 'application/pdf', buffer: Buffer.from(pdf, 'base64') });
       await page.waitForFunction(() => window.__edit.views.length === 1);
+      await page.click('[data-tool="text"]');
       await page.selectOption('#fontFamily', 'roboto');
       await page.check('#fontBold');
-      await textAt(0.1, 0.1, 'Roboto Tebal');
+      await textAt(0.1, 0.3, 'Roboto Tebal');
+      await page.click('[data-tool="text"]');
       await page.uncheck('#fontBold');
       await page.selectOption('#fontFamily', 'times');
-      await textAt(0.1, 0.3, 'Times Biasa');
+      await textAt(0.1, 0.45, 'Times Biasa');
+      await page.click('[data-tool="text"]');
       await page.selectOption('#fontFamily', 'greatvibes');
-      await textAt(0.1, 0.5, 'Tulisan Tangan');
+      await textAt(0.1, 0.6, 'Tulisan Tangan');
       // A font from the device.
+      await page.click('[data-tool="text"]');
       const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.selectOption('#fontFamily', '__add')]);
       await chooser.setFiles({ name: 'FontSaya.ttf', mimeType: 'font/ttf', buffer: fs.readFileSync(USER_FONT) });
       await page.waitForFunction(() => [...document.querySelectorAll('#fontFamily option')].some((o) => o.textContent === 'FontSaya' && o.selected));
       check(`${label}: a font added from the device is listed and selected`, () => {});
-      await textAt(0.1, 0.7, 'Font Sendiri');
+      await textAt(0.1, 0.75, 'Font Sendiri');
       const placed = await page.evaluate(() => window.__edit.items.map((it) => ({ x: it.x, y: it.y, font: it.font, bold: it.bold })));
       await page.screenshot({ path: path.join(OUT, `fonts-edit-${label}.png`), fullPage: true });
       const out = await save();
