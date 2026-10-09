@@ -129,6 +129,8 @@ async function readPdf(b64) {
 
       /* ---------- Sign PDF ---------- */
       await page.goto(origin + '/tandatangan-pdf/');
+      await page.setInputFiles('#pickFiles', { name: 'kosong.pdf', mimeType: 'application/pdf', buffer: Buffer.from(pdf, 'base64') });
+      await page.waitForFunction(() => window.__sign.views.length === 1);
       await page.click('input[name="sigTab"][value="type"] + span');
       await page.selectOption('#sigFont', 'greatvibes');
       await page.fill('#typedName', 'Ali Abu');

@@ -45,6 +45,10 @@ Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langka
 - Langkah tarikh/tandatangan/teks berhenti seketika supaya anda boleh letak item (pada satu atau semua muka surat), kemudian teruskan.
 - Aliran sendiri boleh disimpan dalam pelayar (kata laluan tidak disimpan).
 
+### Pilihan font
+
+Edit PDF, Tandatangan PDF dan Mod Lanjutan (tandatangan ditaip, teks, tarikh) boleh guna: font standard PDF (Helvetica, Times, Courier), 11 font yang dihos sendiri (asas, tulisan tangan, rasmi) atau font .ttf/.otf anda sendiri — fail font kekal dalam peranti anda.
+
 ### Gambar → PDF
 
 Tambah satu atau lebih gambar (seret ke halaman di komputer, atau pilih/ambil gambar di telefon).
@@ -116,6 +120,10 @@ The **Advanced mode** button in the header opens workflows: run several steps in
 - **Build your own**: pick steps — IC stamp (photos), date/signature/text, watermark, page numbers, rotate, compress, password — and order them.
 - The date/signature/text step pauses so you can place items (on one or every page), then continues.
 - Your own workflows can be saved in the browser (passwords are never saved).
+
+### Font choice
+
+Edit PDF, Sign PDF and Advanced mode (typed signatures, text, dates) can use the standard PDF fonts (Helvetica, Times, Courier), 11 self-hosted fonts (basic, handwriting, formal) or your own .ttf/.otf — font files stay on your device.
 
 ### Images → PDF
 
@@ -198,6 +206,9 @@ js/pdf-crypto.js, pdf-security.js               PDF encryption (RC4/AES, R2–R6
 js/workflow.js, workflow-ops.js                 Advanced mode: workflow builder/runner and its steps
 js/compare.js, diff.js                          Compare PDF (Myers word diff + pixel diff)
 js/ocr.js                                       OCR PDF (tesseract.js, invisible text layer)
+js/fonts.js                                     font choice: standard PDF fonts, bundled set, user fonts
+vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
+vendor/fontkit/                                 @pdf-lib/fontkit 1.1.1 (embeds custom fonts)
 vendor/tesseract/                               tesseract.js 5.1.1 + core + eng/msa models (vendor workflow)
 js/sig-maker.js, placer.js                      signature maker + item placement (workflow date/sign/text step)
 js/unlock.js, protect.js                        Unlock PDF, Protect PDF
@@ -239,6 +250,7 @@ NODE_PATH="$(npm root -g)" node tests/phase2b-test.cjs   # unlock, protect (need
 node tests/crypto-test.mjs                                # encryption vs pypdf (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workflows (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
+NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs python3 + pypdf)
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks
