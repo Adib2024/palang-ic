@@ -7,6 +7,9 @@ import { loadPhoto } from './image-loader.js';
 import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
 import { openPdfs, bindFileDrop, displayToUser } from './pdf-pages.js';
 import { renderPages, fracPoint, placeFrac } from './page-viewer.js';
+import {
+  bindFontSelect, cssFamily, pdfFont, encodable, refreshFontSelects,
+} from './fonts.js';
 
 const COLORS = { black: '#111111', red: '#d62828', blue: '#1d4ed8', green: '#15803d', yellow: '#facc15' };
 const TEXT_FONT = 'Helvetica, Arial, sans-serif';
@@ -24,14 +27,15 @@ let tool = 'select';
 let color = 'black';
 let stroke = 3; // points
 let fontSize = 14; // points
+let fontId = 'helvetica';
+let fontBold = false;
 let selectedShape = null;
 let nextId = 1;
 let ready = false;
 
-const page = initPage(() => { if (ready) syncToolbar(); });
+const page = initPage(() => { if (ready) { syncToolbar(); refreshFontSelects(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
-const latin1 = (s) => s.replace(/[^\x20-\x7e\xa0-\xff\n]/g, '?');
 
 /* ---------- Shapes (drawn on a per-page overlay canvas) ---------- */
 
@@ -240,9 +244,22 @@ function deleteButton(it) {
   return del;
 }
 
+/** Show a text item in its chosen font (loaded on demand). */
+function applyFont(it) {
+  const box = it.el.querySelector('.edit-text');
+  box.style.fontWeight = it.bold ? '700' : '400';
+  const want = `${it.font}-${it.bold}`;
+  it.fontKey = want;
+  cssFamily(it.font, it.bold).then((fam) => { if (it.fontKey === want) box.style.fontFamily = fam; }).catch(() => {});
+}
+
+const selectedText = () => items.find((x) => x.el.classList.contains('selected') && x.kind === 'text');
+
 /** Add a text box at page fractions (x, y). */
 export function addText(view, x, y, text) {
-  const it = { id: nextId++, kind: 'text', page: view.index, x, y, size: fontSize, color: COLORS[color], el: null };
+  const it = {
+    id: nextId++, kind: 'text', page: view.index, x, y, size: fontSize, color: COLORS[color], font: fontId, bold: fontBold, el: null,
+  };
   const el = document.createElement('div');
   el.className = 'edit-item text-item';
   const grip = document.createElement('span');
@@ -259,6 +276,7 @@ export function addText(view, x, y, text) {
   box.style.fontFamily = TEXT_FONT;
   box.setAttribute('aria-label', tr('editTextBox'));
   it.el = el;
+  applyFont(it);
   el.append(grip, box);
   el.appendChild(deleteButton(it));
   view.el.appendChild(el);
@@ -366,7 +384,6 @@ function hexToRgb(PDFLib, hex) {
 export async function buildOutput() {
   const PDFLib = await loadPdfLib();
   const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
-  const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
   for (const view of views) {
     const pg = doc.getPage(view.index);
     const Dw = view.vp.width;
@@ -388,13 +405,19 @@ export async function buildOutput() {
         const p = displayToUser(pg, it.x * Dw, (it.y + it.h) * Dh);
         pg.drawImage(img, { x: p.x, y: p.y, width: it.w * Dw, height: it.h * Dh, rotate: PDFLib.degrees(p.angle) });
       } else {
-        const lines = latin1(it.el.querySelector('.edit-text').innerText.replace(/\n$/, '')).split('\n');
+        const { font, standard } = await pdfFont(PDFLib, doc, it.font, it.bold);
+        const lines = encodable(it.el.querySelector('.edit-text').innerText.replace(/\n$/, ''), standard).split('\n');
         const lead = it.size * 1.2;
+        // The on-screen box has no padding and line-height 1.2. For the
+        // standard fonts each baseline sits ~0.88em below the top of its line
+        // (Helvetica ascent); for embedded fonts use the font's own metrics
+        // the way CSS does (half-leading + ascent).
+        const asc = font.heightAtSize(it.size, { descender: false });
+        const full = font.heightAtSize(it.size);
+        const base = standard ? it.size * 0.88 : (lead - full) / 2 + asc;
         lines.forEach((line, i) => {
           if (!line) return;
-          // The on-screen box has no padding and line-height 1.2, so each
-          // baseline sits ~0.88em below the top of its line (Helvetica ascent).
-          const p = displayToUser(pg, it.x * Dw, it.y * Dh + i * lead + it.size * 0.88);
+          const p = displayToUser(pg, it.x * Dw, it.y * Dh + i * lead + base);
           pg.drawText(line, { x: p.x, y: p.y, size: it.size, font, color: hexToRgb(PDFLib, it.color), rotate: PDFLib.degrees(p.angle) });
         });
       }
@@ -472,6 +495,21 @@ $('#fontSize').addEventListener('input', (e) => {
   const it = items.find((x) => x.el.classList.contains('selected') && x.kind === 'text');
   if (it) { it.size = fontSize; syncTextSizes(); }
   syncToolbar();
+});
+bindFontSelect($('#fontFamily'), {
+  lang: () => page.lang(),
+  value: fontId,
+  onChange: (id) => {
+    fontId = id;
+    const it = selectedText();
+    if (it) { it.font = id; applyFont(it); }
+  },
+  onError: () => setStatus(tr('fontAddError')),
+});
+$('#fontBold').addEventListener('change', (e) => {
+  fontBold = e.target.checked;
+  const it = selectedText();
+  if (it) { it.bold = fontBold; applyFont(it); }
 });
 $('#undoBtn').addEventListener('click', undo);
 $('#deleteBtn').addEventListener('click', deleteSelectedShape);
