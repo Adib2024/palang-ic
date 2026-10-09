@@ -927,3 +927,9 @@ textarea.form-input { resize: none; line-height: 1.2; }
   width: 100%; min-height: 220px; padding: 12px 14px; font: 500 .92rem/1.5 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); resize: vertical;
 }
+
+/* ---------- Font choice ---------- */
+.font-row { display: flex; gap: 10px; align-items: flex-end; }
+.font-row .field { flex: 1; min-width: 0; margin-bottom: 14px; }
+.font-row .check { flex: none; min-height: 48px; margin-bottom: 14px; }
+.sign-text > .field select, [data-tab="type"] .field select { width: 100%; }
