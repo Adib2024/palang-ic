@@ -10,8 +10,9 @@ import {
 } from './pdf-kit.js';
 import { bindFileDrop, moveItem } from './pdf-pages.js';
 import { renderPages } from './page-viewer.js';
-import { initSignatureMaker, textCanvas, isoDate, toDMY } from './sig-maker.js';
+import { initSignatureMaker, isoDate, toDMY } from './sig-maker.js';
 import { createPlacer } from './placer.js';
+import { refreshFontSelects } from './fonts.js';
 import {
   STEP_TYPES, DEFAULTS, TEMPLATES_WF, normalize, buildInput, runStep,
 } from './workflow-ops.js';
@@ -32,12 +33,12 @@ let result = null;
 let runToken = 0;
 let ready = false;
 
-const page = initPage(() => { if (ready) renderAll(); });
+const page = initPage(() => { if (ready) { renderAll(); refreshFontSelects(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 const setStatus2 = (msg) => { $('#status2').textContent = msg || ''; };
 const placer = createPlacer({ tr, onChange: () => { if (ready) syncPlace(); } });
-const maker = initSignatureMaker({ onError: () => setStatus2(tr('loadError')) });
+const maker = initSignatureMaker({ onError: () => setStatus2(tr('loadError')), lang: () => page.lang() });
 
 /* ---------- Persistence (passwords are never stored) ---------- */
 
@@ -484,20 +485,20 @@ const place = (canvas, widthFrac) => {
   setStatus2('');
   placer.add(canvas, widthFrac, { allPages: $('#allPages').checked });
 };
-$('#addSig').addEventListener('click', () => {
-  const sig = maker.current();
+$('#addSig').addEventListener('click', async () => {
+  const sig = await maker.current();
   if (!sig) { setStatus2(tr('sigEmptyPad')); return; }
   place(sig, 0.28);
 });
-$('#addDate').addEventListener('click', () => {
+$('#addDate').addEventListener('click', async () => {
   const d = toDMY($('#dateValue').value);
   if (!d) { $('#dateValue').focus(); return; }
-  place(textCanvas(d, undefined, maker.ink()), 0.2);
+  place(await maker.text(d), 0.2);
 });
-$('#addText').addEventListener('click', () => {
+$('#addText').addEventListener('click', async () => {
   const text = $('#extraText').value.trim();
   if (!text) { $('#extraText').focus(); return; }
-  place(textCanvas(text, undefined, maker.ink()), Math.min(0.6, 0.022 * text.length + 0.06));
+  place(await maker.text(text), Math.min(0.6, 0.022 * text.length + 0.06));
 });
 bindFileDrop($('#dropzone'), addFiles);
 

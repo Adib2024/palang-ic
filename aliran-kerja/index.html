@@ -161,12 +161,10 @@
               <span class="sr-title" data-i18n="sigNamePh">Nama</span>
               <input type="text" id="typedName" maxlength="60" autocomplete="name" data-i18n-attr="placeholder:sigNamePh" placeholder="Nama penuh anda">
             </label>
-            <fieldset class="segmented small">
-              <legend data-i18n="sigStyle">Gaya</legend>
-              <label><input type="radio" name="typeStyle" value="0" checked><span class="sig-font-0">Aa</span></label>
-              <label><input type="radio" name="typeStyle" value="1"><span class="sig-font-1">Aa</span></label>
-              <label><input type="radio" name="typeStyle" value="2"><span class="sig-font-2">Aa</span></label>
-            </fieldset>
+            <label class="field">
+              <span data-i18n="sigStyle">Gaya</span>
+              <select id="sigFont"></select>
+            </label>
             <canvas class="sig-pad preview" id="typedPreview" width="900" height="300"></canvas>
           </div>
 
@@ -187,6 +185,10 @@
           </div>
 
           <div class="sign-text">
+            <label class="field">
+              <span data-i18n="fontTextLabel">Font teks &amp; tarikh</span>
+              <select id="textFont"></select>
+            </label>
             <div class="field-row">
               <label class="field">
                 <span data-i18n="sigDate">Tarikh</span>

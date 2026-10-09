@@ -3,12 +3,8 @@
 // from the sign panel (#pad, #typedName, #sigFile, …).
 import * as store from './storage.js';
 import { loadPhoto } from './image-loader.js';
+import { bindFontSelect, cssFamily } from './fonts.js';
 
-const TYPE_FONTS = [
-  'italic 400 140px "Segoe Script", "Brush Script MT", "Snell Roundhand", "URW Chancery L", cursive',
-  'italic 600 120px Georgia, "Times New Roman", serif',
-  '600 110px Inter, system-ui, sans-serif',
-];
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
@@ -75,13 +71,17 @@ export function toDMY(iso) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : '';
 }
 
+/** Fonts listed first for a typed signature, and for text/date. */
+const SIG_GROUPS = ['handwriting', 'formal', 'basic', 'standard', 'mine'];
+const TEXT_GROUPS = ['basic', 'formal', 'standard', 'handwriting', 'mine'];
+
 /**
  * Wire up the signature panel.
- * @param {{onError: () => void}} opts called when an uploaded picture can't be read
- * @returns {{current: () => HTMLCanvasElement | null, ink: () => string}}
+ * @param {{onError: () => void, lang: () => string}} opts onError: a picture or font file can't be read
+ * @returns {{current: () => Promise<HTMLCanvasElement | null>, text: (s: string) => Promise<HTMLCanvasElement>, ink: () => string}}
  */
-export function initSignatureMaker({ onError }) {
-  const settings = { tab: 'draw', ink: '#111111', typeStyle: '0', ...store.load('sign', {}) };
+export function initSignatureMaker({ onError, lang }) {
+  const settings = { tab: 'draw', ink: '#111111', sigFont: 'dancingscript', textFont: 'inter', ...store.load('sign', {}) };
   const save = () => store.save('sign', { ...settings });
   let padDirty = false;
   let imageSource = null;
@@ -127,11 +127,17 @@ export function initSignatureMaker({ onError }) {
     padDirty = false;
   });
 
-  const typed = () => {
+  const typed = async () => {
     const name = $('#typedName').value.trim();
-    return name ? textCanvas(name, TYPE_FONTS[Number(settings.typeStyle)] || TYPE_FONTS[0], settings.ink) : null;
+    if (!name) return null;
+    return textCanvas(name, `400 140px ${await cssFamily(settings.sigFont)}`, settings.ink);
   };
-  const updateTyped = () => fitInto($('#typedPreview'), typed());
+  let typedRun = 0;
+  const updateTyped = async () => {
+    const run = ++typedRun;
+    const c = await typed();
+    if (run === typedRun) fitInto($('#typedPreview'), c);
+  };
 
   async function loadImage(file) {
     const photo = await loadPhoto(file, 2000);
@@ -159,7 +165,14 @@ export function initSignatureMaker({ onError }) {
   };
   bindRadios('sigTab', 'tab', syncTab);
   bindRadios('ink', 'ink', updateTyped);
-  bindRadios('typeStyle', 'typeStyle', updateTyped);
+  bindFontSelect($('#sigFont'), {
+    lang, value: settings.sigFont, groups: SIG_GROUPS, onError,
+    onChange: (id) => { settings.sigFont = id; save(); updateTyped(); },
+  });
+  bindFontSelect($('#textFont'), {
+    lang, value: settings.textFont, groups: TEXT_GROUPS, onError,
+    onChange: (id) => { settings.textFont = id; save(); },
+  });
   $('#typedName').addEventListener('input', updateTyped);
   $('#sigFile').addEventListener('change', async (e) => {
     const f = e.target.files[0];
@@ -171,10 +184,14 @@ export function initSignatureMaker({ onError }) {
   syncTab();
 
   return {
-    current() {
+    async current() {
       if (settings.tab === 'draw') return padDirty ? trim(pad) : null;
       if (settings.tab === 'type') return typed();
       return imageSource;
+    },
+    /** Text or a date drawn in the chosen text font and ink. */
+    async text(s) {
+      return textCanvas(s, `500 72px ${await cssFamily(settings.textFont)}`, settings.ink);
     },
     ink: () => settings.ink,
   };

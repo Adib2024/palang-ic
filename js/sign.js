@@ -7,16 +7,12 @@ import { loadPhoto } from './image-loader.js';
 import {
   loadPdfLib, openForRender, renderPage, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey,
 } from './pdf-kit.js';
+import { bindFontSelect, cssFamily, refreshFontSelects } from './fonts.js';
 
-const TYPE_FONTS = [
-  'italic 400 140px "Segoe Script", "Brush Script MT", "Snell Roundhand", "URW Chancery L", cursive',
-  'italic 600 120px Georgia, "Times New Roman", serif',
-  '600 110px Inter, system-ui, sans-serif',
-];
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
-const settings = { tab: 'draw', ink: '#111111', typeStyle: '0', ...store.load('sign', {}) };
+const settings = { tab: 'draw', ink: '#111111', sigFont: 'dancingscript', textFont: 'inter', ...store.load('sign', {}) };
 /** @type {{name: string, bytes: Uint8Array, doc: any} | null} */
 let input = null;
 /** @type {{el: HTMLElement, vp: any}[]} one per page; vp = pdf.js viewport at scale 1 */
@@ -28,7 +24,7 @@ let activePage = 0;
 let ready = false;
 let imageSource = null; // processed uploaded signature
 
-const page = initPage(() => { if (ready) syncLabels(); });
+const page = initPage(() => { if (ready) { syncLabels(); refreshFontSelects(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 
@@ -130,14 +126,22 @@ function bindPad() {
   });
 }
 
-function typedSignature() {
+async function typedSignature() {
   const name = $('#typedName').value.trim();
   if (!name) return null;
-  return textCanvas(name, TYPE_FONTS[Number(settings.typeStyle)] || TYPE_FONTS[0], settings.ink);
+  return textCanvas(name, `400 140px ${await cssFamily(settings.sigFont)}`, settings.ink);
 }
 
-function updateTypedPreview() {
-  fitInto($('#typedPreview'), typedSignature());
+let typedRun = 0;
+async function updateTypedPreview() {
+  const run = ++typedRun;
+  const c = await typedSignature();
+  if (run === typedRun) fitInto($('#typedPreview'), c);
+}
+
+/** Text or a date in the chosen text font. */
+async function textItem(text) {
+  return textCanvas(text, `500 72px ${await cssFamily(settings.textFont)}`, settings.ink);
 }
 
 async function loadSignatureImage(file) {
@@ -158,7 +162,7 @@ async function loadSignatureImage(file) {
 }
 
 /** The current signature as a trimmed transparent canvas, or null. */
-function currentSignature() {
+async function currentSignature() {
   if (settings.tab === 'draw') return padDirty ? trim($('#pad')) : null;
   if (settings.tab === 'type') return typedSignature();
   return imageSource;
@@ -385,9 +389,19 @@ $$('input[name="ink"]').forEach((r) => {
   r.checked = r.value === settings.ink;
   r.addEventListener('change', () => { if (r.checked) { settings.ink = r.value; store.save('sign', { ...settings }); updateTypedPreview(); } });
 });
-$$('input[name="typeStyle"]').forEach((r) => {
-  r.checked = r.value === settings.typeStyle;
-  r.addEventListener('change', () => { if (r.checked) { settings.typeStyle = r.value; store.save('sign', { ...settings }); updateTypedPreview(); } });
+bindFontSelect($('#sigFont'), {
+  lang: () => page.lang(),
+  value: settings.sigFont,
+  groups: ['handwriting', 'formal', 'basic', 'standard', 'mine'],
+  onChange: (id) => { settings.sigFont = id; store.save('sign', { ...settings }); updateTypedPreview(); },
+  onError: () => setStatus(tr('fontAddError')),
+});
+bindFontSelect($('#textFont'), {
+  lang: () => page.lang(),
+  value: settings.textFont,
+  groups: ['basic', 'formal', 'standard', 'handwriting', 'mine'],
+  onChange: (id) => { settings.textFont = id; store.save('sign', { ...settings }); },
+  onError: () => setStatus(tr('fontAddError')),
 });
 $('#typedName').addEventListener('input', updateTypedPreview);
 $('#sigFile').addEventListener('change', async (e) => {
@@ -399,22 +413,22 @@ $('#sigFile').addEventListener('change', async (e) => {
 });
 $('#removeBg').addEventListener('change', () => { setStatus(''); });
 
-$('#addSig').addEventListener('click', () => {
+$('#addSig').addEventListener('click', async () => {
   if (!input) { setStatus(tr('sigNoPdf')); return; }
-  const sig = currentSignature();
+  const sig = await currentSignature();
   if (!sig) { setStatus(tr('sigEmptyPad')); return; }
   setStatus('');
   addItem(sig, 0.28);
 });
-$('#addText').addEventListener('click', () => {
+$('#addText').addEventListener('click', async () => {
   const text = $('#extraText').value.trim();
   if (!input) { setStatus(tr('sigNoPdf')); return; }
   if (!text) { $('#extraText').focus(); return; }
-  addItem(textCanvas(text, '500 72px Inter, system-ui, sans-serif', '#111111'), Math.min(0.6, 0.022 * text.length + 0.06));
+  addItem(await textItem(text), Math.min(0.6, 0.022 * text.length + 0.06));
 });
-$('#addDate').addEventListener('click', () => {
+$('#addDate').addEventListener('click', async () => {
   if (!input) { setStatus(tr('sigNoPdf')); return; }
-  addItem(textCanvas(todayDMY(), '500 72px Inter, system-ui, sans-serif', '#111111'), 0.2);
+  addItem(await textItem(todayDMY()), 0.2);
 });
 $('#pickFiles').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; openFile(f); });
 $('#another').addEventListener('click', () => $('#pickFiles').click());
