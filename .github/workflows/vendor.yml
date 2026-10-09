@@ -78,4 +78,6 @@ jobs:
           git add vendor
           git diff --cached --quiet && { echo "No changes"; exit 0; }
           git commit -m "Vendor pdf-lib, pdf.js, tesseract.js (eng+msa), fontkit and fonts"
+          # Others may have pushed meanwhile; vendor/ is only written here, so a rebase is safe.
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin HEAD:${GITHUB_REF_NAME}
