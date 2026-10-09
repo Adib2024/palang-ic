@@ -276,8 +276,8 @@ export function addText(view, x, y, text) {
   box.style.fontFamily = TEXT_FONT;
   box.setAttribute('aria-label', tr('editTextBox'));
   it.el = el;
-  applyFont(it);
   el.append(grip, box);
+  applyFont(it);
   el.appendChild(deleteButton(it));
   view.el.appendChild(el);
   placeFrac(el, { x, y });
@@ -324,6 +324,8 @@ async function addImage(file) {
 
 function setTool(name) {
   tool = name;
+  // Starting a new text box: font/colour changes are for it, not the last one.
+  if (name === 'text') selectItem(null);
   $$('[data-tool]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tool === name)));
   views.forEach((v) => { v.overlay.dataset.tool = name; });
   if (name === 'image') $('#imageFile').click();
