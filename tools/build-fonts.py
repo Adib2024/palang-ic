@@ -70,6 +70,24 @@ def static_weight(font, weight):
     return instancer.instantiateVariableFont(font, axes)
 
 
+def set_names(font, family, weight):
+    """Name records, weight class and style bits for a static instance."""
+    style = WEIGHT_NAME[weight]
+    ps = f"{family.replace(' ', '')}-{style}"
+    for rec in list(font['name'].names):
+        if rec.nameID in (16, 17, 21, 22, 25):
+            font['name'].removeNames(nameID=rec.nameID)
+    for nid, value in ((1, family), (2, style), (3, f'{ps};DokuJaga'), (4, f'{family} {style}'), (6, ps)):
+        font['name'].setName(value, nid, 3, 1, 0x409)
+        font['name'].setName(value, nid, 1, 0, 0)
+    if 'OS/2' in font:
+        font['OS/2'].usWeightClass = weight
+        sel = font['OS/2'].fsSelection & ~0b1100001  # clear italic, bold, regular
+        font['OS/2'].fsSelection = sel | (0b100000 if weight >= 700 else 0b1000000)
+    if 'head' in font:
+        font['head'].macStyle = (font['head'].macStyle & ~1) | (1 if weight >= 700 else 0)
+
+
 def subset_font(font):
     opts = subset.Options()
     opts.layout_features = ['kern', 'liga', 'clig', 'calt', 'ccmp', 'locl', 'mark', 'mkmk']
@@ -101,6 +119,7 @@ def main(out):
             font = TTFont(io.BytesIO(get(src['download_url'])))
             if src is variable:
                 font = static_weight(font, w)
+                set_names(font, name, w)
             subset_font(font)
             path = os.path.join(out, f'{fid}-{w}.ttf')
             font.save(path)
