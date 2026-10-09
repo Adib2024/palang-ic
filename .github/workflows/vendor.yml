@@ -21,7 +21,7 @@ jobs:
         run: |
           mkdir -p /tmp/v && cd /tmp/v
           npm init -y >/dev/null
-          npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38 tesseract.js@5.1.1 tesseract.js-core@5.1.1
+          npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38 tesseract.js@5.1.1 tesseract.js-core@5.1.1 @pdf-lib/fontkit@1.1.1
           # OCR language models (Malay + English); optional packages, see fallback below.
           npm install --no-audit --no-fund --ignore-scripts @tesseract.js-data/eng@1.0.0 @tesseract.js-data/msa@1.0.0 || true
       - name: Copy into vendor/
@@ -51,10 +51,21 @@ jobs:
             fi
           done
           ls -la vendor/tesseract vendor/tesseract/core vendor/tesseract/lang
+          # Custom fonts in PDFs: fontkit for pdf-lib.
+          mkdir -p vendor/fontkit
+          cp /tmp/v/node_modules/@pdf-lib/fontkit/dist/fontkit.umd.min.js vendor/fontkit/
+          cp /tmp/v/node_modules/@pdf-lib/fontkit/LICENSE* vendor/fontkit/ 2>/dev/null || true
+      - name: Build fonts (Google Fonts, OFL/Apache; static Regular/Bold, Latin subset)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install --quiet fonttools==4.53.1
+          python3 tools/build-fonts.py vendor/fonts
+          du -sh vendor/fonts
           {
             echo "Vendored by .github/workflows/vendor.yml — do not edit by hand."
             echo
-            for p in pdf-lib pdfjs-dist tesseract.js tesseract.js-core; do
+            for p in pdf-lib pdfjs-dist tesseract.js tesseract.js-core @pdf-lib/fontkit; do
               node -e "const l=require('/tmp/v/package-lock.json').packages['node_modules/$p']; console.log('$p', l.version, l.integrity, l.license||'')"
             done
           } > vendor/VERSIONS.txt
@@ -66,5 +77,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add vendor
           git diff --cached --quiet && { echo "No changes"; exit 0; }
-          git commit -m "Vendor pdf-lib 1.17.1, pdf.js 4.10.38 (legacy) and tesseract.js 5.1.1 (eng+msa)"
+          git commit -m "Vendor pdf-lib, pdf.js, tesseract.js (eng+msa), fontkit and fonts"
           git push origin HEAD:${GITHUB_REF_NAME}

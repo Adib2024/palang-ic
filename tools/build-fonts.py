@@ -1,0 +1,117 @@
+"""Build the self-hosted font set for DokuJaga (run by .github/workflows/vendor.yml).
+
+Fetches each family from github.com/google/fonts, makes static Regular/Bold
+TTFs (instancing variable fonts), subsets them to Latin (+ Latin-1/Ext-A and
+common punctuation) and writes vendor/fonts/<id>-<weight>.ttf plus a
+manifest (fonts.json) and each family's licence.
+
+Usage: python3 tools/build-fonts.py vendor/fonts
+"""
+import io
+import json
+import os
+import sys
+import urllib.request
+
+from fontTools import subset
+from fontTools.ttLib import TTFont
+from fontTools.varLib import instancer
+
+# id, display name, UI group, weights
+FAMILIES = [
+    ('inter', 'Inter', 'basic', [400, 700]),
+    ('roboto', 'Roboto', 'basic', [400, 700]),
+    ('poppins', 'Poppins', 'basic', [400, 700]),
+    ('merriweather', 'Merriweather', 'basic', [400, 700]),
+    ('robotomono', 'Roboto Mono', 'basic', [400, 700]),
+    ('dancingscript', 'Dancing Script', 'handwriting', [400, 700]),
+    ('greatvibes', 'Great Vibes', 'handwriting', [400]),
+    ('caveat', 'Caveat', 'handwriting', [400, 700]),
+    ('tinos', 'Tinos', 'formal', [400, 700]),
+    ('arimo', 'Arimo', 'formal', [400, 700]),
+    ('playfairdisplay', 'Playfair Display', 'formal', [400, 700]),
+]
+WEIGHT_NAME = {400: 'Regular', 700: 'Bold'}
+UNICODES = (list(range(0x20, 0x7F)) + list(range(0xA0, 0x180)) + list(range(0x2010, 0x2028))
+            + list(range(0x2030, 0x203B)) + [0x20AC, 0x2122, 0x2190, 0x2191, 0x2192, 0x2193, 0x2713])
+API = 'https://api.github.com/repos/google/fonts/contents/'
+
+
+def get(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'dokujaga-font-build'})
+    token = os.environ.get('GITHUB_TOKEN')
+    if token and url.startswith(API):
+        req.add_header('Authorization', f'Bearer {token}')
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read()
+
+
+def listing(fid):
+    for licence in ('ofl', 'apache', 'ufl'):
+        try:
+            return licence, json.loads(get(API + f'{licence}/{fid}'))
+        except Exception:  # noqa: BLE001 - 404 for the other licence folders
+            continue
+    raise SystemExit(f'family not found in google/fonts: {fid}')
+
+
+def static_weight(font, weight):
+    """Pin every variation axis (wght → `weight`, others → default)."""
+    if 'fvar' not in font:
+        return font
+    axes = {}
+    for a in font['fvar'].axes:
+        axes[a.axisTag] = max(a.minValue, min(a.maxValue, weight)) if a.axisTag == 'wght' else a.defaultValue
+    return instancer.instantiateVariableFont(font, axes)
+
+
+def subset_font(font):
+    opts = subset.Options()
+    opts.layout_features = ['kern', 'liga', 'clig', 'calt', 'ccmp', 'locl', 'mark', 'mkmk']
+    opts.hinting = False
+    opts.desubroutinize = True
+    opts.notdef_outline = True
+    opts.name_IDs = ['*']
+    opts.name_languages = ['*']
+    s = subset.Subsetter(opts)
+    s.populate(unicodes=UNICODES)
+    s.subset(font)
+    return font
+
+
+def main(out):
+    os.makedirs(os.path.join(out, 'licenses'), exist_ok=True)
+    manifest = []
+    for fid, name, group, weights in FAMILIES:
+        licence, files = listing(fid)
+        ttfs = [f for f in files if f['name'].endswith('.ttf') and 'Italic' not in f['name']]
+        variable = next((f for f in ttfs if '[' in f['name'] and 'wght' in f['name']), None)
+        made = {}
+        for w in weights:
+            static = next((f for f in ttfs if f['name'].endswith(f'-{WEIGHT_NAME[w]}.ttf')), None)
+            src = static or variable
+            if not src:
+                print(f'  {fid} {w}: no source, skipped')
+                continue
+            font = TTFont(io.BytesIO(get(src['download_url'])))
+            if src is variable:
+                font = static_weight(font, w)
+            subset_font(font)
+            path = os.path.join(out, f'{fid}-{w}.ttf')
+            font.save(path)
+            made[str(w)] = f'{fid}-{w}.ttf'
+            print(f'  {fid} {w}: {src["name"]} -> {os.path.getsize(path)} bytes')
+        if not made:
+            raise SystemExit(f'no files for {fid}')
+        lic = next((f for f in files if f['name'] in ('OFL.txt', 'LICENSE.txt', 'LICENSE')), None)
+        if lic:
+            with open(os.path.join(out, 'licenses', f'{fid}.txt'), 'wb') as fh:
+                fh.write(get(lic['download_url']))
+        manifest.append({'id': fid, 'name': name, 'group': group, 'licence': licence, 'files': made})
+    with open(os.path.join(out, 'fonts.json'), 'w') as fh:
+        json.dump(manifest, fh, indent=1)
+    print(json.dumps(manifest, indent=1))
+
+
+if __name__ == '__main__':
+    main(sys.argv[1])
