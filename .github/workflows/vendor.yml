@@ -39,8 +39,9 @@ jobs:
           cp /tmp/v/node_modules/tesseract.js/dist/tesseract.min.js vendor/tesseract/
           cp /tmp/v/node_modules/tesseract.js/dist/worker.min.js vendor/tesseract/
           cp /tmp/v/node_modules/tesseract.js/LICENSE.md vendor/tesseract/LICENSE.md 2>/dev/null || cp /tmp/v/node_modules/tesseract.js/LICENSE* vendor/tesseract/
-          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core*.wasm.js vendor/tesseract/core/
-          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core*.wasm vendor/tesseract/core/ 2>/dev/null || true
+          # Only the LSTM builds are used (OEM 1); their wasm is embedded in the .js.
+          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core-lstm.wasm.js vendor/tesseract/core/
+          cp /tmp/v/node_modules/tesseract.js-core/tesseract-core-simd-lstm.wasm.js vendor/tesseract/core/
           for l in eng msa; do
             f=$(ls /tmp/v/node_modules/@tesseract.js-data/$l/4.0.0_best_int/$l.traineddata.gz 2>/dev/null || true)
             if [ -n "$f" ]; then
