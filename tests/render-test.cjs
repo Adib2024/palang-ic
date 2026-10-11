@@ -207,7 +207,7 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
         await page.click('[data-lang="ms"]');
       }
 
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${scheme}: no horizontal scroll at 390px`, () => assert(overflow <= 0, `overflow ${overflow}px`));
       await page.screenshot({ path: path.join(OUT, `page-${scheme}.png`), fullPage: true });
 
