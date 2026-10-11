@@ -5,6 +5,7 @@ import { t } from './i18n.js';
 import { isPdf, formatSize, safeName, download, shareOrDownload } from './pdf-kit.js';
 import { bindFileDrop } from './pdf-pages.js';
 import { protectPdf } from './pdf-security.js';
+import { createBatch, batchSummary } from './batch.js';
 import { permissions } from './pdf-crypto.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -43,19 +44,31 @@ function sync() {
   $('#sharePdf').disabled = !input || !match;
 }
 
-/** Encrypt the loaded PDF with the form's settings. */
-export async function buildOutput() {
+/** Encrypt the loaded PDF (or another file in a batch) with the form's settings. */
+export async function buildOutput(src = input) {
   const P = permissions({ print: $('#allowPrint').checked, copy: $('#allowCopy').checked });
-  const bytes = await protectPdf(input.bytes, $('#pw1').value, $('#ownerPw').value, P);
-  return new File([bytes], `${safeName(input.name, 'dokumen')}-dilindungi.pdf`, { type: 'application/pdf' });
+  const bytes = await protectPdf(src.bytes, $('#pw1').value, $('#ownerPw').value, P);
+  return new File([bytes], `${safeName(src.name, 'dokumen')}-dilindungi.pdf`, { type: 'application/pdf' });
 }
 
 async function exportPdf(share) {
   if (!input) return;
   setStatus(tr('working'));
   try {
-    const file = await buildOutput();
-    const done = tr('protectDone', { size: formatSize(file.size) });
+    let file;
+    let done;
+    if (batch.active) {
+      const res = await batch.run(
+        async (f) => buildOutput({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) }),
+        `${safeName(input.name, 'dokumen')}-dilindungi.zip`,
+        (i, n, f) => setStatus(tr('batchProgress', { i, n, name: f.name })),
+      );
+      file = res.zip;
+      done = batchSummary(tr, res, formatSize(file.size));
+    } else {
+      file = await buildOutput();
+      done = tr('protectDone', { size: formatSize(file.size) });
+    }
     if (share) {
       const how = await shareOrDownload(file);
       setStatus(how === 'cancelled' ? '' : how === 'downloaded' ? `${tr('shareFallback')} ${done}` : done);
@@ -68,7 +81,10 @@ async function exportPdf(share) {
   }
 }
 
+const batch = createBatch($('#docMeta').parentElement, { tr: (k, v) => tr(k, v) });
+
 async function openFile(list) {
+  batch.set(list.filter(isPdf));
   const file = list.find(isPdf);
   if (!file) { setStatus(tr('pdfOpenError')); return; }
   input = { name: file.name, bytes: new Uint8Array(await file.arrayBuffer()) };
@@ -89,4 +105,4 @@ bindFileDrop($('#dropzone'), openFile);
 ready = true;
 sync();
 
-window.__protect = { openFile, buildOutput, strength };
+window.__protect = { openFile, buildOutput, strength, batch };

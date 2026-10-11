@@ -6,6 +6,7 @@ import { t } from './i18n.js';
 import { loadPdfJs, loadPdfLib, renderPage, isPdf, formatSize, safeName, download, shareOrDownload } from './pdf-kit.js';
 import { bindFileDrop } from './pdf-pages.js';
 import { isEncrypted, unlockPdf } from './pdf-security.js';
+import { createBatch, batchSummary } from './batch.js';
 
 const $ = (sel) => document.querySelector(sel);
 let input = null; // {name, bytes, encrypted}
@@ -22,8 +23,8 @@ function sync() {
     $('#docTitle').textContent = input.name;
     $('#docMeta').textContent = formatSize(input.bytes.length);
   }
-  $('#notLocked').hidden = !input || input.encrypted;
-  $('#pwBlock').hidden = !input || !input.encrypted || !!output;
+  $('#notLocked').hidden = !input || input.encrypted || batch.active;
+  $('#pwBlock').hidden = !input || (!input.encrypted && !batch.active) || !!output;
   $('#result').hidden = !output;
 }
 
@@ -46,13 +47,13 @@ async function rasterUnlock(bytes, password) {
 }
 
 /** Try to unlock with `password`; returns {bytes, raster} or throws Error('password'). */
-export async function unlock(password) {
+export async function unlock(password, bytes = input.bytes) {
   try {
-    return { bytes: await unlockPdf(input.bytes, password), raster: false };
+    return { bytes: await unlockPdf(bytes, password), raster: false };
   } catch (err) {
     if (err && err.message === 'password') throw err;
     try {
-      return { bytes: await rasterUnlock(input.bytes, password), raster: true };
+      return { bytes: await rasterUnlock(bytes, password), raster: true };
     } catch (e2) {
       if (e2 && e2.name === 'PasswordException') throw new Error('password');
       throw e2;
@@ -60,7 +61,10 @@ export async function unlock(password) {
   }
 }
 
+const batch = createBatch($('#docMeta').parentElement, { tr: (k, v) => tr(k, v) });
+
 async function openFile(list) {
+  batch.set(list.filter(isPdf));
   const file = list.find(isPdf);
   if (!file) { setStatus(tr('pdfOpenError')); return; }
   setStatus(tr('pdfLoading'));
@@ -70,7 +74,9 @@ async function openFile(list) {
     input = { name: file.name, bytes, encrypted: await isEncrypted(bytes) };
     setStatus('');
     sync();
-    if (input.encrypted) {
+    if (batch.active) {
+      $('#password').focus();
+    } else if (input.encrypted) {
       // Files that only restrict printing/copying open with an empty password.
       try { await run(''); } catch { $('#password').focus(); }
     }
@@ -81,7 +87,21 @@ async function openFile(list) {
   }
 }
 
+/** Batch: one password for every file; files without a password pass through. */
+async function runBatch(password) {
+  const res = await batch.run(async (f) => {
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    if (!(await isEncrypted(bytes))) return f;
+    const r = await unlock(password, bytes);
+    return new File([r.bytes], `${safeName(f.name, 'dokumen')}-dibuka.pdf`, { type: 'application/pdf' });
+  }, `${safeName(input.name, 'dokumen')}-dibuka.zip`, (i, n, f) => setStatus(tr('batchProgress', { i, n, name: f.name })));
+  output = res.zip;
+  setStatus(batchSummary(tr, res, formatSize(output.size)));
+  sync();
+}
+
 async function run(password) {
+  if (batch.active) { await runBatch(password); return; }
   setStatus(tr('working'));
   const res = await unlock(password);
   output = new File([res.bytes], `${safeName(input.name, 'dokumen')}-dibuka.pdf`, { type: 'application/pdf' });
@@ -110,4 +130,4 @@ bindFileDrop($('#dropzone'), openFile);
 ready = true;
 sync();
 
-window.__unlock = { openFile, unlock, get output() { return output; }, get input() { return input; } };
+window.__unlock = { openFile, unlock, batch, get output() { return output; }, get input() { return input; } };
