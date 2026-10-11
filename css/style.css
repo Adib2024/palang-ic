@@ -959,3 +959,12 @@ textarea.form-input { resize: none; line-height: 1.2; }
 .share-files #shareEmpty { display: grid; gap: 8px; justify-items: start; }
 .share-files #shareEmpty[hidden] { display: none; }
 #sharePick .section-title { text-align: center; }
+
+/* ---------- Batch note ---------- */
+.batch-note {
+  margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); font-size: .88rem;
+}
+.batch-note strong { display: block; margin-bottom: 6px; color: var(--accent); }
+.batch-note ul { margin: 0; padding-left: 18px; max-height: 140px; overflow-y: auto; color: var(--muted); }
+.batch-note li { overflow-wrap: anywhere; }
