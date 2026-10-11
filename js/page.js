@@ -2,6 +2,7 @@
 import { applyI18n } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
+import { deliverInbox } from './handoff.js';
 
 /**
  * @param {(lang: string) => void} [onLang] called after every language change
@@ -23,5 +24,8 @@ export function initPage(onLang) {
   }));
   sync();
   registerServiceWorker();
+  // Files handed over from another tool or app: give them to this tool once
+  // its own setup (which runs right after initPage) is done.
+  setTimeout(() => { deliverInbox().catch(() => {}); }, 0);
   return { lang: () => lang };
 }
