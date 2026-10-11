@@ -5,15 +5,13 @@
 import { initPage } from './page.js';
 import { t } from './i18n.js';
 import {
-  loadPdfLib, openForRender, renderPage, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey,
+  openForRender, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey,
 } from './pdf-kit.js';
-import { bindFileDrop, displayToUser, displaySize } from './pdf-pages.js';
-import { loadPhoto } from './image-loader.js';
+import { bindFileDrop } from './pdf-pages.js';
+import { createOcrWorker, ocrDocument } from './ocr-core.js';
 import { createBatch, batchSummary } from './batch.js';
 
 const $ = (sel) => document.querySelector(sel);
-const LONG_SIDE = 2400; // px of the longest page side given to the OCR engine
-const VENDOR = new URL('../vendor/tesseract/', import.meta.url).href;
 const isImage = (f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name);
 
 /** @type {{name: string, kind: 'pdf'|'images', files: File[], bytes?: Uint8Array, doc?: any, pages: number} | null} */
@@ -32,84 +30,6 @@ const setProgress = (f) => {
 
 /* ---------- Engine ---------- */
 
-let tessPromise = null;
-function loadTesseract() {
-  if (!tessPromise) {
-    tessPromise = new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = `${VENDOR}tesseract.min.js`;
-      s.onload = () => resolve(window.Tesseract);
-      s.onerror = () => { tessPromise = null; reject(new Error('engine')); };
-      document.head.appendChild(s);
-    });
-  }
-  return tessPromise;
-}
-
-/** A tesseract worker for `langs` (e.g. 'msa+eng'), loading everything from this site. */
-export async function createOcrWorker(langs, logger = () => {}) {
-  const T = await loadTesseract();
-  return T.createWorker(langs, 1, {
-    workerPath: `${VENDOR}worker.min.js`,
-    corePath: `${VENDOR}core/`,
-    langPath: `${VENDOR}lang`,
-    workerBlobURL: false,
-    gzip: true,
-    cacheMethod: 'none',
-    logger,
-  });
-}
-
-/** Words with pixel boxes from a tesseract result. */
-function wordsOf(data) {
-  const out = [];
-  for (const b of data.blocks || []) {
-    for (const p of b.paragraphs || []) {
-      for (const l of p.lines || []) {
-        for (const w of l.words || []) {
-          if (w.text && w.text.trim() && w.confidence > 20) out.push({ text: w.text.trim(), ...w.bbox, line: l.bbox });
-        }
-      }
-    }
-  }
-  return out;
-}
-
-/* ---------- Text layer ---------- */
-
-const latin1 = (s) => s.replace(/[^\x20-\x7e\xa0-\xff]/g, '?');
-
-/**
- * Draw `words` (pixel boxes on a `cw`×`ch` render of the displayed page) as
- * invisible text on a pdf-lib page, sized and squeezed to cover each word.
- */
-function addTextLayer(L, pdfPage, font, words, cw, ch) {
-  const { width: Dw, height: Dh } = displaySize(pdfPage);
-  const sx = Dw / cw;
-  const sy = Dh / ch;
-  for (const w of words) {
-    const text = latin1(w.text);
-    // Use the line's height so every word in a line gets the same size.
-    const hPt = Math.max(2, (w.line.y1 - w.line.y0) * sy);
-    const size = hPt * 0.82;
-    const target = (w.x1 - w.x0) * sx;
-    const natural = font.widthOfTextAtSize(text, size) || 1;
-    const baseline = w.line.y1 * sy - hPt * 0.18;
-    const p = displayToUser(pdfPage, w.x0 * sx, baseline);
-    pdfPage.pushOperators(
-      L.pushGraphicsState(),
-      L.setTextRenderingMode(L.TextRenderingMode.Invisible),
-      L.setCharacterSqueeze(Math.max(10, Math.min(400, (target / natural) * 100))),
-    );
-    pdfPage.drawText(text, { x: p.x, y: p.y, size, font, rotate: L.degrees(p.angle) });
-    pdfPage.pushOperators(L.popGraphicsState());
-  }
-}
-
-/* ---------- Run ---------- */
-
-const jpeg = (canvas, q) => new Promise((resolve) => canvas.toBlob(async (b) => resolve(new Uint8Array(await b.arrayBuffer())), 'image/jpeg', q));
-
 /**
  * OCR one input (the loaded one, or another PDF in a batch).
  * @returns {Promise<{pdf: File, text: string, pages: number, skipped: number}>}
@@ -117,62 +37,18 @@ const jpeg = (canvas, q) => new Promise((resolve) => canvas.toBlob(async (b) => 
 export async function runOcr(inp = input, label = '', worker = null) {
   const langs = [$('#langMs').checked && 'msa', $('#langEn').checked && 'eng'].filter(Boolean);
   if (!langs.length) throw new Error('nolang');
-  const skipText = $('#skipText').checked;
   setStatus(tr('ocrLoadingEngine'));
   setProgress(0);
-  const own = !worker;
-  if (own) worker = await createOcrWorker(langs.join('+'));
-  try {
-    const L = await loadPdfLib();
-    const out = inp.kind === 'pdf'
-      ? await L.PDFDocument.load(inp.bytes, { updateMetadata: false })
-      : await L.PDFDocument.create();
-    const font = await out.embedFont(L.StandardFonts.Helvetica);
-    const texts = [];
-    let skipped = 0;
-    for (let i = 0; i < inp.pages; i++) {
-      setStatus(label + tr('ocrProgress', { i: i + 1, n: inp.pages }));
-      setProgress(i / inp.pages);
-      let canvas;
-      let pdfPage;
-      if (inp.kind === 'pdf') {
-        const pg = await inp.doc.getPage(i + 1);
-        pdfPage = out.getPage(i);
-        if (skipText) {
-          const tc = await pg.getTextContent();
-          const existing = tc.items.map((it) => it.str).join(' ').trim();
-          if (existing.length >= 30) {
-            texts.push(existing);
-            skipped++;
-            continue;
-          }
-        }
-        const vp = pg.getViewport({ scale: 1 });
-        canvas = await renderPage(pg, LONG_SIDE / Math.max(vp.width, vp.height));
-        pg.cleanup();
-      } else {
-        canvas = await loadPhoto(inp.files[i], LONG_SIDE);
-        // Page: the photo at its aspect ratio, long side = A4 long side.
-        const s = 841.89 / Math.max(canvas.width, canvas.height);
-        const img = await out.embedJpg(await jpeg(canvas, 0.88));
-        pdfPage = out.addPage([canvas.width * s, canvas.height * s]);
-        pdfPage.drawImage(img, { x: 0, y: 0, width: canvas.width * s, height: canvas.height * s });
-      }
-      const { data } = await worker.recognize(canvas, {}, { text: true, blocks: true });
-      addTextLayer(L, pdfPage, font, wordsOf(data), canvas.width, canvas.height);
-      texts.push((data.text || '').trim());
-      canvas.width = canvas.height = 0;
-    }
-    setProgress(1);
-    out.setProducer('DokuJaga');
-    out.setCreator('DokuJaga');
-    const bytes = await out.save();
-    const name = safeName($('#fileName').value, `${safeName(inp.name, 'dokumen')}-ocr`);
-    const text = texts.map((s, k) => (inp.pages > 1 ? `--- ${tr('sigPage', { n: k + 1 })} ---\n${s}` : s)).join('\n\n');
-    return { pdf: new File([bytes], `${name}.pdf`, { type: 'application/pdf' }), text, pages: inp.pages, skipped };
-  } finally {
-    if (own) await worker.terminate();
-  }
+  const res = await ocrDocument(inp, {
+    langs,
+    skipText: $('#skipText').checked,
+    worker,
+    onPage: (i, n) => { setStatus(label + tr('ocrProgress', { i: i + 1, n })); setProgress(i / n); },
+  });
+  setProgress(1);
+  const name = safeName($('#fileName').value, `${safeName(inp.name, 'dokumen')}-ocr`);
+  const text = res.texts.map((s, k) => (inp.pages > 1 ? `--- ${tr('sigPage', { n: k + 1 })} ---\n${s}` : s)).join('\n\n');
+  return { pdf: new File([res.bytes], `${name}.pdf`, { type: 'application/pdf' }), text, pages: inp.pages, skipped: res.skipped };
 }
 
 /* ---------- UI ---------- */
