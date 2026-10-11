@@ -169,6 +169,42 @@ async function pixelDiff({ a, b }) {
         assert.match(ci.pages[1].text, /2 \/ 2/);
       });
 
+      /* ---------- OCR step (after Compress, so the text layer survives) ---------- */
+      await reset();
+      await page.click('[data-tpl="blank"]');
+      for (const type of ['ocr', 'compress']) {
+        await page.selectOption('#addType', type);
+        await page.click('#addStep');
+      }
+      const order = await page.evaluate(() => window.__wf.steps.map((s) => s.type));
+      check(`${label}: OCR is ordered after Compress`, () => assert.deepStrictEqual(order, ['compress', 'ocr']));
+      const scanB64 = await page.evaluate(async () => {
+        const L = await import('/vendor/pdf-lib/pdf-lib.esm.min.js');
+        const c = document.createElement('canvas');
+        c.width = 1240; c.height = 1754;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = '#111'; ctx.font = '600 52px Arial, sans-serif';
+        ['SURAT PENGESAHAN GAJI', 'Jumlah RM 5200'].forEach((l, i) => ctx.fillText(l, 120, 240 + i * 110));
+        const jpg = await new Promise((r) => c.toBlob(async (bl) => r(new Uint8Array(await bl.arrayBuffer())), 'image/jpeg', 0.92));
+        const d = await L.PDFDocument.create();
+        const im = await d.embedJpg(jpg);
+        d.addPage([595.28, 841.89]).drawImage(im, { x: 0, y: 0, width: 595.28, height: 841.89 });
+        const by = await d.save();
+        let t = '';
+        for (let i = 0; i < by.length; i += 0x8000) t += String.fromCharCode(...by.subarray(i, i + 0x8000));
+        return btoa(t);
+      });
+      await page.setInputFiles('#pickFiles', [pdf('imbas.pdf', scanB64)]);
+      await page.click('#runWf');
+      await page.waitForFunction(() => !document.querySelector('#resultArea').hidden || /./.test(document.querySelector('#status2').textContent), null, { timeout: 240000 });
+      const ocrOut = await save();
+      const oi = await page.evaluate(inspect, { b64: ocrOut.b64 });
+      check(`${label}: workflow OCR makes the compressed scan searchable`, () => {
+        assert.match(oi.pages[0].text.replace(/\s+/g, ' '), /PENGESAHAN/);
+        assert.match(oi.pages[0].text, /5200/);
+      });
+
       /* ---------- Merge, text, sign & date ---------- */
       await reset();
       await page.click('[data-tpl="mergesign"]');
