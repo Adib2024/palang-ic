@@ -280,7 +280,14 @@ async function diffBoxes({ before, after }) {
       // Drag the bottom-right handle inwards.
       const h = page.locator('.crop-rect [data-h="br"]');
       await h.scrollIntoViewIfNeeded();
-      const hb = await h.boundingBox();
+      // Wait until the layout has settled, or the drag can miss the handle.
+      let hb = await h.boundingBox();
+      for (let k = 0; k < 20; k++) {
+        await page.waitForTimeout(100);
+        const nb = await h.boundingBox();
+        if (nb && hb && Math.abs(nb.x - hb.x) < 0.5 && Math.abs(nb.y - hb.y) < 0.5) break;
+        hb = nb;
+      }
       const stage = await page.locator('#cropStage').boundingBox();
       await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2);
       await page.mouse.down();
