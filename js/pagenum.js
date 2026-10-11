@@ -4,7 +4,8 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
 import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
-import { openPdfs, bindFileDrop, displayToUser, displaySize, createPreview } from './pdf-pages.js';
+import { openPdfs, bindFileDrop, createPreview } from './pdf-pages.js';
+import { numberPage } from './pdf-stamps.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -26,18 +27,10 @@ export function label(n, total) {
   return String(n);
 }
 
-async function number(doc, page, PDFLib, n, total, cache) {
-  if (!cache.font) cache.font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
-  const text = label(n, total).replace(/[^\x20-\x7e\xa0-\xff]/g, '?');
-  const size = settings.size;
-  const w = cache.font.widthOfTextAtSize(text, size);
-  const { width: Dw, height: Dh } = displaySize(page);
-  const m = MARGINS[settings.margin] || MARGINS.mid;
-  const [row, col] = settings.pos;
-  const u = col === 'l' ? m : col === 'r' ? Dw - m - w : (Dw - w) / 2;
-  const baseline = row === 't' ? m + size * 0.8 : Dh - m;
-  const p = displayToUser(page, u, baseline);
-  page.drawText(text, { x: p.x, y: p.y, size, font: cache.font, color: PDFLib.rgb(0.1, 0.1, 0.1), rotate: PDFLib.degrees(p.angle) });
+function number(doc, page, PDFLib, n, total, cache) {
+  return numberPage(doc, page, PDFLib, cache, {
+    text: label(n, total), size: settings.size, pos: settings.pos, margin: MARGINS[settings.margin] || MARGINS.mid,
+  });
 }
 
 /** Build the numbered PDF. */
