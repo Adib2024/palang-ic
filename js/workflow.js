@@ -251,6 +251,12 @@ function stepForm(step) {
         field('wfLimit', select(o.limit, [[0, tr('wfNoLimit')], [1048576, '≤ 1 MB'], [2097152, '≤ 2 MB'], [5242880, '≤ 5 MB']], (v) => set('limit')(Number(v)))),
       );
       break;
+    case 'ocr':
+      wrap.append(
+        field('wfOcrLangs', select(o.langs, [['msa+eng', 'Bahasa Melayu + English'], ['msa', 'Bahasa Melayu'], ['eng', 'English']], set('langs'))),
+        check('ocrSkipText', o.skipText, set('skipText')),
+      );
+      break;
     case 'protect': {
       const pw = input('password', o.password, set('password'), { maxLength: 64, autocomplete: 'new-password', className: 'wf-pw' });
       wrap.append(
@@ -281,8 +287,9 @@ function renderSteps() {
     title.textContent = tr(`wfStep_${s.type}`);
     const tools = document.createElement('span');
     tools.className = 'wf-tools';
-    const pinned = s.type === 'palang' || s.type === 'protect';
-    const movable = (to) => !pinned && to >= 0 && to < steps.length && steps[to].type !== 'palang' && steps[to].type !== 'protect';
+    const PINNED = ['palang', 'ocr', 'protect'];
+    const pinned = PINNED.includes(s.type);
+    const movable = (to) => !pinned && to >= 0 && to < steps.length && !PINNED.includes(steps[to].type);
     tools.append(
       smallButton(`${tr('wfUp')}: ${title.textContent}`, '▲', () => { moveItem(steps, i, i - 1); saveCurrent(); renderSteps(); }, !movable(i - 1)),
       smallButton(`${tr('wfDown')}: ${title.textContent}`, '▼', () => { moveItem(steps, i, i + 1); saveCurrent(); renderSteps(); }, !movable(i + 1)),
@@ -293,7 +300,7 @@ function renderSteps() {
     if (pinned) {
       const note = document.createElement('p');
       note.className = 'wf-pin';
-      note.textContent = tr(s.type === 'palang' ? 'wfPinnedFirst' : 'wfPinnedLast');
+      note.textContent = tr({ palang: 'wfPinnedFirst', ocr: 'wfPinnedOcr', protect: 'wfPinnedLast' }[s.type]);
       li.appendChild(note);
     }
     li.appendChild(stepForm(s));
@@ -305,7 +312,7 @@ function renderSteps() {
   sel.textContent = '';
   for (const type of STEP_TYPES) {
     // Palang and Protect make sense once per workflow.
-    const used = (type === 'palang' || type === 'protect') && steps.some((s) => s.type === type);
+    const used = ['palang', 'ocr', 'protect'].includes(type) && steps.some((s) => s.type === type);
     if (!used) sel.appendChild(new Option(tr(`wfStep_${type}`), type));
   }
   if ([...sel.options].some((o) => o.value === keep)) sel.value = keep;

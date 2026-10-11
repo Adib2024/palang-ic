@@ -9,9 +9,10 @@ import { composite } from './watermark.js';
 import { TEMPLATES, todayDMY } from './i18n.js';
 import { protectPdf } from './pdf-security.js';
 import { permissions } from './pdf-crypto.js';
+import { ocrDocument } from './ocr-core.js';
 
 /** Step types, in the order offered in the "add step" menu. */
-export const STEP_TYPES = ['palang', 'place', 'watermark', 'pagenum', 'rotate', 'compress', 'protect'];
+export const STEP_TYPES = ['palang', 'place', 'watermark', 'pagenum', 'rotate', 'compress', 'ocr', 'protect'];
 
 /** Default options per step type. */
 export const DEFAULTS = {
@@ -21,6 +22,7 @@ export const DEFAULTS = {
   pagenum: { pos: 'bc', format: 'nOfTotal' },
   rotate: { deg: 90 },
   compress: { level: 'medium', limit: 0 },
+  ocr: { langs: 'msa+eng', skipText: true },
   protect: { password: '', print: true, copy: true },
 };
 
@@ -60,7 +62,9 @@ export const TEMPLATES_WF = [
  * first; a password makes the file unreadable to later steps, so it runs last.
  */
 export function normalize(steps) {
-  const rank = (s) => (s.type === 'palang' ? 0 : s.type === 'protect' ? 2 : 1);
+  // OCR runs after the other steps: compressing re-draws pages as pictures
+  // and would drop the text layer.
+  const rank = (s) => ({ palang: 0, ocr: 1.5, protect: 2 }[s.type] ?? 1);
   return steps.map((s, i) => [s, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([s]) => s);
 }
 
@@ -200,6 +204,19 @@ export async function protect(bytes, o) {
   return protectPdf(bytes, o.password, '', permissions({ print: o.print !== false, copy: o.copy !== false }));
 }
 
+/** OCR: add a searchable text layer to scanned pages (Malay and/or English). */
+export async function ocr(bytes, o, onProgress = () => {}) {
+  const doc = await openForRender(bytes);
+  try {
+    const res = await ocrDocument({ kind: 'pdf', bytes, doc, pages: doc.numPages }, {
+      langs: (o.langs || 'msa+eng').split('+'), skipText: o.skipText !== false, onPage: (i, n) => onProgress(i / n),
+    });
+    return res.bytes;
+  } finally {
+    doc.destroy();
+  }
+}
+
 /** Run one non-interactive step. */
 export function runStep(step, bytes, onProgress) {
   switch (step.type) {
@@ -207,6 +224,7 @@ export function runStep(step, bytes, onProgress) {
     case 'pagenum': return pagenum(bytes, step.opts);
     case 'rotate': return rotate(bytes, step.opts);
     case 'compress': return compress(bytes, step.opts, onProgress);
+    case 'ocr': return ocr(bytes, step.opts, onProgress);
     case 'protect': return protect(bytes, step.opts);
     default: return Promise.resolve(bytes); // palang runs on input; place is interactive
   }
