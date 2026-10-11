@@ -33,7 +33,7 @@ jobs:
           mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null
           npm install --no-audit --no-fund playwright@1.56.1
           npx playwright install --with-deps chromium
-          pip install --quiet 'pypdf>=5' cryptography
+          pip install --quiet 'pypdf>=5' cryptography python-docx openpyxl python-pptx
       - name: Run all test suites
         env:
           NODE_PATH: /tmp/pw/node_modules
@@ -59,7 +59,7 @@ jobs:
       - name: Stage site
         run: |
           mkdir _site
-          cp -r index.html manifest.webmanifest sw.js css js icons vendor palang gambar-pdf susun-pdf kecilkan-pdf pdf-gambar kecil-gambar tandatangan-pdf imbas gabung-pdf pisah-pdf putar-pdf watermark-pdf nombor-pdf potong-pdf edit-pdf hitamkan-pdf isi-borang buka-kunci-pdf lindungi-pdf aliran-kerja banding-pdf ocr-pdf kongsi _site/
+          cp -r index.html manifest.webmanifest sw.js css js icons vendor palang gambar-pdf susun-pdf kecilkan-pdf pdf-gambar kecil-gambar tandatangan-pdf imbas gabung-pdf pisah-pdf putar-pdf watermark-pdf nombor-pdf potong-pdf edit-pdf hitamkan-pdf isi-borang buka-kunci-pdf lindungi-pdf aliran-kerja banding-pdf ocr-pdf kongsi pdf-word pdf-excel pdf-powerpoint _site/
           touch _site/.nojekyll
       # Self-host Inter (SIL OFL 1.1): subset to Latin + punctuation and
       # convert to WOFF2 so the site never loads fonts from another host.
