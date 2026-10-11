@@ -9,6 +9,7 @@ import {
 } from './pdf-kit.js';
 import { bindFileDrop, displayToUser, displaySize } from './pdf-pages.js';
 import { loadPhoto } from './image-loader.js';
+import { createBatch, batchSummary } from './batch.js';
 
 const $ = (sel) => document.querySelector(sel);
 const LONG_SIDE = 2400; // px of the longest page side given to the OCR engine
@@ -109,29 +110,33 @@ function addTextLayer(L, pdfPage, font, words, cw, ch) {
 
 const jpeg = (canvas, q) => new Promise((resolve) => canvas.toBlob(async (b) => resolve(new Uint8Array(await b.arrayBuffer())), 'image/jpeg', q));
 
-/** OCR the loaded input; returns {pdf: File, text: string, pages: number, skipped: number}. */
-export async function runOcr() {
+/**
+ * OCR one input (the loaded one, or another PDF in a batch).
+ * @returns {Promise<{pdf: File, text: string, pages: number, skipped: number}>}
+ */
+export async function runOcr(inp = input, label = '', worker = null) {
   const langs = [$('#langMs').checked && 'msa', $('#langEn').checked && 'eng'].filter(Boolean);
   if (!langs.length) throw new Error('nolang');
   const skipText = $('#skipText').checked;
   setStatus(tr('ocrLoadingEngine'));
   setProgress(0);
-  const worker = await createOcrWorker(langs.join('+'));
+  const own = !worker;
+  if (own) worker = await createOcrWorker(langs.join('+'));
   try {
     const L = await loadPdfLib();
-    const out = input.kind === 'pdf'
-      ? await L.PDFDocument.load(input.bytes, { updateMetadata: false })
+    const out = inp.kind === 'pdf'
+      ? await L.PDFDocument.load(inp.bytes, { updateMetadata: false })
       : await L.PDFDocument.create();
     const font = await out.embedFont(L.StandardFonts.Helvetica);
     const texts = [];
     let skipped = 0;
-    for (let i = 0; i < input.pages; i++) {
-      setStatus(tr('ocrProgress', { i: i + 1, n: input.pages }));
-      setProgress(i / input.pages);
+    for (let i = 0; i < inp.pages; i++) {
+      setStatus(label + tr('ocrProgress', { i: i + 1, n: inp.pages }));
+      setProgress(i / inp.pages);
       let canvas;
       let pdfPage;
-      if (input.kind === 'pdf') {
-        const pg = await input.doc.getPage(i + 1);
+      if (inp.kind === 'pdf') {
+        const pg = await inp.doc.getPage(i + 1);
         pdfPage = out.getPage(i);
         if (skipText) {
           const tc = await pg.getTextContent();
@@ -146,7 +151,7 @@ export async function runOcr() {
         canvas = await renderPage(pg, LONG_SIDE / Math.max(vp.width, vp.height));
         pg.cleanup();
       } else {
-        canvas = await loadPhoto(input.files[i], LONG_SIDE);
+        canvas = await loadPhoto(inp.files[i], LONG_SIDE);
         // Page: the photo at its aspect ratio, long side = A4 long side.
         const s = 841.89 / Math.max(canvas.width, canvas.height);
         const img = await out.embedJpg(await jpeg(canvas, 0.88));
@@ -162,11 +167,11 @@ export async function runOcr() {
     out.setProducer('DokuJaga');
     out.setCreator('DokuJaga');
     const bytes = await out.save();
-    const name = safeName($('#fileName').value, `${safeName(input.name, 'dokumen')}-ocr`);
-    const text = texts.map((s, k) => (input.pages > 1 ? `--- ${tr('sigPage', { n: k + 1 })} ---\n${s}` : s)).join('\n\n');
-    return { pdf: new File([bytes], `${name}.pdf`, { type: 'application/pdf' }), text, pages: input.pages, skipped };
+    const name = safeName($('#fileName').value, `${safeName(inp.name, 'dokumen')}-ocr`);
+    const text = texts.map((s, k) => (inp.pages > 1 ? `--- ${tr('sigPage', { n: k + 1 })} ---\n${s}` : s)).join('\n\n');
+    return { pdf: new File([bytes], `${name}.pdf`, { type: 'application/pdf' }), text, pages: inp.pages, skipped };
   } finally {
-    await worker.terminate();
+    if (own) await worker.terminate();
   }
 }
 
@@ -187,7 +192,46 @@ function sync() {
   }
 }
 
-async function openFiles(list) {
+const batch = createBatch($('#docMeta').parentElement, { tr: (k, v) => tr(k, v) });
+
+/** Several PDFs: OCR each one, save the searchable PDFs as a ZIP and all text in one .txt. */
+async function runBatch() {
+  const langs = [$('#langMs').checked && 'msa', $('#langEn').checked && 'eng'].filter(Boolean);
+  if (!langs.length) throw new Error('nolang');
+  setStatus(tr('ocrLoadingEngine'));
+  const worker = await createOcrWorker(langs.join('+'));
+  const texts = [];
+  let pages = 0;
+  let skipped = 0;
+  try {
+    const res = await batch.run(async (f) => {
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      const doc = await openForRender(bytes);
+      try {
+        const one = await runOcr({ name: f.name, kind: 'pdf', files: [f], bytes, doc, pages: doc.numPages }, `${f.name}: `, worker);
+        texts.push(`===== ${f.name} =====\n${one.text}`);
+        pages += one.pages;
+        skipped += one.skipped;
+        return new File([one.pdf], `${safeName(f.name, 'dokumen')}-ocr.pdf`, { type: 'application/pdf' });
+      } finally {
+        doc.destroy();
+      }
+    }, `${safeName($('#fileName').value, 'dokumen-ocr')}.zip`);
+    return { pdf: res.zip, text: texts.join('\n\n'), pages, skipped, summary: batchSummary(tr, res, formatSize(res.zip.size)) };
+  } finally {
+    await worker.terminate();
+  }
+}
+
+let loading = null; // the file being opened; Start waits for it
+
+function openFiles(list) {
+  loading = openFilesNow(list).finally(() => { loading = null; });
+  return loading;
+}
+
+async function openFilesNow(list) {
+  batch.set(list.filter(isPdf));
   const pdf = list.find(isPdf);
   const images = list.filter(isImage);
   if (!pdf && !images.length) { setStatus(tr('pdfOpenError')); return; }
@@ -212,13 +256,15 @@ async function openFiles(list) {
 }
 
 async function start() {
+  // A file picked a moment ago may still be opening: use that one, not the last.
+  if (loading) await loading;
   if (!input || busy) return;
   busy = true;
   output = null;
   sync();
   try {
-    output = await runOcr();
-    setStatus('');
+    output = batch.active ? await runBatch() : await runOcr();
+    setStatus(output.summary || '');
   } catch (err) {
     const m = err && err.message;
     setStatus(m === 'nolang' ? tr('ocrNeedLang') : m === 'engine' ? tr('ocrEngineError') : tr(openErrorKey(err)));
@@ -247,7 +293,7 @@ $('#copyText').addEventListener('click', async () => {
 });
 $('#saveTxt').addEventListener('click', () => {
   if (!output) return;
-  download(new File([output.text], output.pdf.name.replace(/\.pdf$/i, '.txt'), { type: 'text/plain;charset=utf-8' }));
+  download(new File([output.text], output.pdf.name.replace(/\.(pdf|zip)$/i, '.txt'), { type: 'text/plain;charset=utf-8' }));
 });
 $('#pickFiles').addEventListener('change', (e) => { const f = [...e.target.files]; e.target.value = ''; openFiles(f); });
 $('#another').addEventListener('click', () => $('#pickFiles').click());
@@ -256,4 +302,4 @@ ready = true;
 sync();
 
 // Exposed for the automated test only.
-window.__ocr = { openFiles, start, get output() { return output; }, get busy() { return busy; } };
+window.__ocr = { openFiles, start, batch, get output() { return output; }, get busy() { return busy; } };
