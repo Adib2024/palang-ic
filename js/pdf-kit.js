@@ -66,7 +66,13 @@ export function safeName(name, fallback) {
   return base || fallback;
 }
 
-export function download(file) {
+/** After a result is saved/shared, offer "Teruskan ke…" (loaded on demand). */
+function offerNext(file) {
+  import('./continue.js').then((m) => m.offerContinue(file)).catch(() => {});
+}
+
+export function download(file, { next = true } = {}) {
+  if (next) offerNext(file);
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url;
@@ -85,6 +91,7 @@ export async function shareOrDownload(file) {
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: file.name });
+      offerNext(file);
       return 'shared';
     } catch (err) {
       if (err && err.name === 'AbortError') return 'cancelled';

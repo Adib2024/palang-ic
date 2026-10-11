@@ -4,6 +4,7 @@ import { buildPdf } from './pdf.js';
 import { applyI18n, t, TEMPLATES, todayDMY } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
+import { deliverInbox } from './handoff.js';
 
 // Per-mode slider defaults, tuned so the IC number and face stay readable.
 const MODE_DEFAULTS = {
@@ -345,7 +346,9 @@ async function saveJpg() {
 }
 
 async function savePdf() {
-  download(await pdfFile());
+  const file = await pdfFile();
+  download(file);
+  import('./continue.js').then((m) => m.offerContinue(file)).catch(() => {});
 }
 
 async function share() {
@@ -394,6 +397,8 @@ drawPreview();
 window.addEventListener('resize', schedulePreview);
 
 registerServiceWorker();
+// A photo handed over from another tool or shared from another app.
+deliverInbox().catch(() => {});
 
 // Exposed for the automated render test only; harmless in production.
 window.__palangic = { state, renderWatermark, setPhoto, options, pdfFile, jpgFiles, schedulePreview };
