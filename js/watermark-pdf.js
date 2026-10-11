@@ -4,7 +4,8 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
 import { loadPhoto } from './image-loader.js';
-import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { createBatch, batchSummary } from './batch.js';
 import { openPdfs, bindFileDrop, parseRanges, createPreview } from './pdf-pages.js';
 import { stampPage } from './pdf-stamps.js';
 
@@ -38,17 +39,16 @@ function targetPages(n) {
   return g ? [...new Set(g.flat())] : null;
 }
 
-/** Build the watermarked PDF. */
-export async function buildOutput() {
+/** Build the watermarked PDF (the loaded file, or `bytes` in a batch). */
+export async function buildOutput(bytes = src.bytes, outName = safeName($('#fileName').value, 'dokumen')) {
   if (settings.type === 'image' && !imagePng) throw new Error('noimage');
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
   const targets = targetPages(doc.getPageCount());
   if (!targets) throw new Error('ranges');
   const cache = {};
   for (const i of targets) await stamp(doc, doc.getPage(i), PDFLib, cache);
-  const bytes = await doc.save();
-  return new File([bytes], `${safeName($('#fileName').value, 'dokumen')}.pdf`, { type: 'application/pdf' });
+  return new File([await doc.save()], `${outName}.pdf`, { type: 'application/pdf' });
 }
 
 /* ---------- UI ---------- */
@@ -76,7 +76,10 @@ function sync() {
   refreshPreview();
 }
 
+const batch = createBatch($('#docMeta').parentElement, { tr: (k, v) => tr(k, v) });
+
 async function openFile(list) {
+  batch.set(list.filter(isPdf));
   setStatus(tr('pdfLoading'));
   const { sources, failed } = await openPdfs(list.slice(0, 1));
   if (!sources.length) {
@@ -97,8 +100,20 @@ async function exportPdf(share) {
   $$('.options .buttons button').forEach((b) => { b.disabled = true; });
   setStatus(tr('working'));
   try {
-    const file = await buildOutput();
-    const done = tr('splitDoneOne', { size: formatSize(file.size) });
+    let file;
+    let done;
+    if (batch.active) {
+      const res = await batch.run(
+        async (f) => buildOutput(new Uint8Array(await f.arrayBuffer()), `${safeName(f.name, 'dokumen')}-watermark`),
+        `${safeName($('#fileName').value, 'dokumen')}.zip`,
+        (i, n, f) => setStatus(tr('batchProgress', { i, n, name: f.name })),
+      );
+      file = res.zip;
+      done = batchSummary(tr, res, formatSize(file.size));
+    } else {
+      file = await buildOutput();
+      done = tr('splitDoneOne', { size: formatSize(file.size) });
+    }
     if (share) {
       const how = await shareOrDownload(file);
       setStatus(how === 'cancelled' ? '' : how === 'downloaded' ? `${tr('shareFallback')} ${done}` : done);
@@ -160,4 +175,4 @@ ready = true;
 sync();
 
 // Exposed for the automated test only.
-window.__watermark = { settings, buildOutput, openFile, refresh: sync };
+window.__watermark = { settings, buildOutput, openFile, refresh: sync, batch };

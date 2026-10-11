@@ -8,6 +8,7 @@ import { writePdf } from './pdf.js';
 import {
   openForRender, renderPage, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey,
 } from './pdf-kit.js';
+import { createBatch, batchSummary } from './batch.js';
 
 // Quality ladder: chosen level first, then stronger steps if a size limit is set.
 const LADDER = [
@@ -98,8 +99,7 @@ function jpegBytes(canvas, quality) {
   });
 }
 
-async function compressAt(step, onPage) {
-  const doc = input.doc;
+async function compressAt(step, onPage, doc = input.doc) {
   const images = [];
   const pages = [];
   for (let i = 1; i <= doc.numPages; i++) {
@@ -118,17 +118,17 @@ async function compressAt(step, onPage) {
 }
 
 /** Run compression with the current settings; resolves to the best Blob. */
-export async function compress() {
+export async function compress(doc = input.doc, label = '') {
   const limit = Number(settings.limit) || 0;
   const start = LEVEL_START[settings.level] ?? 1;
   const steps = limit ? LADDER.slice(start) : [LADDER[start]];
-  const n = input.doc.numPages;
+  const n = doc.numPages;
   let best = null;
   for (let s = 0; s < steps.length; s++) {
     const blob = await compressAt(steps[s], (i) => {
-      setStatus(tr('cmpProgress', { i, n }));
+      setStatus(label + tr('cmpProgress', { i, n }));
       setProgress((s + i / n) / steps.length);
-    });
+    }, doc);
     if (!best || blob.size < best.size) best = blob;
     if (!limit || blob.size <= limit) break;
   }
@@ -136,7 +136,7 @@ export async function compress() {
 }
 
 function showResult() {
-  const from = input.bytes.length;
+  const from = batch.active ? batch.files.reduce((k, f) => k + f.size, 0) : input.bytes.length;
   const to = output.size;
   $('#sizeFrom').textContent = formatSize(from);
   $('#sizeTo').textContent = formatSize(to);
@@ -152,6 +152,24 @@ async function run() {
   $('#result').hidden = true;
   output = null;
   try {
+    if (batch.active) {
+      // Each file on its own; a file that wouldn't get smaller is kept as is.
+      const res = await batch.run(async (f) => {
+        const bytes = new Uint8Array(await f.arrayBuffer());
+        const doc = await openForRender(bytes);
+        try {
+          const blob = await compress(doc, `${f.name}: `);
+          return new File([blob.size < bytes.length ? blob : bytes], `${safeName(f.name, 'dokumen')}-kecil.pdf`, { type: 'application/pdf' });
+        } finally {
+          doc.destroy();
+        }
+      }, 'pdf-kecil.zip');
+      setProgress(null);
+      output = res.zip;
+      showResult();
+      setStatus(batchSummary(tr, res, formatSize(output.size)));
+      return;
+    }
     const blob = await compress();
     setProgress(null);
     const limit = Number(settings.limit) || 0;
@@ -188,7 +206,14 @@ $('#limit').addEventListener('change', (e) => { settings.limit = e.target.value;
 $('#gray').checked = !!settings.gray;
 $('#gray').addEventListener('change', (e) => { settings.gray = e.target.checked; store.save('compress', settings); });
 
-$('#pickFiles').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; openFile(f); });
+const batch = createBatch($('#fileMeta').parentElement, { tr: (k, v) => tr(k, v) });
+function openFiles(list) {
+  const pdfs = [...list].filter(isPdf);
+  batch.set(pdfs);
+  output = null;
+  openFile(pdfs[0] || list[0]);
+}
+$('#pickFiles').addEventListener('change', (e) => { const f = [...e.target.files]; e.target.value = ''; openFiles(f); });
 $('#another').addEventListener('click', () => $('#pickFiles').click());
 $('#run').addEventListener('click', run);
 $('#savePdf').addEventListener('click', () => { if (output) download(output); });
@@ -206,11 +231,11 @@ document.addEventListener('drop', (e) => {
   if (!(e.dataTransfer && e.dataTransfer.files.length)) return;
   e.preventDefault();
   $('#dropzone').classList.remove('over');
-  openFile(e.dataTransfer.files[0]);
+  openFiles([...e.dataTransfer.files]);
 });
 
 ready = true;
 renderInfo();
 
 // Exposed for the automated test only.
-window.__compress = { settings, openFile, compress, run, get output() { return output; }, get input() { return input; } };
+window.__compress = { settings, openFile, openFiles, compress, run, batch, get output() { return output; }, get input() { return input; } };

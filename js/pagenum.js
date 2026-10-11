@@ -3,7 +3,8 @@
 import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
-import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { createBatch, batchSummary } from './batch.js';
 import { openPdfs, bindFileDrop, createPreview } from './pdf-pages.js';
 import { numberPage } from './pdf-stamps.js';
 
@@ -34,9 +35,9 @@ function number(doc, page, PDFLib, n, total, cache) {
 }
 
 /** Build the numbered PDF. */
-export async function buildOutput() {
+export async function buildOutput(bytes = src.bytes, outName = safeName($('#fileName').value, 'dokumen')) {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
   const total = doc.getPageCount();
   const first = settings.skipFirst ? 1 : 0;
   const start = Math.max(0, Math.floor(Number(settings.start) || 1));
@@ -45,8 +46,7 @@ export async function buildOutput() {
   for (let i = first; i < total; i++) {
     await number(doc, doc.getPage(i), PDFLib, start + i - first, start + shown - 1, cache);
   }
-  const bytes = await doc.save();
-  return new File([bytes], `${safeName($('#fileName').value, 'dokumen')}.pdf`, { type: 'application/pdf' });
+  return new File([await doc.save()], `${outName}.pdf`, { type: 'application/pdf' });
 }
 
 function refreshPreview() {
@@ -69,7 +69,10 @@ function sync() {
   refreshPreview();
 }
 
+const batch = createBatch($('#docMeta').parentElement, { tr: (k, v) => tr(k, v) });
+
 async function openFile(list) {
+  batch.set(list.filter(isPdf));
   setStatus(tr('pdfLoading'));
   const { sources, failed } = await openPdfs(list.slice(0, 1));
   if (!sources.length) {
@@ -90,8 +93,20 @@ async function exportPdf(share) {
   $$('.options .buttons button').forEach((b) => { b.disabled = true; });
   setStatus(tr('working'));
   try {
-    const file = await buildOutput();
-    const done = tr('splitDoneOne', { size: formatSize(file.size) });
+    let file;
+    let done;
+    if (batch.active) {
+      const res = await batch.run(
+        async (f) => buildOutput(new Uint8Array(await f.arrayBuffer()), `${safeName(f.name, 'dokumen')}-bernombor`),
+        `${safeName($('#fileName').value, 'dokumen')}.zip`,
+        (i, n, f) => setStatus(tr('batchProgress', { i, n, name: f.name })),
+      );
+      file = res.zip;
+      done = batchSummary(tr, res, formatSize(file.size));
+    } else {
+      file = await buildOutput();
+      done = tr('splitDoneOne', { size: formatSize(file.size) });
+    }
     if (share) {
       const how = await shareOrDownload(file);
       setStatus(how === 'cancelled' ? '' : how === 'downloaded' ? `${tr('shareFallback')} ${done}` : done);
@@ -133,4 +148,4 @@ ready = true;
 sync();
 
 // Exposed for the automated test only.
-window.__pagenum = { settings, buildOutput, openFile, label };
+window.__pagenum = { settings, buildOutput, openFile, label, batch };
