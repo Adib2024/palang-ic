@@ -1,8 +1,10 @@
-name: Deploy to GitHub Pages
+name: Test and deploy
 
+# Tests run on every push and pull request. The site is deployed only from
+# main, and only when every test suite passes.
 on:
   push:
-    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -11,11 +13,42 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test tools (Playwright + Chromium, pypdf)
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+          pip install --quiet 'pypdf>=5' cryptography
+      - name: Run all test suites
+        env:
+          NODE_PATH: /tmp/pw/node_modules
+        run: tests/run-all.sh "$RUNNER_TEMP/test-output"
+      - name: Keep screenshots and outputs if a test failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: ${{ runner.temp }}/test-output
+          retention-days: 7
+
   deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
