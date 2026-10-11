@@ -1,10 +1,12 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v13';
+const VERSION = 'dokujaga-v14';
 // Third-party libraries, the OCR engine and fonts (vendor/) change rarely and
 // are big, so they live in their own cache that survives app updates.
 const VENDOR_CACHE = 'dokujaga-vendor-1';
 const ASSETS = [
+  'kongsi/',
+  'kongsi/index.html',
   'ocr-pdf/',
   'ocr-pdf/index.html',
   'banding-pdf/',
@@ -81,6 +83,10 @@ const ASSETS = [
   'js/image-loader.js',
   'js/pdf.js',
   'js/i18n.js',
+  'js/share.js',
+  'js/tool-catalog.js',
+  'js/continue.js',
+  'js/handoff.js',
   'js/pdf-stamps.js',
   'js/fonts.js',
   'js/ocr.js',
@@ -134,9 +140,37 @@ function staleWhileRevalidate(event) {
 // uses them rather than up front. Pages and app code are network-first so
 // updates land quickly, falling back to the cache when offline. Requests from
 // workers (pdf.js, OCR) come through here too. Anything else is left alone.
+/* Web Share Target: files shared to DokuJaga from another app arrive as a
+   POST to kongsi/. Keep them in the on-device inbox (IndexedDB, same store as
+   js/handoff.js) and open the tool picker. Nothing leaves the device. */
+function putInbox(files) {
+  return new Promise((resolve, reject) => {
+    const r = indexedDB.open('dokujaga-handoff', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('inbox');
+    r.onerror = () => reject(r.error);
+    r.onsuccess = () => {
+      const db = r.result;
+      const t = db.transaction('inbox', 'readwrite');
+      t.objectStore('inbox').put({ at: Date.now(), from: 'share', files }, 'current');
+      t.oncomplete = () => { db.close(); resolve(); };
+      t.onerror = () => { db.close(); reject(t.error); };
+    };
+  });
+}
+async function receiveShare(request) {
+  const form = await request.formData();
+  const files = form.getAll('files').filter((f) => f && typeof f === 'object' && f.size > 0);
+  await putInbox(files);
+  return Response.redirect(new URL('kongsi/?shared=1', self.registration.scope).href, 303);
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+  if (request.method === 'POST' && url.origin === self.location.origin && url.pathname.endsWith('/kongsi/')) {
+    event.respondWith(receiveShare(request));
+    return;
+  }
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
   if (url.pathname.includes('/vendor/')) {
     event.respondWith(staleWhileRevalidate(event));
