@@ -1,6 +1,9 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v12';
+const VERSION = 'dokujaga-v13';
+// Third-party libraries, the OCR engine and fonts (vendor/) change rarely and
+// are big, so they live in their own cache that survives app updates.
+const VENDOR_CACHE = 'dokujaga-vendor-1';
 const ASSETS = [
   'ocr-pdf/',
   'ocr-pdf/index.html',
@@ -106,18 +109,39 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== VENDOR_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
 
-// The PDF libraries under vendor/ are big, so they're cached the first time a
-// PDF tool is used rather than up front.
-// Network-first for same-origin GETs so updates land quickly, falling back
-// to the cache when offline. Anything else is left alone.
+/** vendor/: serve from cache at once (works offline), refresh in the background. */
+function staleWhileRevalidate(event) {
+  const { request } = event;
+  return caches.open(VENDOR_CACHE).then((cache) => cache.match(request).then((hit) => {
+    const update = fetch(request).then((res) => {
+      if (res.ok) cache.put(request, res.clone());
+      return res;
+    });
+    if (hit) {
+      event.waitUntil(update.catch(() => {}));
+      return hit;
+    }
+    return update;
+  }));
+}
+
+// The libraries under vendor/ are big, so they're cached the first time a tool
+// uses them rather than up front. Pages and app code are network-first so
+// updates land quickly, falling back to the cache when offline. Requests from
+// workers (pdf.js, OCR) come through here too. Anything else is left alone.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (url.pathname.includes('/vendor/')) {
+    event.respondWith(staleWhileRevalidate(event));
+    return;
+  }
   event.respondWith(
     fetch(request)
       .then((res) => {
