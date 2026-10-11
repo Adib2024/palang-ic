@@ -2,7 +2,7 @@
 // PDF bytes. Pure functions (no page UI), so steps can be chained in any
 // order the user picks. Everything runs in this tab; nothing is uploaded.
 import { loadPdfLib, openForRender, renderPage } from './pdf-kit.js';
-import { displayToUser, displaySize } from './pdf-pages.js';
+import { stampPage, numberPage } from './pdf-stamps.js';
 import { writePdf } from './pdf.js';
 import { loadPhoto } from './image-loader.js';
 import { composite } from './watermark.js';
@@ -64,7 +64,6 @@ export function normalize(steps) {
   return steps.map((s, i) => [s, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([s]) => s);
 }
 
-const latin1 = (s) => s.replace(/[^\x20-\x7e\xa0-\xff]/g, '?');
 const isPdfFile = (f) => f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
 
 const jpeg = (canvas, q) => new Promise((resolve, reject) => {
@@ -120,52 +119,17 @@ export async function buildInput(files, palang) {
   return out.save();
 }
 
-/* ---------- Page stamps (pdf-lib) ---------- */
+/* ---------- Page stamps (shared with the Watermark and Page Numbers tools) ---------- */
 
-const WM_COLORS = { black: [0, 0, 0], red: [0.78, 0.16, 0.16], blue: [0.08, 0.27, 0.69], gray: [0.45, 0.45, 0.45] };
-
-/** Watermark text across each page, centred or tiled, at 45°. */
+/** Watermark text across each page, centred (large) or tiled, at 45°. */
 export async function watermark(bytes, o) {
   const L = await loadPdfLib();
   const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
-  const font = await doc.embedFont(L.StandardFonts.HelveticaBold);
-  const text = latin1((o.text || '').trim() || 'SALINAN');
-  const [r, g, b] = WM_COLORS[o.color] || WM_COLORS.red;
-  const opacity = Math.max(0.05, Math.min(1, (Number(o.opacity) || 30) / 100));
-  const deg = 45;
-  const th = (deg * Math.PI) / 180;
+  const cache = {};
   for (const page of doc.getPages()) {
-    const { width: Dw, height: Dh } = displaySize(page);
-    // Centred: the text spans ~60% of the page diagonal (capped); tiled: smaller copies.
-    const unit = font.widthOfTextAtSize(text, 1);
-    const size = o.layout === 'tile' ? Math.min(Dw, Dh) / 16 : Math.min(Math.min(Dw, Dh) / 4, (0.6 * Math.hypot(Dw, Dh)) / unit);
-    const w = font.widthOfTextAtSize(text, size);
-    const h = size * 0.72;
-    const centers = [];
-    if (o.layout === 'tile') {
-      const stepA = w + h * 1.6;
-      const stepB = h * 3.6;
-      const along = [Math.cos(th), -Math.sin(th)];
-      const across = [Math.sin(th), Math.cos(th)];
-      const reach = Math.hypot(Dw, Dh);
-      for (let j = -Math.ceil(reach / stepB); j <= Math.ceil(reach / stepB); j++) {
-        const shift = ((j % 2) * stepA) / 2;
-        for (let i = -Math.ceil(reach / stepA) - 1; i <= Math.ceil(reach / stepA) + 1; i++) {
-          const u = Dw / 2 + (i * stepA + shift) * along[0] + j * stepB * across[0];
-          const v = Dh / 2 + (i * stepA + shift) * along[1] + j * stepB * across[1];
-          if (u > -w && u < Dw + w && v > -w && v < Dh + w) centers.push([u, v]);
-        }
-      }
-    } else centers.push([Dw / 2, Dh / 2]);
-    for (const [cu, cv] of centers) {
-      // Box origin for a w×h box rotated by `deg` around (cu, cv), y-up display frame.
-      const ox = cu - ((w / 2) * Math.cos(th) - (h / 2) * Math.sin(th));
-      const oy = (Dh - cv) - ((w / 2) * Math.sin(th) + (h / 2) * Math.cos(th));
-      const p = displayToUser(page, ox, Dh - oy);
-      page.drawText(text, {
-        x: p.x, y: p.y, size, font, color: L.rgb(r, g, b), opacity, rotate: L.degrees(deg + p.angle),
-      });
-    }
+    await stampPage(doc, page, L, cache, {
+      type: 'text', text: o.text, color: o.color, opacity: o.opacity, angle: 45, pos: 'mc', tile: o.layout === 'tile', size: 'auto',
+    });
   }
   return doc.save();
 }
@@ -174,20 +138,12 @@ export async function watermark(bytes, o) {
 export async function pagenum(bytes, o) {
   const L = await loadPdfLib();
   const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
-  const font = await doc.embedFont(L.StandardFonts.Helvetica);
   const total = doc.getPageCount();
-  const size = 11;
-  const m = 30;
-  doc.getPages().forEach((page, i) => {
-    const text = o.format === 'n' ? String(i + 1) : `${i + 1} / ${total}`;
-    const w = font.widthOfTextAtSize(text, size);
-    const { width: Dw, height: Dh } = displaySize(page);
-    const [row, col] = o.pos || 'bc';
-    const u = col === 'l' ? m : col === 'r' ? Dw - m - w : (Dw - w) / 2;
-    const baseline = row === 't' ? m + size * 0.8 : Dh - m;
-    const p = displayToUser(page, u, baseline);
-    page.drawText(text, { x: p.x, y: p.y, size, font, color: L.rgb(0.1, 0.1, 0.1), rotate: L.degrees(p.angle) });
-  });
+  const cache = {};
+  const pages = doc.getPages();
+  for (let i = 0; i < pages.length; i++) {
+    await numberPage(doc, pages[i], L, cache, { text: o.format === 'n' ? String(i + 1) : `${i + 1} / ${total}`, size: 11, pos: o.pos, margin: 30 });
+  }
   return doc.save();
 }
 

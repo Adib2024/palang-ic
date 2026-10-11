@@ -5,9 +5,9 @@ import { t } from './i18n.js';
 import * as store from './storage.js';
 import { loadPhoto } from './image-loader.js';
 import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
-import { openPdfs, bindFileDrop, parseRanges, displayToUser, displaySize, createPreview } from './pdf-pages.js';
+import { openPdfs, bindFileDrop, parseRanges, createPreview } from './pdf-pages.js';
+import { stampPage } from './pdf-stamps.js';
 
-const COLORS = { black: [0, 0, 0], red: [0.78, 0.16, 0.16], blue: [0.08, 0.27, 0.69], gray: [0.45, 0.45, 0.45] };
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
@@ -25,84 +25,11 @@ const page = initPage(() => { if (ready) sync(); });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 
-/** pdf-lib's standard fonts only cover Latin-1 (fine for BM/EN). */
-const latin1 = (s) => s.replace(/[^\x20-\x7e\xa0-\xff]/g, '?');
-
 /* ---------- Drawing ---------- */
 
-/**
- * Centre points for the stamp. Mosaic mode lays a lattice along the text
- * direction (`deg`) so rotated copies tile the page evenly.
- */
-function centers(Dw, Dh, ex, ey, w = 0, h = 0, deg = 0) {
-  const m = Math.min(Dw, Dh) * 0.06;
-  if (settings.tile) {
-    const th = (deg * Math.PI) / 180;
-    const along = [Math.cos(th), -Math.sin(th)]; // text direction on screen (y down)
-    const across = [Math.sin(th), Math.cos(th)];
-    const stepA = w + Math.max(h * 1.6, 24);
-    const stepB = Math.max(h * 3.2, 40);
-    const reach = Math.hypot(Dw, Dh);
-    const out = [];
-    for (let j = -Math.ceil(reach / stepB); j <= Math.ceil(reach / stepB); j++) {
-      const shift = (j % 2) * stepA / 2;
-      for (let i = -Math.ceil(reach / stepA) - 1; i <= Math.ceil(reach / stepA) + 1; i++) {
-        const u = Dw / 2 + (i * stepA + shift) * along[0] + j * stepB * across[0];
-        const v = Dh / 2 + (i * stepA + shift) * along[1] + j * stepB * across[1];
-        if (u > -ex && u < Dw + ex && v > -ey && v < Dh + ey) out.push([u, v]);
-      }
-    }
-    return out;
-  }
-  const [r, c] = settings.pos;
-  const u = c === 'l' ? m + ex : c === 'r' ? Dw - m - ex : Dw / 2;
-  const v = r === 't' ? m + ey : r === 'b' ? Dh - m - ey : Dh / 2;
-  return [[u, v]];
-}
-
-/** Draw a w×h box rotated by `deg`, centred at display point (cu, cv). */
-function placeBox(page, w, h, deg, cu, cv, draw) {
-  const th = (deg * Math.PI) / 180;
-  const { height: Dh } = displaySize(page);
-  // Work in a y-up display frame, then convert the box origin to PDF space.
-  const offX = (w / 2) * Math.cos(th) - (h / 2) * Math.sin(th);
-  const offY = (w / 2) * Math.sin(th) + (h / 2) * Math.cos(th);
-  const ox = cu - offX;
-  const oy = (Dh - cv) - offY;
-  const p = displayToUser(page, ox, Dh - oy);
-  draw(p.x, p.y, deg + p.angle);
-}
-
-async function stamp(doc, page, PDFLib, cache) {
-  const { width: Dw, height: Dh } = displaySize(page);
-  const deg = Number(settings.angle) || 0;
-  const th = (deg * Math.PI) / 180;
-  const opacity = Math.max(0.05, Math.min(1, settings.opacity / 100));
-  if (settings.type === 'image') {
-    if (!imagePng) return;
-    if (!cache.img) cache.img = await doc.embedPng(imagePng);
-    const w = Dw * (settings.scale / 100);
-    const h = w * imageAspect;
-    const ex = (Math.abs(Math.cos(th)) * w + Math.abs(Math.sin(th)) * h) / 2;
-    const ey = (Math.abs(Math.sin(th)) * w + Math.abs(Math.cos(th)) * h) / 2;
-    for (const [cu, cv] of centers(Dw, Dh, ex, ey, w, h, deg)) {
-      placeBox(page, w, h, deg, cu, cv, (x, y, rot) => page.drawImage(cache.img, { x, y, width: w, height: h, opacity, rotate: PDFLib.degrees(rot) }));
-    }
-    return;
-  }
-  const text = latin1(settings.text.trim() || 'SALINAN');
-  if (!cache.font) cache.font = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-  const size = settings.size;
-  const w = cache.font.widthOfTextAtSize(text, size);
-  const h = size * 0.72;
-  const [r, g, b] = COLORS[settings.color] || COLORS.red;
-  const ex = (Math.abs(Math.cos(th)) * w + Math.abs(Math.sin(th)) * h) / 2;
-  const ey = (Math.abs(Math.sin(th)) * w + Math.abs(Math.cos(th)) * h) / 2;
-  for (const [cu, cv] of centers(Dw, Dh, ex, ey, w, h, deg)) {
-    placeBox(page, w, h, deg, cu, cv, (x, y, rot) => page.drawText(text, {
-      x, y, size, font: cache.font, color: PDFLib.rgb(r, g, b), opacity, rotate: PDFLib.degrees(rot),
-    }));
-  }
+/** Stamp one page with the current settings (shared drawing: pdf-stamps.js). */
+function stamp(doc, page, PDFLib, cache) {
+  return stampPage(doc, page, PDFLib, cache, { ...settings, png: imagePng, aspect: imageAspect });
 }
 
 function targetPages(n) {

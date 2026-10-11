@@ -78,6 +78,7 @@ const ASSETS = [
   'js/image-loader.js',
   'js/pdf.js',
   'js/i18n.js',
+  'js/pdf-stamps.js',
   'js/fonts.js',
   'js/ocr.js',
   'js/compare.js',
