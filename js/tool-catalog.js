@@ -22,6 +22,9 @@ export const CATALOG = [
   { href: 'isi-borang/', key: 'toolFormsTitle', accepts: 'pdf', max: 1 },
   { href: 'buka-kunci-pdf/', key: 'toolUnlockTitle', accepts: 'pdf', max: 1 },
   { href: 'pdf-gambar/', key: 'toolPdfImgTitle', accepts: 'pdf', max: 1 },
+  { href: 'pdf-word/', key: 'toolWordTitle', accepts: 'pdf', max: 1 },
+  { href: 'pdf-excel/', key: 'toolExcelTitle', accepts: 'pdf', max: 1 },
+  { href: 'pdf-powerpoint/', key: 'toolPptTitle', accepts: 'pdf', max: 1 },
   { href: 'banding-pdf/', key: 'toolCompareTitle', accepts: 'pdf', max: 2 },
   { href: 'aliran-kerja/', key: 'wfTitle', accepts: 'both', max: 99 },
 ];

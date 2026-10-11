@@ -968,3 +968,7 @@ textarea.form-input { resize: none; line-height: 1.2; }
 .batch-note strong { display: block; margin-bottom: 6px; color: var(--accent); }
 .batch-note ul { margin: 0; padding-left: 18px; max-height: 140px; overflow-y: auto; color: var(--muted); }
 .batch-note li { overflow-wrap: anywhere; }
+
+/* ---------- PDF → Office ---------- */
+.office-panel { display: grid; gap: 12px; margin-top: 16px; }
+.office-panel .field, .office-panel .check { margin: 0; }

@@ -28,6 +28,7 @@
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
+| **PDF → Word / Excel / PowerPoint** (ringkas / simple): teks, perenggan, tajuk, jadual mudah; imbasan jadi gambar / text, paragraphs, headings, simple tables; scans become pictures | ✅ `pdf-word/` `pdf-excel/` `pdf-powerpoint/` |
 | **Kecilkan Gambar / Compress Images**: had saiz (cth. ≤ 200 KB), saiz maksimum, buang EXIF / size limit, max dimensions, strips EXIF | ✅ `kecil-gambar/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
@@ -44,6 +45,17 @@ Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langka
 - **Bina sendiri**: pilih langkah — Palang IC (gambar), tarikh/tandatangan/teks, watermark, nombor muka surat, putar, kecilkan, kunci dengan kata laluan — dan susun ikut urutan.
 - Langkah tarikh/tandatangan/teks berhenti seketika supaya anda boleh letak item (pada satu atau semua muka surat), kemudian teruskan.
 - Aliran sendiri boleh disimpan dalam pelayar (kata laluan tidak disimpan).
+
+### Banyak fail, kongsi & teruskan
+
+- **Banyak fail sekali gus**: Kecilkan PDF, Watermark, Nombor muka surat, Lindungi, Buka kunci dan OCR boleh terima beberapa PDF; tetapan sama digunakan pada semua dan hasilnya disimpan sebagai satu ZIP.
+- **Kongsi ke DokuJaga**: selepas dipasang (PWA, Android), kongsi PDF/gambar dari app lain → halaman *Pilih alat*.
+- **Teruskan ke…**: selepas simpan, hantar hasil terus ke alat lain (cth. Gabung → Tandatangan → Kunci) tanpa pilih fail semula.
+- **OCR dalam aliran kerja** dan enjin OCR disimpan untuk guna luar talian selepas kali pertama.
+
+### PDF → Word / Excel / PowerPoint (ringkas & jujur)
+
+Teks, perenggan, tajuk dan jadual mudah dibina semula daripada teks dalam PDF. Susun atur yang rumit (lajur, kotak teks, fon asal) **tidak** disalin tepat. Muka surat imbasan jadi gambar (Word/PowerPoint) — guna **OCR PDF** dahulu jika mahu teksnya. PowerPoint: pilih *Sama seperti PDF* (gambar, tepat) atau *Teks boleh edit*.
 
 ### Pilihan font
 
@@ -120,6 +132,17 @@ The **Advanced mode** button in the header opens workflows: run several steps in
 - **Build your own**: pick steps — IC stamp (photos), date/signature/text, watermark, page numbers, rotate, compress, password — and order them.
 - The date/signature/text step pauses so you can place items (on one or every page), then continues.
 - Your own workflows can be saved in the browser (passwords are never saved).
+
+### Many files, sharing & continue
+
+- **Batch**: Compress PDF, Watermark, Page numbers, Protect, Unlock and OCR accept several PDFs; the same settings apply to each and the results are saved as one ZIP.
+- **Share to DokuJaga**: once installed (PWA, Android), share PDFs/photos from other apps → the *Pick a tool* page.
+- **Continue to…**: after saving, send the result straight to another tool (e.g. Merge → Sign → Protect) without picking the file again.
+- **OCR as a workflow step**, and the OCR engine is cached for offline use after the first run.
+
+### PDF → Word / Excel / PowerPoint (simple & honest)
+
+Text, paragraphs, headings and simple tables are rebuilt from the PDF's own text. Complex layouts (columns, text boxes, original fonts) are **not** copied exactly. Scanned pages become pictures (Word/PowerPoint) — run **OCR PDF** first if you need their text. PowerPoint: choose *Same as PDF* (pictures, exact) or *Editable text*.
 
 ### Font choice
 
@@ -207,6 +230,9 @@ js/workflow.js, workflow-ops.js                 Advanced mode: workflow builder/
 js/compare.js, diff.js                          Compare PDF (Myers word diff + pixel diff)
 js/ocr.js                                       OCR PDF (tesseract.js, invisible text layer)
 js/fonts.js                                     font choice: standard PDF fonts, bundled set, user fonts
+js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: text layout, minimal OOXML writers
+js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
+js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
 vendor/fontkit/                                 @pdf-lib/fontkit 1.1.1 (embeds custom fonts)
 vendor/tesseract/                               tesseract.js 5.1.1 + core + eng/msa models (vendor workflow)
@@ -251,6 +277,8 @@ node tests/crypto-test.mjs                                # encryption vs pypdf 
 NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workflows (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
 NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs python3 + pypdf)
+NODE_PATH="$(npm root -g)" node tests/phase2d-test.cjs   # PDF -> Word/Excel/PowerPoint (needs python-docx, openpyxl, python-pptx)
+tests/run-all.sh                                          # every suite (what CI runs)
 ```
 
 The test checks the EXIF orientation fix, every mode, JPG/PDF export, that the CSP blocks
@@ -258,7 +286,7 @@ outbound `fetch`, that no request leaves the origin, the BM/EN toggle, and that 
 no horizontal scroll at phone width. Screenshots and exports go to `tests/output/`.
 
 Deployment: `.github/workflows/deploy.yml` publishes the static files to GitHub Pages
-on every push to `main`. In the repo settings, enable **Pages → Source: GitHub Actions**.
+on every push to `main`, only after every test suite passes (the same job runs on pull requests). In the repo settings, enable **Pages → Source: GitHub Actions**.
 
 Not an official government site and not affiliated with JPN.
 
