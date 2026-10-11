@@ -308,7 +308,7 @@ async function makeBigPng() {
 
       for (const url of ['/pdf-gambar/', '/kecil-gambar/', '/tandatangan-pdf/', '/imbas/']) {
         await page.goto(origin + url);
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         check(`${label}: ${url} has no horizontal scroll`, () => assert(overflow <= 0, `${overflow}px`));
       }
       check(`${label}: no requests to other origins`, () => assert.deepStrictEqual(foreign, []));

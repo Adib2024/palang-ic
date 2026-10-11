@@ -69,7 +69,7 @@ function inspectPdf(file) {
         assert.deepStrictEqual(secure, ['palang/', 'tandatangan-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/']);
       });
       await page.click('.chip[data-cat="all"]');
-      const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${label}: dashboard has no horizontal scroll`, () => assert(overflowHome <= 0, `${overflowHome}px`));
       await page.screenshot({ path: path.join(OUT, `dashboard-${label}.png`), fullPage: true });
 
@@ -149,7 +149,7 @@ function inspectPdf(file) {
       });
       await page.click('input[name="pageSize"][value="a4"] + span');
 
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${label}: tool page has no horizontal scroll`, () => assert(overflow <= 0, `${overflow}px`));
       check(`${label}: no requests to other origins`, () => assert.deepStrictEqual(foreign, []));
       check(`${label}: no page errors`, () => assert.deepStrictEqual(errors, []));

@@ -134,7 +134,7 @@ async function readPdf(b64) {
       const rows = await page.$$eval('.cmp-row h3', (els) => els.map((e) => e.textContent));
       check(`${label}: visual tab shows only changed pages by default`, () => assert.strictEqual(rows.length, 2));
       await page.screenshot({ path: path.join(OUT, `compare-${label}.png`), fullPage: true });
-      const ovCmp = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const ovCmp = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${label}: compare results fit the screen (no horizontal scroll)`, () => assert(ovCmp <= 0, `${ovCmp}px`));
       await page.click('#swap');
       await page.waitForFunction(() => window.__compare.result && window.__compare.result.text.del === 7);
@@ -156,7 +156,7 @@ async function readPdf(b64) {
       const ocrPdf = await save();
       const op = await page.evaluate(readPdf, ocrPdf.b64);
       await page.screenshot({ path: path.join(OUT, `ocr-${label}.png`), fullPage: true });
-      const ovOcr = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const ovOcr = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${label}: OCR results fit the screen`, () => assert(ovOcr <= 0, `${ovOcr}px`));
       check(`${label}: OCR recognises the scanned text`, () => {
         assert.match(txt, /SURAT PENGESAHAN MAJIKAN/);
@@ -203,7 +203,7 @@ async function readPdf(b64) {
 
       for (const url of ['/', '/banding-pdf/', '/ocr-pdf/']) {
         await page.goto(origin + url);
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         check(`${label}: ${url} has no horizontal scroll`, () => assert(overflow <= 0, `${overflow}px`));
       }
       check(`${label}: no requests to other origins`, () => assert.deepStrictEqual(foreign, []));

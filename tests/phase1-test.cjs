@@ -302,7 +302,7 @@ async function diffBoxes({ before, after }) {
 
       for (const url of ['/', '/gabung-pdf/', '/pisah-pdf/', '/susun-pdf/', '/putar-pdf/', '/watermark-pdf/', '/nombor-pdf/', '/potong-pdf/']) {
         await page.goto(origin + url);
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         check(`${label}: ${url} has no horizontal scroll`, () => assert(overflow <= 0, `${overflow}px`));
       }
       await page.goto(origin + '/');

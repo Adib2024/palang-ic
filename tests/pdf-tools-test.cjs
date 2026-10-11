@@ -148,7 +148,7 @@ function zipEntries(buf) {
       const noGain = await page.textContent('#status');
       check(`${label}: already-small PDF is not made bigger`, () => assert.match(noGain, /sudah kecil/));
 
-      const overflowCmp = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflowCmp = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(`${label}: compress has no horizontal scroll`, () => assert(overflowCmp <= 0, `${overflowCmp}px`));
       check(`${label}: no requests to other origins`, () => assert.deepStrictEqual(foreign, []));
       check(`${label}: no CSP violations`, () => assert.deepStrictEqual(cspIssues, []));
