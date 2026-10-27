@@ -68,6 +68,7 @@ const ASSETS = [
   'css/style.css',
   'js/home.js',
   'js/page.js',
+  'js/heic-worker.js',
   'js/undo.js',
   'js/guide.js',
   'js/pwa.js',

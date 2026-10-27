@@ -81,6 +81,52 @@ function applyOrientation(ctx, o, w, h) {
  * @returns {Promise<HTMLCanvasElement>}
  */
 export async function loadPhoto(file, maxSide = MAX_SIDE) {
+  try {
+    return await loadWithBrowser(file, maxSide);
+  } catch (err) {
+    // iPhone photos (HEIC) only open natively in Safari: decode them ourselves.
+    if (await isHeic(file)) return decodeHeic(file, maxSide);
+    throw err;
+  }
+}
+
+/** Is this a HEIC/HEIF picture (by type, name or the file's own header)? */
+export async function isHeic(file) {
+  if (/image\/hei[cf]/i.test(file.type) || /\.hei[cf]$/i.test(file.name || '')) return true;
+  const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const tag = String.fromCharCode(...head.subarray(4, 12));
+  return /^ftyp(heic|heix|hevc|hevx|heim|heis|mif1|msf1)$/.test(tag);
+}
+
+let heicWorker = null;
+/** Decode HEIC in a worker (libheif, loaded only now) into an upright canvas. */
+async function decodeHeic(file, maxSide) {
+  const buf = await file.arrayBuffer();
+  if (!heicWorker) heicWorker = new Worker(new URL('./heic-worker.js', import.meta.url));
+  const res = await new Promise((resolve, reject) => {
+    const onMsg = (e) => { heicWorker.removeEventListener('message', onMsg); resolve(e.data); };
+    heicWorker.addEventListener('message', onMsg);
+    heicWorker.addEventListener('error', reject, { once: true });
+    heicWorker.postMessage(buf, [buf]);
+  });
+  if (res.error) throw new Error(`heic: ${res.error}`);
+  const full = document.createElement('canvas');
+  full.width = res.width;
+  full.height = res.height;
+  full.getContext('2d').putImageData(new ImageData(res.data, res.width, res.height), 0, 0);
+  const s = Math.min(1, maxSide / Math.max(res.width, res.height));
+  if (s === 1) return full;
+  const out = document.createElement('canvas');
+  out.width = Math.round(res.width * s);
+  out.height = Math.round(res.height * s);
+  const ctx = out.getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(full, 0, 0, out.width, out.height);
+  full.width = full.height = 0;
+  return out;
+}
+
+async function loadWithBrowser(file, maxSide) {
   const url = URL.createObjectURL(file);
   try {
     const [img, auto] = await Promise.all([loadImage(url), browserAutoOrients()]);

@@ -12,7 +12,7 @@ import { createOcrWorker, ocrDocument } from './ocr-core.js';
 import { createBatch, batchSummary } from './batch.js';
 
 const $ = (sel) => document.querySelector(sel);
-const isImage = (f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name);
+const isImage = (f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp|hei[cf])$/i.test(f.name);
 
 /** @type {{name: string, kind: 'pdf'|'images', files: File[], bytes?: Uint8Array, doc?: any, pages: number} | null} */
 let input = null;
