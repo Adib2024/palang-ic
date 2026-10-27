@@ -112,6 +112,26 @@ async function makePdf() {
       const en = await steps();
       check(`${label}: steps follow the language`, () => assert.deepStrictEqual(en, ['✓1Choose 2 PDFs', '>2See the differences']));
       await page.click('[data-lang="ms"]');
+      /* More quick picks: Protect (single-column), Split, OCR */
+      await page.goto(origin + '/lindungi-pdf/');
+      await page.setInputFiles('#pickFiles', file);
+      await page.waitForFunction(() => !document.querySelector('#toolLayout').classList.contains('is-empty'));
+      await page.click('.quick-picks .preset:has-text("Baca sahaja")');
+      const prot = await page.evaluate(() => [document.querySelector('#allowPrint').checked, document.querySelector('#allowCopy').checked]);
+      check(`${label}: Protect quick pick "Baca sahaja" blocks printing and copying`, () => assert.deepStrictEqual(prot, [false, false]));
+      await page.goto(origin + '/pisah-pdf/');
+      await page.setInputFiles('#pickFiles', file);
+      await page.waitForFunction(() => !document.querySelector('#toolLayout').classList.contains('is-empty'));
+      await page.click('.quick-picks .preset:has-text("Setiap 2 muka surat")');
+      const split = await page.evaluate(() => [document.querySelector('input[name="splitMode"]:checked').value, document.querySelector('#every').value]);
+      check(`${label}: Split quick pick "every 2 pages"`, () => assert.deepStrictEqual(split, ['every', '2']));
+      await page.goto(origin + '/ocr-pdf/');
+      await page.setInputFiles('#pickFiles', file);
+      await page.waitForFunction(() => !document.querySelector('#toolLayout').classList.contains('is-empty'));
+      await page.click('.quick-picks .preset:has-text("Melayu sahaja")');
+      const ocr = await page.evaluate(() => [document.querySelector('#langMs').checked, document.querySelector('#langEn').checked]);
+      check(`${label}: OCR quick pick "Malay only"`, () => assert.deepStrictEqual(ocr, [true, false]));
+
       for (const url of ['/', '/palang/', '/kecil-gambar/', '/aliran-kerja/', '/kongsi/']) {
         await page.goto(origin + url);
         await page.waitForTimeout(100);

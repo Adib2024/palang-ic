@@ -24,6 +24,23 @@ const SKIP = new Set(['kecil-gambar', 'aliran-kerja', 'kongsi', 'palang']);
  * '#id' (value / checkbox state) or 'name=group' (radio value).
  */
 export const PRESETS = {
+  'ocr-pdf': [
+    { key: 'psOcrBoth', spec: 'BM + English', set: { '#langMs': true, '#langEn': true, '#skipText': true } },
+    { key: 'psOcrMs', spec: 'Bahasa Melayu', set: { '#langMs': true, '#langEn': false, '#skipText': true } },
+    { key: 'psOcrEn', spec: 'English', set: { '#langMs': false, '#langEn': true, '#skipText': true } },
+    { key: 'psOcrAll', spec: 'psOcrAllSpec', set: { '#langMs': true, '#langEn': true, '#skipText': false } },
+  ],
+  'pisah-pdf': [
+    { key: 'psEveryPage', spec: '1 + 1 + 1…', set: { 'name=splitMode': 'every', '#every': '1' } },
+    { key: 'psEvery2', spec: '2 + 2 + 2…', set: { 'name=splitMode': 'every', '#every': '2' } },
+    { key: 'psPickPages', spec: 'psPickPagesSpec', set: { 'name=splitMode': 'pick' } },
+    { key: 'psRanges', spec: '1-3, 4-6', set: { 'name=splitMode': 'ranges' } },
+  ],
+  'lindungi-pdf': [
+    { key: 'psLockOnly', spec: 'psLockOnlySpec', set: { '#allowPrint': true, '#allowCopy': true } },
+    { key: 'psNoCopy', spec: 'psNoCopySpec', set: { '#allowPrint': true, '#allowCopy': false } },
+    { key: 'psReadOnly', spec: 'psReadOnlySpec', set: { '#allowPrint': false, '#allowCopy': false } },
+  ],
   'kecilkan-pdf': [
     { key: 'psPortal', spec: '≤ 2 MB', set: { 'name=level': 'medium', '#limit': '2097152', '#gray': false } },
     { key: 'psEmail', spec: '≤ 5 MB', set: { 'name=level': 'light', '#limit': '5242880', '#gray': false } },
@@ -157,7 +174,9 @@ export function initGuide(lang) {
   /* Presets */
   const presets = PRESETS[tool];
   const options = layout && $('.options', layout);
-  if (presets && options) {
+  // Single-column tools keep their settings in the panel shown after loading.
+  const panel = options || (layout && $('.after-load:not(.file-card)', layout));
+  if (presets && panel) {
     const box = document.createElement('div');
     box.className = 'quick-picks';
     const head = document.createElement('p');
@@ -166,8 +185,8 @@ export function initGuide(lang) {
     group.className = 'presets';
     group.setAttribute('role', 'radiogroup');
     box.append(head, group);
-    const title = $('h2', options);
-    if (title) title.after(box); else options.prepend(box);
+    const title = options && $('h2', options);
+    if (title) title.after(box); else panel.prepend(box);
     const buttons = presets.map((p) => {
       const b = document.createElement('button');
       b.type = 'button';
@@ -203,9 +222,9 @@ export function initGuide(lang) {
       next.b.click();
       next.b.focus();
     });
-    options.addEventListener('change', refresh);
-    options.addEventListener('click', () => setTimeout(refresh, 0));
-    options.addEventListener('input', refresh);
+    panel.addEventListener('change', refresh);
+    panel.addEventListener('click', () => setTimeout(refresh, 0));
+    panel.addEventListener('input', refresh);
     updaters.push(refresh);
     refresh();
   }
