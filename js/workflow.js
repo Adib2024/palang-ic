@@ -12,6 +12,7 @@ import { bindFileDrop, moveItem } from './pdf-pages.js';
 import { renderPages } from './page-viewer.js';
 import { initSignatureMaker, isoDate, toDMY } from './sig-maker.js';
 import { createPlacer } from './placer.js';
+import { mountUndoButtons } from './undo.js';
 import { refreshFontSelects } from './fonts.js';
 import {
   STEP_TYPES, DEFAULTS, TEMPLATES_WF, normalize, buildInput, runStep,
@@ -33,11 +34,12 @@ let result = null;
 let runToken = 0;
 let ready = false;
 
-const page = initPage(() => { if (ready) { renderAll(); refreshFontSelects(); maker.relabel(); } });
+const page = initPage(() => { if (ready) { renderAll(); refreshFontSelects(); maker.relabel(); refreshUndo(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 const setStatus2 = (msg) => { $('#status2').textContent = msg || ''; };
-const placer = createPlacer({ tr, onChange: () => { if (ready) syncPlace(); } });
+let refreshUndo = () => {};
+const placer = createPlacer({ tr, onChange: () => { if (ready) syncPlace(); refreshUndo(); } });
 const maker = initSignatureMaker({ onError: () => setStatus2(tr('loadError')), lang: () => page.lang() });
 
 /* ---------- Persistence (passwords are never stored) ---------- */
@@ -512,6 +514,7 @@ bindFileDrop($('#dropzone'), addFiles);
 const last = store.load('wf-current', null);
 if (last && Array.isArray(last.steps)) setSteps(last.steps, last.chosen);
 else setSteps(TEMPLATES_WF[0].steps, TEMPLATES_WF[0].id);
+refreshUndo = mountUndoButtons($('#addSig').closest('.buttons'), placer.history, () => page.lang());
 ready = true;
 renderAll();
 

@@ -2,6 +2,7 @@
 // numbers or any text) and permanently black them out. Redacted pages are
 // re-rendered as images so the hidden text is truly gone, not just covered.
 // Runs in this tab; nothing is uploaded.
+import { createUndo, mountUndoButtons } from './undo.js';
 import { initPage } from './page.js';
 import { t } from './i18n.js';
 import { loadPdfJs, loadPdfLib, renderPage, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
@@ -22,9 +23,11 @@ let src = null;
 let views = [];
 /** Redaction boxes in page fractions: {page, x, y, w, h, el}. */
 let boxes = [];
+let refreshUndo = () => {};
+const history = createUndo({ onChange: () => refreshUndo() });
 let ready = false;
 
-const page = initPage(() => { if (ready) sync(); });
+const page = initPage(() => { if (ready) { sync(); refreshUndo(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 
@@ -41,17 +44,27 @@ function addBox(view, r) {
   del.addEventListener('click', (e) => { e.stopPropagation(); removeBox(b); });
   el.appendChild(del);
   b.el = el;
-  view.el.appendChild(el);
   placeFrac(el, b);
-  boxes.push(b);
-  sync();
+  attach(b);
+  history.push({ undo: () => detach(b), redo: () => attach(b) });
   return b;
 }
 
-function removeBox(b) {
+function attach(b) {
+  views[b.page].el.appendChild(b.el);
+  boxes.push(b);
+  sync();
+}
+
+function detach(b) {
   b.el.remove();
   boxes = boxes.filter((x) => x !== b);
   sync();
+}
+
+function removeBox(b) {
+  detach(b);
+  history.push({ undo: () => attach(b), redo: () => detach(b) });
 }
 
 function bindDraw(view) {
@@ -159,14 +172,16 @@ async function findAll(kind) {
     regex = new RegExp(escapeRegExp(q), 'gi');
   } else regex = new RegExp(PATTERNS[kind].source, 'g');
   let n = 0;
-  for (const v of views) {
-    for (const r of await findOnPage(v, regex)) {
-      // Skip exact duplicates of boxes already placed.
-      if (boxes.some((b) => b.page === v.index && Math.abs(b.x - r.x) < 0.002 && Math.abs(b.y - r.y) < 0.002)) continue;
-      addBox(v, r);
-      n++;
+  await history.group(async () => {
+    for (const v of views) {
+      for (const r of await findOnPage(v, regex)) {
+        // Skip exact duplicates of boxes already placed.
+        if (boxes.some((b) => b.page === v.index && Math.abs(b.x - r.x) < 0.002 && Math.abs(b.y - r.y) < 0.002)) continue;
+        addBox(v, r);
+        n++;
+      }
     }
-  }
+  });
   setStatus(n ? tr('redFound', { n }) : tr('redNone'));
 }
 
@@ -232,6 +247,7 @@ async function openFile(list) {
   if (src) src.doc.destroy();
   [src] = sources;
   boxes = [];
+  history.clear();
   $('#fileName').value = `${safeName(src.name, 'dokumen')}-dihitamkan`;
   sync();
   views = await renderPages($('#redactPages'), src.doc, { label: (n) => tr('sigPage', { n }) });
@@ -264,12 +280,13 @@ async function exportPdf(share) {
 
 $$('[data-find]').forEach((b) => b.addEventListener('click', () => findAll(b.dataset.find)));
 $('#findText').addEventListener('keydown', (e) => { if (e.key === 'Enter') findAll('custom'); });
-$('#clearBoxes').addEventListener('click', () => { [...boxes].forEach(removeBox); setStatus(''); });
+$('#clearBoxes').addEventListener('click', () => { history.group(() => [...boxes].forEach(removeBox)); setStatus(''); });
 $('#pickFiles').addEventListener('change', (e) => { const f = [...e.target.files]; e.target.value = ''; openFile(f); });
 $('#another').addEventListener('click', () => $('#pickFiles').click());
 $('#savePdf').addEventListener('click', () => exportPdf(false));
 $('#sharePdf').addEventListener('click', () => exportPdf(true));
 bindFileDrop($('#dropzone'), openFile);
+refreshUndo = mountUndoButtons($('#boxCount'), history, () => page.lang());
 ready = true;
 sync();
 

@@ -72,6 +72,44 @@ async function drawOnPad(page) {
       const stored = await page.evaluate(() => localStorage.getItem('palangic:savedSigs'));
       check(`${label}: a saved signature can be deleted`, () => { assert.strictEqual(left, 0); assert.strictEqual(stored, '[]'); });
 
+      /* ---------- Undo / redo ---------- */
+      // Sign PDF: placing a signature can be undone and redone.
+      await page.goto(origin + '/tandatangan-pdf/');
+      await page.setInputFiles('#pickFiles', pdf);
+      await page.waitForFunction(() => window.__sign.views.length === 2);
+      await drawOnPad(page);
+      await page.click('#addSig');
+      await page.waitForFunction(() => window.__sign.items.length === 1);
+      await page.click('#undoStep');
+      const afterUndo = await page.evaluate(() => window.__sign.items.length);
+      await page.click('#redoStep');
+      const afterRedo = await page.evaluate(() => window.__sign.items.length);
+      await page.click('.sig-item .sig-del');
+      await page.click('#undoStep');
+      const restored = await page.evaluate(() => window.__sign.items.length);
+      check(`${label}: Sign PDF: undo / redo placing and deleting`, () => assert.deepStrictEqual([afterUndo, afterRedo, restored], [0, 1, 1]));
+
+      // Redact: "find" adds a group of boxes that one undo removes; Ctrl+Z works.
+      await page.goto(origin + '/hitamkan-pdf/');
+      await page.setInputFiles('#pickFiles', pdf);
+      await page.waitForFunction(() => window.__redact.views.length === 2);
+      await page.evaluate(() => { document.querySelector('#findText').value = 'Halaman'; });
+      await page.evaluate(() => window.__redact.findAll('custom'));
+      const found = await page.evaluate(() => window.__redact.boxes.length);
+      await page.click('#undoStep');
+      const none = await page.evaluate(() => window.__redact.boxes.length);
+      await page.click('#redoStep');
+      const back = await page.evaluate(() => window.__redact.boxes.length);
+      if (!mobile) {
+        await page.click('#optTitle');
+        await page.keyboard.press('Control+z');
+      } else {
+        await page.click('#undoStep');
+      }
+      const key = await page.evaluate(() => window.__redact.boxes.length);
+      check(`${label}: Redact: one undo removes a whole search, redo brings it back`, () => assert.deepStrictEqual([found, none, back, key], [2, 0, 2, 0]));
+      await page.screenshot({ path: path.join(OUT, `extras-undo-${label}.png`) });
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));

@@ -10,6 +10,7 @@ import {
 import { renderPages } from './page-viewer.js';
 import { initSignatureMaker, textCanvas, trim } from './sig-maker.js';
 import { createPlacer } from './placer.js';
+import { mountUndoButtons } from './undo.js';
 import { refreshFontSelects } from './fonts.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -18,10 +19,11 @@ const $ = (sel) => document.querySelector(sel);
 let input = null;
 let ready = false;
 
-const page = initPage(() => { if (ready) { syncLabels(); refreshFontSelects(); maker.relabel(); } });
+const page = initPage(() => { if (ready) { syncLabels(); refreshFontSelects(); maker.relabel(); refreshUndo(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
-const placer = createPlacer({ tr, onChange: () => { if (ready) syncLabels(); } });
+let refreshUndo = () => {};
+const placer = createPlacer({ tr, onChange: () => { if (ready) syncLabels(); refreshUndo(); } });
 const maker = initSignatureMaker({ onError: () => setStatus(tr('loadError')), lang: () => page.lang() });
 
 /* ---------- Document ---------- */
@@ -133,6 +135,7 @@ document.addEventListener('drop', (e) => {
   if (isPdf(f)) openFile(f);
 });
 
+refreshUndo = mountUndoButtons($('#addSig').closest('.buttons'), placer.history, () => page.lang());
 ready = true;
 syncLabels();
 

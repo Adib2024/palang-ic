@@ -1,3 +1,5 @@
+import { createUndo } from './undo.js';
+
 // Place pictures (signatures, text, dates) on rendered PDF pages, move and
 // resize them, then draw them into the PDF with pdf-lib. Shared by Sign PDF
 // and Merge PDF.
@@ -8,6 +10,7 @@ const pngBytes = (canvas) => new Promise((resolve) => canvas.toBlob(async (b) =>
  * @param {{tr: (key: string) => string, onChange?: () => void}} opts
  */
 export function createPlacer({ tr, onChange = () => {} }) {
+  const history = createUndo({ onChange: () => onChange() });
   /** @type {{el: HTMLElement, vp: any}[]} one per page; vp = pdf.js viewport at scale 1 */
   let views = [];
   /** @type {{id: number, page: number, fx: number, fy: number, fw: number, fh: number, aspect: number, canvas: HTMLCanvasElement, el: HTMLElement}[]} */
@@ -28,10 +31,19 @@ export function createPlacer({ tr, onChange = () => {} }) {
     onChange();
   }
 
-  function remove(it) {
+  function detach(it) {
     it.el.remove();
     items = items.filter((x) => x !== it);
     onChange();
+  }
+  function attach(it) {
+    views[it.page].el.appendChild(it.el);
+    items.push(it);
+    onChange();
+  }
+  function remove(it) {
+    detach(it);
+    history.push({ undo: () => attach(it), redo: () => detach(it) });
   }
 
   function bind(it, view) {
@@ -47,7 +59,7 @@ export function createPlacer({ tr, onChange = () => {} }) {
       select(it);
       setActive(it.page);
       mode = e.target.closest('.sig-handle') ? 'resize' : 'move';
-      start = { x: e.clientX, y: e.clientY, fx: it.fx, fy: it.fy, fw: it.fw };
+      start = { x: e.clientX, y: e.clientY, fx: it.fx, fy: it.fy, fw: it.fw, fh: it.fh };
       el.setPointerCapture(e.pointerId);
     });
     el.addEventListener('pointermove', (e) => {
@@ -66,7 +78,14 @@ export function createPlacer({ tr, onChange = () => {} }) {
       }
       place(it);
     });
-    const end = () => { mode = null; };
+    const end = () => {
+      if (mode && start && (it.fx !== start.fx || it.fy !== start.fy || it.fw !== start.fw)) {
+        const before = { fx: start.fx, fy: start.fy, fw: start.fw, fh: start.fh };
+        const after = { fx: it.fx, fy: it.fy, fw: it.fw, fh: it.fh };
+        history.push({ undo: () => { Object.assign(it, before); place(it); }, redo: () => { Object.assign(it, after); place(it); } });
+      }
+      mode = null;
+    };
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   }
@@ -112,6 +131,7 @@ export function createPlacer({ tr, onChange = () => {} }) {
     setViews(list) {
       items.forEach((it) => it.el.remove());
       items = [];
+      history.clear();
       views = list;
       views.forEach((v, i) => {
         v.el.addEventListener('pointerdown', (e) => {
@@ -138,6 +158,7 @@ export function createPlacer({ tr, onChange = () => {} }) {
       const src = canvas.toDataURL('image/png');
       const pages = allPages ? views.map((_, i) => i) : [active];
       const added = pages.map((p) => addOne(p, canvas, src, fx, fy, fw));
+      history.push({ undo: () => added.forEach(detach), redo: () => added.forEach(attach) });
       const mine = added.find((it) => it.page === active);
       select(mine);
       mine.el.scrollIntoView({ block: 'center', behavior: 'smooth' });
@@ -146,7 +167,8 @@ export function createPlacer({ tr, onChange = () => {} }) {
     },
 
     remove,
-    clear() { [...items].forEach(remove); },
+    clear() { history.group(() => [...items].forEach(remove)); },
+    history,
 
     /** Draw every placed item into `doc` (pdf-lib; page i = view i). */
     async drawInto(PDFLib, doc) {
