@@ -1198,3 +1198,17 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
 .meta-list .meta-clean { display: block; grid-template-columns: none; color: var(--safe-text); background: var(--safe-bg); font-weight: 700; }
 .meta-after .meta-list { border-color: var(--safe-border); }
 .meta-opts .check { margin-bottom: 6px; }
+
+/* ---------- Saved signatures ---------- */
+.saved-sigs { margin-bottom: 14px; }
+.saved-title { margin: 0 0 8px; font-size: .88rem; font-weight: 700; }
+.saved-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.saved-sig { display: flex; align-items: center; gap: 2px; }
+.saved-pick {
+  display: grid; place-items: center; width: 132px; height: 60px; padding: 6px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--border-strong); background: #fff;
+}
+.saved-pick img { max-width: 100%; max-height: 100%; }
+.saved-pick[aria-pressed="true"] { border-color: var(--tone, var(--accent)); box-shadow: 0 0 0 2px var(--tone, var(--accent)); }
+.saved-sig .icon-btn { width: 36px; height: 36px; }
+.save-sig { margin-top: 10px; }

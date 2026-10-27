@@ -18,7 +18,7 @@ const $ = (sel) => document.querySelector(sel);
 let input = null;
 let ready = false;
 
-const page = initPage(() => { if (ready) { syncLabels(); refreshFontSelects(); } });
+const page = initPage(() => { if (ready) { syncLabels(); refreshFontSelects(); maker.relabel(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 const placer = createPlacer({ tr, onChange: () => { if (ready) syncLabels(); } });
