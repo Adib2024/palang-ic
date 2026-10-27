@@ -256,6 +256,7 @@ js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; 
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
 vendor/fontkit/                                 @pdf-lib/fontkit 1.1.1 (embeds custom fonts)
 vendor/tesseract/                               tesseract.js 5.1.1 + core + eng/msa models (vendor workflow)
+vendor/libheif/                                 libheif-js (LGPL-3.0, unmodified) for HEIC photos, loaded only when needed (js/heic-worker.js)
 js/sig-maker.js, placer.js                      signature maker + item placement (workflow date/sign/text step)
 js/unlock.js, protect.js                        Unlock PDF, Protect PDF
 js/compress.js          Compress PDF (re-render pages as JPEG)

@@ -22,7 +22,7 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
   `js/pdf-kit.js` (vendored pdf.js + pdf-lib loaders, `download()` / `shareOrDownload()` fire `dokujaga:saved`),
   `js/tool-catalog.js` (which tools accept which files, for "Continue to…" and the share page),
   `js/batch.js`, `js/handoff.js`, `js/continue.js`, `js/pdf-stamps.js`, `js/ocr-core.js`, `js/fonts.js`.
-- `vendor/` is filled by `.github/workflows/vendor.yml` (pdf-lib, pdf.js, tesseract, fontkit, fonts) — don't hand-edit.
+- `vendor/` is filled by `.github/workflows/vendor.yml` (pdf-lib, pdf.js, tesseract, fontkit, libheif, fonts) — don't hand-edit; run it from the Actions tab (workflow_dispatch). No npm access in the cloud sandbox.
 - `sw.js`: network-first app cache `dokujaga-vNN` (bump on every release) + `ASSETS` list (**add every new js file / page**).
 
 ## Adding a tool
