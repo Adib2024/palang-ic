@@ -177,9 +177,9 @@ async function makeBigPng() {
         { name: 'sample-front-exif6.jpg', mimeType: 'image/jpeg', buffer: fs.readFileSync(FRONT) },
       ]);
       await page.waitForFunction(() => window.__imgsmall.items.length === 2);
+      await page.click('#custom summary');
       await page.selectOption('#limit', '204800');
-      await page.click('#run');
-      await page.waitForFunction(() => window.__imgsmall.items.every((it) => it.out) && !document.querySelector('#run').disabled, null, { timeout: 60000 });
+      await page.waitForFunction(() => !window.__imgsmall.pending && window.__imgsmall.items.every((it) => it.out), null, { timeout: 60000 });
       const outs = await page.evaluate(async () => Promise.all(window.__imgsmall.items.map(async (it) => {
         const b = new Uint8Array(await it.out.arrayBuffer());
         return { size: it.out.size, w: it.outW, h: it.outH, over: it.over, exif: new TextDecoder('latin1').decode(b.subarray(0, 64 * 1024)).includes('Exif') };
@@ -195,8 +195,7 @@ async function makeBigPng() {
       });
       await page.selectOption('#limit', '0');
       await page.selectOption('#maxDim', '800');
-      await page.click('#run');
-      await page.waitForFunction(() => window.__imgsmall.items.every((it) => it.out) && !document.querySelector('#run').disabled, null, { timeout: 60000 });
+      await page.waitForFunction(() => !window.__imgsmall.pending && window.__imgsmall.items.every((it) => it.out), null, { timeout: 60000 });
       const dims = await page.evaluate(() => window.__imgsmall.items.map((it) => Math.max(it.outW, it.outH)));
       check(`${label}: Kecilkan Gambar resizes to max 800 px`, () => assert.deepStrictEqual(dims, [800, 800]));
       await page.screenshot({ path: path.join(OUT, `imgsmall-${label}.png`), fullPage: true });

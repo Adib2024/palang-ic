@@ -182,15 +182,22 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
         });
         check('CSP blocks fetch() to other hosts', () => assert(blocked));
 
-        // Theme toggle flips light/dark and is remembered.
-        await page.click('#themeToggle');
+        // Theme toggle flips light/dark and is remembered. On small phones it
+        // lives in the display ("Aa") panel.
+        const toggleTheme = async () => {
+          if (await page.isVisible('#themeToggle')) { await page.click('#themeToggle'); return; }
+          await page.click('#a11yBtn');
+          await page.click('#a11yDark');
+          await page.keyboard.press('Escape');
+        };
+        await toggleTheme();
         const flipped = await page.evaluate(() => document.documentElement.dataset.theme);
         check('theme toggle switches to dark', () => assert.strictEqual(flipped, 'dark'));
         await page.screenshot({ path: path.join(OUT, 'page-toggled-dark.png'), fullPage: true });
         await page.reload();
         const kept = await page.evaluate(() => document.documentElement.dataset.theme);
         check('theme choice remembered', () => assert.strictEqual(kept, 'dark'));
-        await page.click('#themeToggle');
+        await toggleTheme();
         await page.setInputFiles('[data-input="front"]', path.join(__dirname, 'fixtures/sample-front-exif6.jpg'));
         await page.setInputFiles('[data-input="back"]', path.join(__dirname, 'fixtures/sample-back.jpg'));
         await page.waitForSelector('[data-preview="back"]:not([hidden])');
