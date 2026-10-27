@@ -195,7 +195,7 @@ function selectItem(it) {
 function removeItem(it) {
   it.el.remove();
   items = items.filter((x) => x !== it);
-  history = history.filter((h) => h.ref !== it);
+  history.push({ kind: 'removed', ref: it });
   syncToolbar();
 }
 
@@ -229,7 +229,13 @@ function makeDraggable(it, view, handleSel) {
     }
     placeFrac(it.el, it.kind === 'image' ? it : { x: it.x, y: it.y });
   });
-  const end = () => { mode = null; };
+  const end = () => {
+    if (mode && (it.x !== start.it.x || it.y !== start.it.y || it.w !== start.it.w)) {
+      history.push({ kind: 'move', ref: it, from: { x: start.it.x, y: start.it.y, w: start.it.w, h: start.it.h } });
+      syncToolbar();
+    }
+    mode = null;
+  };
   it.el.addEventListener('pointerup', end);
   it.el.addEventListener('pointercancel', end);
 }
@@ -353,6 +359,15 @@ function undo() {
     last.view.shapes = last.view.shapes.filter((s) => s !== last.ref);
     if (selectedShape === last.ref) selectedShape = null;
     redraw(last.view);
+  } else if (last.kind === 'removedShape') {
+    last.view.shapes.push(last.ref);
+    redraw(last.view);
+  } else if (last.kind === 'removed') {
+    views[last.ref.page].el.appendChild(last.ref.el);
+    items.push(last.ref);
+  } else if (last.kind === 'move') {
+    Object.assign(last.ref, last.from);
+    placeFrac(last.ref.el, last.ref.kind === 'image' ? last.ref : { x: last.ref.x, y: last.ref.y });
   } else {
     last.ref.el.remove();
     items = items.filter((x) => x !== last.ref);
@@ -365,7 +380,7 @@ function deleteSelectedShape() {
   for (const v of views) {
     if (v.shapes.includes(selectedShape)) {
       v.shapes = v.shapes.filter((s) => s !== selectedShape);
-      history = history.filter((h) => h.ref !== selectedShape);
+      history.push({ kind: 'removedShape', view: v, ref: selectedShape });
       selectedShape = null;
       redraw(v);
     }

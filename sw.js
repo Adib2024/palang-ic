@@ -66,6 +66,7 @@ const ASSETS = [
   'css/style.css',
   'js/home.js',
   'js/page.js',
+  'js/undo.js',
   'js/guide.js',
   'js/pwa.js',
   'js/palang.js',
