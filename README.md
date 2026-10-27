@@ -27,6 +27,7 @@
 | **OCR PDF**: imbasan/gambar → PDF boleh dicari & disalin + teks (.txt); BM & English, enjin dihos sendiri / scans/photos → searchable, copyable PDF + text; Malay & English, self-hosted engine | ✅ `ocr-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
 | **Imbas Dokumen / Scan Document**: kamera → luruskan tepi (auto) → penapis → PDF / camera → auto edge straightening → filters → PDF | ✅ `imbas/` |
+| **Gambar Pasport / Passport Photo**: 35×50 mm (Malaysia), 35×45 mm atau saiz sendiri; zum, alih, cerahkan latar; helaian cetak 4R (JPG) / A4 (PDF) / custom size; zoom, move, whiten background; 4R (JPG) / A4 (PDF) print sheets | ✅ `gambar-pasport/` |
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
 | **PDF → Word / Excel / PowerPoint** (ringkas / simple): teks, perenggan, tajuk, jadual mudah; imbasan jadi gambar / text, paragraphs, headings, simple tables; scans become pictures | ✅ `pdf-word/` `pdf-excel/` `pdf-powerpoint/` |
@@ -246,6 +247,7 @@ js/fonts.js                                     font choice: standard PDF fonts,
 js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: text layout, minimal OOXML writers
 js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
 js/metadata.js, pdf-meta.js                     Remove PDF Metadata (read + clean, drops unreferenced objects)
+js/passport.js                                  Passport Photo (frame, adjust, print sheets)
 js/guide.js                                     steps bar, quick picks and phone save bar for every tool page
 js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/

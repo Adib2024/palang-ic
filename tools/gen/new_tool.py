@@ -11,7 +11,9 @@ spec.json:
    "dropKey": "pdfDropBig", "chooseKey": "pdfChoose",
    "layout": "two" | "narrow",
    "options": "<html for the settings panel>",
-   "primary": ["savePdf", "pdfSave"], "share": ["sharePdf", "pdfShare"]}
+   "content": "<optional html after the file card, e.g. a preview>",
+   "primary": ["savePdf", "pdfSave"], "share": ["sharePdf", "pdfShare"],
+   "anotherKey": "cmpAnother"}
 """
 import json
 import os
@@ -23,11 +25,12 @@ sys.path.insert(0, G)
 from parts import page, dropzone  # noqa: E402
 
 spec = json.load(open(sys.argv[1]))
-file_card = '''          <div class="file-card after-load">
+file_label = spec.get('anotherKey', 'cmpAnother')
+file_card = f'''          <div class="file-card after-load">
             <div class="file-info">
               <h2 id="docTitle" class="file-name"></h2>
               <p class="file-meta" id="docMeta"></p>
-              <button type="button" class="link" id="another" data-i18n="cmpAnother">Pilih PDF lain</button>
+              <button type="button" class="link" id="another" data-i18n="{file_label}"></button>
             </div>
           </div>'''
 pid, pkey = spec['primary']
@@ -58,6 +61,7 @@ else:
         <section class="card" aria-labelledby="docTitle">
 {drop}
 {file_card}
+{spec.get('content', '')}
         </section>
         <aside class="card options" aria-labelledby="optTitle">
           <h2 id="optTitle" data-i18n="i2pOptions">Tetapan</h2>

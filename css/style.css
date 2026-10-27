@@ -1212,3 +1212,14 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
 .saved-pick[aria-pressed="true"] { border-color: var(--tone, var(--accent)); box-shadow: 0 0 0 2px var(--tone, var(--accent)); }
 .saved-sig .icon-btn { width: 36px; height: 36px; }
 .save-sig { margin-top: 10px; }
+
+/* ---------- Gambar Pasport ---------- */
+.pp-stage { display: grid; justify-items: center; gap: 10px; margin-top: 16px; }
+.pp-stage canvas {
+  width: min(100%, 340px); height: auto; border-radius: 6px; cursor: grab; touch-action: none;
+  box-shadow: 0 0 0 1px var(--border-strong), 0 8px 24px rgba(15, 23, 42, .12); background: #fff;
+}
+.pp-stage canvas:active { cursor: grabbing; }
+.pp-stage .hint { text-align: center; max-width: 420px; }
+/* A lone second button (e.g. Share) under the primary one takes the full row. */
+.buttons > .primary:first-child + button:last-child { grid-column: 1 / -1; }
