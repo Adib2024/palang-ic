@@ -17,6 +17,14 @@ def head(root, title, desc, script):
   <meta name="referrer" content="no-referrer">
   <title>{title}</title>
   <meta name="description" content="{desc}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DokuJaga">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{desc}">
+  <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="{root}manifest.webmanifest">
   <link rel="icon" href="{root}icons/icon.svg" type="image/svg+xml">
