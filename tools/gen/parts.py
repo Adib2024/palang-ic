@@ -261,3 +261,7 @@ ICONS.update({
 ICONS.update({
  'meta': '<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 21H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 8h4M8 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m14.5 15.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
 })
+
+ICONS.update({
+ 'passport': '<svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 18.5c.8-2.6 2.5-3.8 4.5-3.8s3.7 1.2 4.5 3.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+})

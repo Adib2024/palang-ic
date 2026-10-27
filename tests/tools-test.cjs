@@ -46,9 +46,9 @@ function inspectPdf(file) {
       // Dashboard
       await page.goto(origin + '/');
       const cards = await page.$$eval('.tool', (els) => els.map((e) => ({ href: e.getAttribute('href'), soon: e.classList.contains('soon') })));
-      check(`${label}: dashboard lists 25 tools`, () => {
+      check(`${label}: dashboard lists 26 tools`, () => {
         assert.deepStrictEqual(cards.map((c) => c.href), [
-          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'ocr-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'pdf-word/', 'pdf-excel/', 'pdf-powerpoint/', 'tandatangan-pdf/', 'edit-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/', 'buang-metadata/', 'imbas/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'banding-pdf/', 'susun-pdf/', 'kecil-gambar/',
+          'palang/', 'gabung-pdf/', 'pisah-pdf/', 'kecilkan-pdf/', 'ocr-pdf/', 'gambar-pdf/', 'pdf-gambar/', 'pdf-word/', 'pdf-excel/', 'pdf-powerpoint/', 'tandatangan-pdf/', 'edit-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/', 'buang-metadata/', 'imbas/', 'gambar-pasport/', 'watermark-pdf/', 'putar-pdf/', 'nombor-pdf/', 'potong-pdf/', 'isi-borang/', 'banding-pdf/', 'susun-pdf/', 'kecil-gambar/',
         ]);
         assert(cards.every((c) => !c.soon));
       });
