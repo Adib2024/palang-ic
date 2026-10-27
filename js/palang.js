@@ -5,6 +5,7 @@ import { applyI18n, t, TEMPLATES, todayDMY } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
 import { deliverInbox } from './handoff.js';
+import { rememberTool } from './page.js';
 
 // Per-mode slider defaults, tuned so the IC number and face stay readable.
 const MODE_DEFAULTS = {
@@ -397,6 +398,7 @@ drawPreview();
 window.addEventListener('resize', schedulePreview);
 
 registerServiceWorker();
+rememberTool();
 // A photo handed over from another tool or shared from another app.
 deliverInbox().catch(() => {});
 

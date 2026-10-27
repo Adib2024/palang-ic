@@ -23,9 +23,18 @@ export function initPage(onLang) {
     sync();
   }));
   sync();
+  rememberTool();
   registerServiceWorker();
   // Files handed over from another tool or app: give them to this tool once
   // its own setup (which runs right after initPage) is done.
   setTimeout(() => { deliverInbox().catch(() => {}); }, 0);
   return { lang: () => lang };
+}
+
+/** Remember this tool for the dashboard's "Recently used" row (this browser only). */
+export function rememberTool() {
+  const m = /\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(location.pathname);
+  if (!m || m[1] === 'kongsi' || !document.querySelector('.tool-hero')) return;
+  const href = `${m[1]}/`;
+  store.save('recent', [href, ...store.load('recent', []).filter((h) => h !== href)].slice(0, 6));
 }

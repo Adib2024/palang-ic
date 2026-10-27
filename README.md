@@ -29,7 +29,7 @@
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
 | **PDF → Word / Excel / PowerPoint** (ringkas / simple): teks, perenggan, tajuk, jadual mudah; imbasan jadi gambar / text, paragraphs, headings, simple tables; scans become pictures | ✅ `pdf-word/` `pdf-excel/` `pdf-powerpoint/` |
-| **Kecilkan Gambar / Compress Images**: had saiz (cth. ≤ 200 KB), saiz maksimum, buang EXIF / size limit, max dimensions, strips EXIF | ✅ `kecil-gambar/` |
+| **Kecilkan Gambar / Compress Images**: preset (borang ≤ 200 KB, WhatsApp, e-mel, pasport, laman web), had saiz/dimensi/kualiti sendiri, JPG/PNG/WebP, putar & potong, banding sebelum/selepas, tampal, buang EXIF / presets, custom size/dimension/quality, JPG/PNG/WebP, rotate & crop, before/after compare, paste, strips EXIF | ✅ `kecil-gambar/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
@@ -45,6 +45,11 @@ Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langka
 - **Bina sendiri**: pilih langkah — Palang IC (gambar), tarikh/tandatangan/teks, watermark, nombor muka surat, putar, kecilkan, kunci dengan kata laluan — dan susun ikut urutan.
 - Langkah tarikh/tandatangan/teks berhenti seketika supaya anda boleh letak item (pada satu atau semua muka surat), kemudian teruskan.
 - Aliran sendiri boleh disimpan dalam pelayar (kata laluan tidak disimpan).
+
+### Paparan & carian
+
+- Butang **Aa** di header: saiz teks (A / A+ / A++), kontras tinggi dan tema gelap — diingati dalam pelayar ini.
+- Dashboard: **cari alat** (BM atau English, tekan `/`), dan baris **Baru digunakan**.
 
 ### Banyak fail, kongsi & teruskan
 
@@ -132,6 +137,11 @@ The **Advanced mode** button in the header opens workflows: run several steps in
 - **Build your own**: pick steps — IC stamp (photos), date/signature/text, watermark, page numbers, rotate, compress, password — and order them.
 - The date/signature/text step pauses so you can place items (on one or every page), then continues.
 - Your own workflows can be saved in the browser (passwords are never saved).
+
+### Display & search
+
+- The **Aa** button in the header: text size (A / A+ / A++), high contrast and dark theme — remembered in this browser.
+- Dashboard: **search tools** (Malay or English, press `/`), and a **Recently used** row.
 
 ### Many files, sharing & continue
 
@@ -277,6 +287,7 @@ node tests/crypto-test.mjs                                # encryption vs pypdf 
 NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workflows (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
 NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs python3 + pypdf)
+NODE_PATH="$(npm root -g)" node tests/imgsmall-test.cjs   # compress images (presets, crop, compare), display settings, dashboard search
 NODE_PATH="$(npm root -g)" node tests/phase2d-test.cjs   # PDF -> Word/Excel/PowerPoint (needs python-docx, openpyxl, python-pptx)
 tests/run-all.sh                                          # every suite (what CI runs)
 ```

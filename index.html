@@ -57,6 +57,13 @@
       <section id="tools" aria-labelledby="toolsTitle">
         <h2 id="toolsTitle" class="section-title" data-i18n="toolsHeading">Pilih alat</h2>
         <p class="section-sub" data-i18n="toolsSub"></p>
+        <div class="tool-search" role="search">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="search" id="toolSearch" autocomplete="off" enterkeyhint="search"
+                 data-i18n-attr="placeholder:searchTools,aria-label:searchToolsLabel" placeholder="Cari alat…" aria-label="Cari alat">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+        <div class="recent" id="recent" hidden></div>
         <div class="cat-chips" role="toolbar" aria-label="Kategori">
           <button type="button" class="chip" data-cat="all" aria-pressed="true" data-i18n="catAll">Semua</button>
           <button type="button" class="chip" data-cat="organize" aria-pressed="false" data-i18n="catOrganize">Susun</button>
@@ -65,6 +72,7 @@
           <button type="button" class="chip" data-cat="edit" aria-pressed="false" data-i18n="catEdit">Edit</button>
           <button type="button" class="chip" data-cat="security" aria-pressed="false" data-i18n="catSecurity">Keselamatan</button>
         </div>
+        <p class="no-tools" id="noTools" role="status" hidden></p>
         <div class="tool-grid">
           <a class="tool tone-indigo popular hero-tool" href="palang/" data-cat="security">
             <em class="pop-badge" data-i18n="popular">Popular</em>
