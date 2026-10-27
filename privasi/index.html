@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Privacy guarantee enforced by the browser: this page cannot open any
+       network connection, and loads code, styles, fonts and images only
+       from this site. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Privasi · DokuJaga</title>
+  <meta name="description" content="Bagaimana DokuJaga menjaga fail anda: semuanya diproses dalam peranti anda, tiada muat naik, tiada akaun, tiada analitik.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DokuJaga">
+  <meta property="og:title" content="Privasi · DokuJaga">
+  <meta property="og:description" content="Bagaimana DokuJaga menjaga fail anda: semuanya diproses dalam peranti anda, tiada muat naik, tiada akaun, tiada analitik.">
+  <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="preload" href="../fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/theme.js"></script>
+  <script type="module" src="../js/privacy.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <nav class="nav-links" aria-label="Utama">
+        <a href="../#tools" data-i18n="navTools">Alat</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      </nav>
+      <div class="top-actions">
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+        <div class="lang" role="group" aria-label="Bahasa / Language">
+          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero tool-hero tone-emerald">
+    <div class="container">
+      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5 4.5 5.5v6c0 4.7 3.2 8.6 7.5 9.9 4.3-1.3 7.5-5.2 7.5-9.9v-6Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><rect x="9" y="11" width="6" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.2 11V9.6a1.8 1.8 0 0 1 3.6 0V11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
+      <h1 data-i18n="pvTitle">Privasi</h1>
+      <p class="lead" data-i18n="pvLead"></p>
+    </div>
+  </section>
+
+  <main class="page">
+    <div class="container stack">
+      <section class="privacy">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+      </section>
+
+      <div class="pv-page">
+        <section class="card pv-section">
+          <h2 data-i18n="pvShortTitle"></h2>
+          <p data-i18n="pvShort1"></p>
+          <p data-i18n="pvShort2"></p>
+        </section>
+        <section class="card pv-section">
+          <h2 data-i18n="pvHowTitle"></h2>
+          <p data-i18n="pvHow1"></p>
+          <p data-i18n="pvHow2"></p>
+          <p data-i18n="pvHow3"></p>
+        </section>
+        <section class="card pv-section">
+          <h2 data-i18n="pvStoreTitle"></h2>
+          <p data-i18n="pvStore1"></p>
+        </section>
+        <section class="card pv-section" aria-labelledby="pvDataTitle">
+          <h2 id="pvDataTitle" data-i18n="pvDataTitle"></h2>
+          <p data-i18n="pvData1"></p>
+          <ul class="pv-list" id="pvStored"></ul>
+          <div class="buttons">
+            <button type="button" class="primary" id="pvClear" data-i18n="pvClear"></button>
+          </div>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+        </section>
+        <section class="card pv-section">
+          <h2 data-i18n="pvCheckTitle"></h2>
+          <p data-i18n="pvCheck1"></p>
+          <p data-i18n="pvCheck2"></p>
+          <p data-i18n="pvCheck3"></p>
+        </section>
+        <section class="card pv-section">
+          <h2 data-i18n="pvLimitsTitle"></h2>
+          <p data-i18n="pvLimits1"></p>
+          <p data-i18n="pvLimits2"></p>
+        </section>
+        <section class="card pv-section">
+          <h2 data-i18n="pvOpenTitle"></h2>
+          <p data-i18n="pvOpen1"></p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+      </div>
+      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+    </div>
+  </footer>
+</body>
+</html>

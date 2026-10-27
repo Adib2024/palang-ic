@@ -84,6 +84,7 @@ html = head(root, 'DokuJaga — Alat dokumen yang jaga privasi',
           <li class="feature tone-indigo"><span class="tool-icon" aria-hidden="true">{ICONS['gift']}</span><strong data-i18n="why2Title"></strong><span data-i18n="why2"></span></li>
           <li class="feature tone-sky"><span class="tool-icon" aria-hidden="true">{ICONS['plane']}</span><strong data-i18n="why3Title"></strong><span data-i18n="why3"></span></li>
         </ul>
+        <p class="pv-more"><a href="privasi/" data-i18n="pvMore">Baca dasar privasi penuh →</a></p>
         <details class="verify">
           <summary data-i18n="verifyTitle">Cara semak sendiri</summary>
           <ul>

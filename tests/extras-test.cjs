@@ -205,6 +205,32 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
         results.push(`skip ${label}: HEIC (vendor/libheif not present yet)`);
       }
 
+      /* ---------- Privacy page ---------- */
+      await page.goto(origin + '/kecil-gambar/');
+      await Promise.all([page.waitForURL(/\/privasi\/$/), page.click('.footer-links a[href="../privasi/"]')]);
+      await page.evaluate(() => {
+        localStorage.setItem('palangic:savedSigs', JSON.stringify([{ id: 1, png: 'data:image/png;base64,AA' }]));
+        localStorage.setItem('palangic:recent', JSON.stringify(['kecil-gambar/']));
+        localStorage.setItem('palangic:textSize', JSON.stringify('lg'));
+      });
+      await page.reload();
+      const listed = await page.$$eval('#pvStored li', (els) => els.map((e) => e.textContent));
+      check(`${label}: privacy page lists what is stored`, () => {
+        assert(listed.includes('Tandatangan tersimpan: 1'), JSON.stringify(listed));
+        assert(listed.includes('Alat baru digunakan: 1'), JSON.stringify(listed));
+      });
+      await page.click('#pvClear');
+      await page.waitForFunction(() => /Dipadam/.test(document.querySelector('#status').textContent));
+      const leftKeys = await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('palangic:') && k !== 'palangic:lang'));
+      const after = await page.$$eval('#pvStored li', (els) => els.map((e) => e.textContent));
+      check(`${label}: "delete all" clears saved signatures, settings and recent tools`, () => {
+        assert.deepStrictEqual(leftKeys, []);
+        assert.deepStrictEqual(after, ['Tiada apa-apa disimpan.']);
+      });
+      const ovPv = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(`${label}: privacy page fits the screen`, () => assert(ovPv <= 0, `${ovPv}px`));
+      await page.screenshot({ path: path.join(OUT, `extras-privacy-${label}.png`), fullPage: true });
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));
