@@ -71,8 +71,11 @@ function offerNext(file) {
   import('./continue.js').then((m) => m.offerContinue(file)).catch(() => {});
 }
 
+const saved = () => document.dispatchEvent(new CustomEvent('dokujaga:saved'));
+
 export function download(file, { next = true } = {}) {
   if (next) offerNext(file);
+  saved();
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url;
@@ -92,6 +95,7 @@ export async function shareOrDownload(file) {
     try {
       await navigator.share({ files: [file], title: file.name });
       offerNext(file);
+      saved();
       return 'shared';
     } catch (err) {
       if (err && err.name === 'AbortError') return 'cancelled';
@@ -109,6 +113,7 @@ export async function shareFiles(files, title) {
   if (!(navigator.canShare && navigator.canShare({ files }))) return 'unsupported';
   try {
     await navigator.share({ files, title });
+    saved();
     return 'shared';
   } catch (err) {
     return err && err.name === 'AbortError' ? 'cancelled' : 'unsupported';

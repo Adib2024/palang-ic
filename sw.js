@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v17';
+const VERSION = 'dokujaga-v18';
 // Third-party libraries, the OCR engine and fonts (vendor/) change rarely and
 // are big, so they live in their own cache that survives app updates.
 const VENDOR_CACHE = 'dokujaga-vendor-1';
@@ -62,6 +62,7 @@ const ASSETS = [
   'css/style.css',
   'js/home.js',
   'js/page.js',
+  'js/guide.js',
   'js/pwa.js',
   'js/palang.js',
   'js/img2pdf.js',

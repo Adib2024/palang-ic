@@ -3,6 +3,7 @@ import { applyI18n } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
 import { deliverInbox } from './handoff.js';
+import { initGuide } from './guide.js';
 
 /**
  * @param {(lang: string) => void} [onLang] called after every language change
@@ -16,7 +17,9 @@ export function initPage(onLang) {
       b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
     });
     if (onLang) onLang(lang);
+    refreshGuide();
   };
+  let refreshGuide = () => {};
   document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => {
     lang = b.dataset.lang === 'en' ? 'en' : 'ms';
     store.save('lang', lang);
@@ -28,6 +31,9 @@ export function initPage(onLang) {
   // Files handed over from another tool or app: give them to this tool once
   // its own setup (which runs right after initPage) is done.
   setTimeout(() => { deliverInbox().catch(() => {}); }, 0);
+  // Steps bar, quick picks and the phone save bar, once the tool has set its
+  // controls up.
+  setTimeout(() => { refreshGuide = initGuide(() => lang); }, 0);
   return { lang: () => lang };
 }
 
