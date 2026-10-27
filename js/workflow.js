@@ -33,7 +33,7 @@ let result = null;
 let runToken = 0;
 let ready = false;
 
-const page = initPage(() => { if (ready) { renderAll(); refreshFontSelects(); } });
+const page = initPage(() => { if (ready) { renderAll(); refreshFontSelects(); maker.relabel(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 const setStatus = (msg) => { $('#status').textContent = msg || ''; };
 const setStatus2 = (msg) => { $('#status2').textContent = msg || ''; };

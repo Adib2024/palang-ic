@@ -4,6 +4,7 @@
 import * as store from './storage.js';
 import { loadPhoto } from './image-loader.js';
 import { bindFontSelect, cssFamily } from './fonts.js';
+import { t } from './i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -183,8 +184,117 @@ export function initSignatureMaker({ onError, lang }) {
   });
   syncTab();
 
+  /* Saved signatures: kept in this browser only, when the user asks. */
+  const saved = mountSaved();
+  pad.addEventListener('pointerdown', () => saved.clear());
+  $('#typedName').addEventListener('input', () => saved.clear());
+  $('#sigFile').addEventListener('change', () => saved.clear());
+  $$('input[name="sigTab"]').forEach((r) => r.addEventListener('change', () => saved.clear()));
+
+  async function fresh() {
+    if (settings.tab === 'draw') return padDirty ? trim(pad) : null;
+    if (settings.tab === 'type') return typed();
+    return imageSource;
+  }
+
+  function mountSaved() {
+    const KEY = 'savedSigs';
+    const MAX = 3;
+    const tr = (k) => t(lang(), k);
+    let list = store.load(KEY, []).filter((x) => x && typeof x.png === 'string' && x.png.startsWith('data:image/png'));
+    let chosen = null; // {id, canvas}
+    const box = document.createElement('div');
+    box.className = 'saved-sigs';
+    const head = document.createElement('p');
+    head.className = 'saved-title';
+    const row = document.createElement('div');
+    row.className = 'saved-row';
+    box.append(head, row);
+    const tabs = $('input[name="sigTab"]').closest('fieldset');
+    tabs.parentNode.insertBefore(box, tabs);
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'link save-sig';
+    saveBtn.id = 'saveSig';
+    const note = document.createElement('p');
+    note.className = 'hint';
+    note.setAttribute('aria-live', 'polite');
+    const addBtns = $('#addSig').closest('.buttons');
+    addBtns.after(saveBtn, note);
+
+    const toCanvas = (png) => new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        resolve(c);
+      };
+      img.onerror = reject;
+      img.src = png;
+    });
+    async function choose(item) {
+      chosen = { id: item.id, canvas: await toCanvas(item.png) };
+      render();
+    }
+    function render() {
+      head.textContent = tr('sigSaved');
+      saveBtn.textContent = tr('sigSaveThis');
+      box.hidden = !list.length;
+      row.textContent = '';
+      for (const item of list) {
+        const wrap = document.createElement('div');
+        wrap.className = 'saved-sig';
+        const pick = document.createElement('button');
+        pick.type = 'button';
+        pick.className = 'saved-pick';
+        pick.setAttribute('aria-pressed', String(!!chosen && chosen.id === item.id));
+        pick.setAttribute('aria-label', tr('sigUseSaved'));
+        pick.title = tr('sigUseSaved');
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = item.png;
+        pick.appendChild(img);
+        pick.addEventListener('click', () => choose(item));
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'icon-btn danger';
+        del.textContent = '✕';
+        del.setAttribute('aria-label', tr('sigDeleteSaved'));
+        del.title = tr('sigDeleteSaved');
+        del.addEventListener('click', () => {
+          list = list.filter((x) => x.id !== item.id);
+          store.save(KEY, list);
+          if (chosen && chosen.id === item.id) chosen = null;
+          render();
+        });
+        wrap.append(pick, del);
+        row.appendChild(wrap);
+      }
+    }
+    saveBtn.addEventListener('click', async () => {
+      const c = await fresh();
+      if (!c) { note.textContent = tr('sigNothingToSave'); return; }
+      const item = { id: Date.now(), png: c.toDataURL('image/png') };
+      list = [item, ...list].slice(0, MAX);
+      store.save(KEY, list);
+      chosen = { id: item.id, canvas: c };
+      note.textContent = tr('sigSavedOk');
+      render();
+    });
+    render();
+    if (list.length) choose(list[0]);
+    return {
+      clear() { if (chosen) { chosen = null; render(); } },
+      get canvas() { return chosen && chosen.canvas; },
+      relabel: render,
+    };
+  }
+
   return {
     async current() {
+      if (saved.canvas) return saved.canvas;
       if (settings.tab === 'draw') return padDirty ? trim(pad) : null;
       if (settings.tab === 'type') return typed();
       return imageSource;
@@ -194,5 +304,7 @@ export function initSignatureMaker({ onError, lang }) {
       return textCanvas(s, `500 72px ${await cssFamily(settings.textFont)}`, settings.ink);
     },
     ink: () => settings.ink,
+    /** Call after a language change. */
+    relabel: () => saved.relabel(),
   };
 }
