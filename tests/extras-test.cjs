@@ -181,6 +181,23 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
       const fimg = JSON.parse(execFileSync('python3', ['-I', '-c', PYFLAT, imgPath], { encoding: 'utf8' }));
       check(`${label}: Flatten to pictures leaves no text`, () => assert.deepStrictEqual([fimg.fields, fimg.annots, fimg.text.trim(), fimg.images], [0, 0, '', 1]));
 
+      /* ---------- HEIC (iPhone photos) ---------- */
+      // Chromium can't show HEIC itself, so this exercises the libheif worker.
+      if (fs.existsSync(path.join(__dirname, '..', 'vendor', 'libheif', 'libheif-bundle.js'))) {
+        await page.goto(origin + '/kecil-gambar/');
+        await page.setInputFiles('#pickFiles', { name: 'IMG_0001.HEIC', mimeType: 'image/heic', buffer: fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.heic')) });
+        await page.waitForFunction(() => window.__imgsmall.items.length === 1 || /tidak|dilangkau/i.test(document.querySelector('#status').textContent), null, { timeout: 30000 });
+        const heic = await page.evaluate(() => {
+          const it = window.__imgsmall.items[0];
+          if (!it) return null;
+          const px = it.canvas.getContext('2d').getImageData(10, 10, 1, 1).data;
+          return { w: it.canvas.width, h: it.canvas.height, nonBlank: px[3] === 255 && (px[0] + px[1] + px[2]) > 0 };
+        });
+        check(`${label}: HEIC photos open (decoded on the device)`, () => assert.deepStrictEqual(heic, { w: 320, h: 240, nonBlank: true }));
+      } else {
+        results.push(`skip ${label}: HEIC (vendor/libheif not present yet)`);
+      }
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));

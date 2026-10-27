@@ -24,6 +24,8 @@ jobs:
           npm install --no-audit --no-fund --ignore-scripts pdf-lib@1.17.1 pdfjs-dist@4.10.38 tesseract.js@5.1.1 tesseract.js-core@5.1.1 @pdf-lib/fontkit@1.1.1
           # OCR language models (Malay + English); optional packages, see fallback below.
           npm install --no-audit --no-fund --ignore-scripts @tesseract.js-data/eng@1.0.0 @tesseract.js-data/msa@1.0.0 || true
+          # HEIC (iPhone photos) decoder, loaded only when such a photo is opened.
+          npm install --no-audit --no-fund --ignore-scripts libheif-js@1
       - name: Copy into vendor/
         run: |
           rm -rf vendor && mkdir -p vendor/pdf-lib vendor/pdfjs
@@ -56,6 +58,13 @@ jobs:
           mkdir -p vendor/fontkit
           cp /tmp/v/node_modules/@pdf-lib/fontkit/dist/fontkit.umd.min.js vendor/fontkit/
           cp /tmp/v/node_modules/@pdf-lib/fontkit/LICENSE* vendor/fontkit/ 2>/dev/null || true
+          # HEIC: the single-file build with the WebAssembly embedded.
+          mkdir -p vendor/libheif
+          f=$(find /tmp/v/node_modules/libheif-js -name 'libheif-bundle.js' | head -1)
+          test -n "$f"
+          cp "$f" vendor/libheif/libheif-bundle.js
+          cp /tmp/v/node_modules/libheif-js/LICENSE* vendor/libheif/ 2>/dev/null || true
+          ls -la vendor/libheif
       - name: Build fonts (Google Fonts, OFL/Apache; static Regular/Bold, Latin subset)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +75,7 @@ jobs:
           {
             echo "Vendored by .github/workflows/vendor.yml — do not edit by hand."
             echo
-            for p in pdf-lib pdfjs-dist tesseract.js tesseract.js-core @pdf-lib/fontkit; do
+            for p in pdf-lib pdfjs-dist tesseract.js tesseract.js-core @pdf-lib/fontkit libheif-js; do
               node -e "const l=require('/tmp/v/package-lock.json').packages['node_modules/$p']; console.log('$p', l.version, l.integrity, l.license||'')"
             done
           } > vendor/VERSIONS.txt
