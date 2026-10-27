@@ -62,6 +62,7 @@ def footer(root):
         <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
         <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
       </div>
+      <p class="footer-links"><a href="{root}privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
       <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
     </div>
   </footer>'''

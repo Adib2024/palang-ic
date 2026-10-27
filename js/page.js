@@ -40,7 +40,7 @@ export function initPage(onLang) {
 /** Remember this tool for the dashboard's "Recently used" row (this browser only). */
 export function rememberTool() {
   const m = /\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(location.pathname);
-  if (!m || m[1] === 'kongsi' || !document.querySelector('.tool-hero')) return;
+  if (!m || m[1] === 'kongsi' || m[1] === 'privasi' || !document.querySelector('.tool-hero')) return;
   const href = `${m[1]}/`;
   store.save('recent', [href, ...store.load('recent', []).filter((h) => h !== href)].slice(0, 6));
 }
