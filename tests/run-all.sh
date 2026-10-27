@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT="${1:-tests/output}"
 node tests/crypto-test.mjs
-for t in render-test tools-test pdf-tools-test more-tools-test phase1-test phase2a-test phase2b-test phase2c-test phase2d-test imgsmall-test workflow-test fonts-test offline-test handoff-test batch-test; do
+for t in render-test tools-test pdf-tools-test more-tools-test phase1-test phase2a-test phase2b-test phase2c-test phase2d-test imgsmall-test guide-test workflow-test fonts-test offline-test handoff-test batch-test; do
   echo "::group::$t"
   node "tests/$t.cjs" "$OUT"
   echo "::endgroup::"

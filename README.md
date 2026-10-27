@@ -50,6 +50,7 @@ Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langka
 
 - Butang **Aa** di header: saiz teks (A / A+ / A++), kontras tinggi dan tema gelap — diingati dalam pelayar ini.
 - Dashboard: **cari alat** (BM atau English, tekan `/`), dan baris **Baru digunakan**.
+- Setiap alat: panduan **1-2-3** (pilih fail → tetapan → simpan), **pilihan pantas** (Kecilkan PDF, Watermark, Nombor muka surat, PDF → Gambar, Gambar → PDF), tetapan di kiri pada desktop, dan bar **Simpan** terapung di telefon.
 
 ### Banyak fail, kongsi & teruskan
 
@@ -142,6 +143,7 @@ The **Advanced mode** button in the header opens workflows: run several steps in
 
 - The **Aa** button in the header: text size (A / A+ / A++), high contrast and dark theme — remembered in this browser.
 - Dashboard: **search tools** (Malay or English, press `/`), and a **Recently used** row.
+- Every tool: a **1-2-3 guide** (choose file → settings → save), **quick picks** (Compress PDF, Watermark, Page numbers, PDF → Images, Images → PDF), settings on the left on desktop, and a floating **Save** bar on phones.
 
 ### Many files, sharing & continue
 
@@ -242,6 +244,7 @@ js/ocr.js                                       OCR PDF (tesseract.js, invisible
 js/fonts.js                                     font choice: standard PDF fonts, bundled set, user fonts
 js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: text layout, minimal OOXML writers
 js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
+js/guide.js                                     steps bar, quick picks and phone save bar for every tool page
 js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
 vendor/fontkit/                                 @pdf-lib/fontkit 1.1.1 (embeds custom fonts)
@@ -288,6 +291,7 @@ NODE_PATH="$(npm root -g)" node tests/workflow-test.cjs  # advanced mode / workf
 NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
 NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/imgsmall-test.cjs   # compress images (presets, crop, compare), display settings, dashboard search
+NODE_PATH="$(npm root -g)" node tests/guide-test.cjs     # steps bar, quick picks, settings left, phone save bar
 NODE_PATH="$(npm root -g)" node tests/phase2d-test.cjs   # PDF -> Word/Excel/PowerPoint (needs python-docx, openpyxl, python-pptx)
 tests/run-all.sh                                          # every suite (what CI runs)
 ```
