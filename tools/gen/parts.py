@@ -265,3 +265,7 @@ ICONS.update({
 ICONS.update({
  'passport': '<svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 18.5c.8-2.6 2.5-3.8 4.5-3.8s3.7 1.2 4.5 3.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
 })
+
+ICONS.update({
+ 'flatten': '<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 11h8M8 14.5h8M8 18h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 6.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+})

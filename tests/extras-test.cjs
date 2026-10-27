@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 const serve = require('./serve.cjs');
 
@@ -28,6 +29,51 @@ async function drawOnPad(page) {
   for (let i = 1; i <= 10; i++) await page.mouse.move(box.x + box.w * (0.2 + i * 0.06), box.y + box.h * (0.6 - Math.sin(i / 2) * 0.25));
   await page.mouse.up();
 }
+
+async function makeForm() {
+  const L = await import('/vendor/pdf-lib/pdf-lib.esm.min.js');
+  const d = await L.PDFDocument.create();
+  const p = d.addPage([595, 842]);
+  const form = d.getForm();
+  const tf = form.createTextField('nama');
+  tf.addToPage(p, { x: 60, y: 700, width: 220, height: 26 });
+  tf.setText('Ali bin Abu');
+  const cb = form.createCheckBox('setuju');
+  cb.addToPage(p, { x: 60, y: 650, width: 18, height: 18 });
+  cb.check();
+  // A stamp-like comment whose appearance is a red box.
+  const ap = d.context.formXObject([L.setFillingRgbColor(0.9, 0.1, 0.1), L.rectangle(0, 0, 100, 40), L.fill()], { BBox: [0, 0, 100, 40] });
+  const apRef = d.context.register(ap);
+  const annot = d.context.obj({ Type: 'Annot', Subtype: 'Stamp', Rect: [300, 500, 400, 540], AP: { N: apRef }, T: L.PDFHexString.fromText('Penyemak') });
+  p.node.addAnnot(d.context.register(annot));
+  const b = await d.save();
+  let s = '';
+  for (const x of b) s += String.fromCharCode(x);
+  return btoa(s);
+}
+
+async function redAt({ b64, fx, fy }) {
+  const pdfjs = await import('/vendor/pdfjs/pdf.min.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs';
+  const doc = await pdfjs.getDocument({ data: Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)), isEvalSupported: false }).promise;
+  const pg = await doc.getPage(1);
+  const vp = pg.getViewport({ scale: 1 });
+  const c = document.createElement('canvas');
+  c.width = vp.width; c.height = vp.height;
+  const ctx = c.getContext('2d');
+  await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+  const [r, g, b] = ctx.getImageData(Math.round(fx * vp.width), Math.round(fy * vp.height), 1, 1).data;
+  return r > 180 && g < 80 && b < 80;
+}
+
+const PYFLAT = `
+import sys, json
+from pypdf import PdfReader
+r = PdfReader(sys.argv[1])
+p = r.pages[0]
+print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Annots', []) or []),
+  'text': p.extract_text(), 'images': len(p.images)}))
+`;
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -109,6 +155,31 @@ async function drawOnPad(page) {
       const key = await page.evaluate(() => window.__redact.boxes.length);
       check(`${label}: Redact: one undo removes a whole search, redo brings it back`, () => assert.deepStrictEqual([found, none, back, key], [2, 0, 2, 0]));
       await page.screenshot({ path: path.join(OUT, `extras-undo-${label}.png`) });
+
+      /* ---------- Flatten PDF ---------- */
+      await page.goto(origin + '/ratakan-pdf/');
+      const formPdf = Buffer.from(await page.evaluate(makeForm), 'base64');
+      await page.setInputFiles('#pickFiles', { name: 'borang.pdf', mimeType: 'application/pdf', buffer: formPdf });
+      await page.waitForFunction(() => window.__flatten.input);
+      const foundFlat = await page.textContent('#flatFound');
+      check(`${label}: Flatten counts fields and comments`, () => assert.strictEqual(foundFlat, 'Dijumpai: 2 medan borang, 1 komen/cop.'));
+      const [fd] = await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
+      const flatPath = path.join(OUT, `${label}-${fd.suggestedFilename()}`);
+      await fd.saveAs(flatPath);
+      const fr = JSON.parse(execFileSync('python3', ['-I', '-c', PYFLAT, flatPath], { encoding: 'utf8' }));
+      const red = await page.evaluate(redAt, { b64: fs.readFileSync(flatPath).toString('base64'), fx: 350 / 595, fy: 1 - 520 / 842 });
+      check(`${label}: Flatten: no fields or comments left, values and stamp drawn on the page`, () => {
+        assert.strictEqual(fd.suggestedFilename(), 'borang-rata.pdf');
+        assert.deepStrictEqual([fr.fields, fr.annots], [0, 0]);
+        assert.match(fr.text, /Ali bin Abu/);
+        assert.strictEqual(red, true);
+      });
+      await page.check('#flatImage');
+      const [fi] = await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
+      const imgPath = path.join(OUT, `${label}-flat-image.pdf`);
+      await fi.saveAs(imgPath);
+      const fimg = JSON.parse(execFileSync('python3', ['-I', '-c', PYFLAT, imgPath], { encoding: 'utf8' }));
+      check(`${label}: Flatten to pictures leaves no text`, () => assert.deepStrictEqual([fimg.fields, fimg.annots, fimg.text.trim(), fimg.images], [0, 0, '', 1]));
 
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
