@@ -22,11 +22,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install test tools (Playwright + Chromium, pypdf)
@@ -41,7 +41,7 @@ jobs:
         run: tests/run-all.sh "$RUNNER_TEMP/test-output"
       - name: Keep screenshots and outputs if a test failed
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-output
           path: ${{ runner.temp }}/test-output
@@ -50,12 +50,12 @@ jobs:
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Publish only the static app, not tests or fixtures.
       - name: Stage site
         run: |
@@ -64,7 +64,7 @@ jobs:
           touch _site/.nojekyll
       # Self-host Inter (SIL OFL 1.1): subset to Latin + punctuation and
       # convert to WOFF2 so the site never loads fonts from another host.
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Build web fonts
@@ -84,7 +84,7 @@ jobs:
           cp /usr/share/doc/fonts-inter/copyright _site/fonts/LICENSE-Inter.txt
           ls -la _site/fonts
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
       - id: deployment

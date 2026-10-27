@@ -1,0 +1,7 @@
+# Keep the CI actions up to date (a monthly pull request; nothing merges by itself).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
