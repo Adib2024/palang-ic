@@ -1187,3 +1187,14 @@ textarea.form-input { resize: none; line-height: 1.2; }
 .float-bar .btn { min-height: 52px; max-width: 60vw; }
 body.has-float-bar .site-footer { padding-bottom: 84px; }
 @media (min-width: 980px) { .float-bar { display: none !important; } }
+
+/* ---------- Buang Metadata ---------- */
+.meta-found h3, .meta-after h3 { margin: 0 0 8px; font-size: .95rem; }
+.meta-list { margin: 0 0 16px; display: grid; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.meta-list > div { display: grid; grid-template-columns: minmax(110px, 38%) minmax(0, 1fr); gap: 10px; padding: 9px 12px; border-top: 1px solid var(--border); font-size: .88rem; }
+.meta-list > div:first-child { border-top: 0; }
+.meta-list dt { font-weight: 700; color: var(--muted); }
+.meta-list dd { margin: 0; overflow-wrap: anywhere; }
+.meta-list .meta-clean { display: block; grid-template-columns: none; color: var(--safe-text); background: var(--safe-bg); font-weight: 700; }
+.meta-after .meta-list { border-color: var(--safe-border); }
+.meta-opts .check { margin-bottom: 6px; }

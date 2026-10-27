@@ -22,6 +22,7 @@
 | **Isi Borang PDF / Fill PDF Form**: kotak teks, tanda, pilihan, senarai; boleh diratakan / text, checkbox, radio, dropdown; optional flatten | ✅ `isi-borang/` |
 | **Buka Kunci PDF / Unlock PDF**: buang kata laluan atau sekatan cetak/salin (anda mesti tahu kata laluan) / remove a password or print/copy restrictions (you must know the password) | ✅ `buka-kunci-pdf/` |
 | **Lindungi PDF / Protect PDF**: kunci dengan kata laluan AES-256, sekat cetak/salin / lock with an AES-256 password, block printing/copying | ✅ `lindungi-pdf/` |
+| **Buang Metadata PDF / Remove PDF Metadata**: lihat & buang pengarang, perisian, tarikh, XMP, ID, lampiran, JavaScript, nama pada komen / see & remove author, software, dates, XMP, ID, attachments, JavaScript, comment authors | ✅ `buang-metadata/` |
 | **Banding PDF / Compare PDF**: perkataan ditambah/dibuang + kawasan berubah setiap muka surat / added/removed words + changed areas per page | ✅ `banding-pdf/` |
 | **OCR PDF**: imbasan/gambar → PDF boleh dicari & disalin + teks (.txt); BM & English, enjin dihos sendiri / scans/photos → searchable, copyable PDF + text; Malay & English, self-hosted engine | ✅ `ocr-pdf/` |
 | **Kecilkan PDF / Compress PDF**: tahap atau had saiz (cth. ≤ 2 MB) / level or size limit (e.g. ≤ 2 MB) | ✅ `kecilkan-pdf/` |
@@ -244,6 +245,7 @@ js/ocr.js                                       OCR PDF (tesseract.js, invisible
 js/fonts.js                                     font choice: standard PDF fonts, bundled set, user fonts
 js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: text layout, minimal OOXML writers
 js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
+js/metadata.js, pdf-meta.js                     Remove PDF Metadata (read + clean, drops unreferenced objects)
 js/guide.js                                     steps bar, quick picks and phone save bar for every tool page
 js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
@@ -292,6 +294,7 @@ NODE_PATH="$(npm root -g)" node tests/phase2c-test.cjs   # compare, OCR
 NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/imgsmall-test.cjs   # compress images (presets, crop, compare), display settings, dashboard search
 NODE_PATH="$(npm root -g)" node tests/guide-test.cjs     # steps bar, quick picks, settings left, phone save bar
+NODE_PATH="$(npm root -g)" node tests/metadata-test.cjs  # remove PDF metadata (needs python3 + pypdf)
 NODE_PATH="$(npm root -g)" node tests/phase2d-test.cjs   # PDF -> Word/Excel/PowerPoint (needs python-docx, openpyxl, python-pptx)
 tests/run-all.sh                                          # every suite (what CI runs)
 ```

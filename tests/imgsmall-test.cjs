@@ -182,7 +182,7 @@ const BACK = path.join(__dirname, 'fixtures', 'sample-back.jpg');
       await page.click('.chip[data-cat="security"]');
       await page.fill('#toolSearch', 'pdf');
       const sec = await visible();
-      check(`${label}: search combines with the category chip`, () => assert.deepStrictEqual(sec, ['tandatangan-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/']));
+      check(`${label}: search combines with the category chip`, () => assert.deepStrictEqual(sec, ['tandatangan-pdf/', 'hitamkan-pdf/', 'buka-kunci-pdf/', 'lindungi-pdf/', 'buang-metadata/']));
       await page.click('.chip[data-cat="all"]');
       await page.fill('#toolSearch', 'zzzz');
       const none = await page.textContent('#noTools');
