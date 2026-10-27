@@ -84,6 +84,13 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
   const check = (name, fn) => { fn(); results.push(`ok   ${name}`); };
 
   try {
+    /* Link previews: every page names the share image, which is 1200×630. */
+    const pages = ['index.html', ...fs.readdirSync(path.join(__dirname, '..')).filter((d) => fs.existsSync(path.join(__dirname, '..', d, 'index.html'))).map((d) => `${d}/index.html`)];
+    const missing = pages.filter((f) => !/<meta property="og:image" content="https:\/\/[^"]+\/icons\/og\.png">/.test(fs.readFileSync(path.join(__dirname, '..', f), 'utf8')));
+    const og = fs.readFileSync(path.join(__dirname, '..', 'icons', 'og.png'));
+    check('every page has link-preview tags', () => assert.deepStrictEqual(missing, []));
+    check('share image is 1200×630 PNG', () => assert.deepStrictEqual([og.readUInt32BE(16), og.readUInt32BE(20)], [1200, 630]));
+
     for (const [label, viewport, mobile] of [['desktop', { width: 1366, height: 900 }, false], ['phone', { width: 390, height: 844 }, true]]) {
       const context = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, acceptDownloads: true });
       const page = await context.newPage();
