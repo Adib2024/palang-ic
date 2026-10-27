@@ -20,6 +20,7 @@
 | **Edit PDF**: teks, gambar, kotak, bulatan, garis, lukisan, highlight / text, images, shapes, drawing, highlight | ✅ `edit-pdf/` |
 | **Hitamkan PDF / Redact PDF**: cari No. IC, telefon, e-mel, No. akaun atau teks lain; muka surat dihitamkan jadi gambar supaya teks betul-betul hilang / find IC, phone, email, account numbers or any text; redacted pages are flattened so the text is really gone | ✅ `hitamkan-pdf/` |
 | **Isi Borang PDF / Fill PDF Form**: kotak teks, tanda, pilihan, senarai; boleh diratakan / text, checkbox, radio, dropdown; optional flatten | ✅ `isi-borang/` |
+| **Ratakan PDF / Flatten PDF**: kunci isian borang, komen & cop ke dalam muka surat, atau jadikan setiap muka surat gambar / lock form entries, comments & stamps into the page, or turn pages into pictures | ✅ `ratakan-pdf/` |
 | **Buka Kunci PDF / Unlock PDF**: buang kata laluan atau sekatan cetak/salin (anda mesti tahu kata laluan) / remove a password or print/copy restrictions (you must know the password) | ✅ `buka-kunci-pdf/` |
 | **Lindungi PDF / Protect PDF**: kunci dengan kata laluan AES-256, sekat cetak/salin / lock with an AES-256 password, block printing/copying | ✅ `lindungi-pdf/` |
 | **Buang Metadata PDF / Remove PDF Metadata**: lihat & buang pengarang, perisian, tarikh, XMP, ID, lampiran, JavaScript, nama pada komen / see & remove author, software, dates, XMP, ID, attachments, JavaScript, comment authors | ✅ `buang-metadata/` |
@@ -248,6 +249,8 @@ js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: te
 js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
 js/metadata.js, pdf-meta.js                     Remove PDF Metadata (read + clean, drops unreferenced objects)
 js/passport.js                                  Passport Photo (frame, adjust, print sheets)
+js/flatten.js, pdf-flatten.js                   Flatten PDF (form fields, annotation appearances, picture mode)
+js/undo.js                                      undo/redo steps + buttons for the page editors
 js/guide.js                                     steps bar, quick picks and phone save bar for every tool page
 js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/

@@ -8,6 +8,7 @@ export const CATALOG = [
   { href: 'tandatangan-pdf/', key: 'toolSignTitle', accepts: 'pdf', max: 1 },
   { href: 'lindungi-pdf/', key: 'toolProtectTitle', accepts: 'pdf', max: 1 },
   { href: 'buang-metadata/', key: 'toolMetaTitle', accepts: 'pdf', max: 1 },
+  { href: 'ratakan-pdf/', key: 'toolFlatTitle', accepts: 'pdf', max: 1 },
   { href: 'gambar-pasport/', key: 'toolPassportTitle', accepts: 'image', max: 1 },
   { href: 'watermark-pdf/', key: 'toolWmTitle', accepts: 'pdf', max: 1 },
   { href: 'nombor-pdf/', key: 'toolPnTitle', accepts: 'pdf', max: 1 },
