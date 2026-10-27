@@ -257,3 +257,7 @@ ICONS.update({
  'excel': _doc_icon('<path d="M8.5 11l5 6m0-6-5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'),
  'ppt': _doc_icon('<path d="M9.5 17.5V11h2.3a2 2 0 0 1 0 4H9.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>'),
 })
+
+ICONS.update({
+ 'meta': '<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 21H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 8h4M8 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m14.5 15.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+})

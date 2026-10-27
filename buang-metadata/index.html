@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Privacy guarantee enforced by the browser: this page cannot open any
+       network connection, and loads code, styles, fonts and images only
+       from this site. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Buang Metadata PDF · DokuJaga</title>
+  <meta name="description" content="Buang maklumat tersembunyi dalam PDF (pengarang, perisian, tarikh, XMP, lampiran) terus dalam pelayar. Tiada apa-apa dimuat naik.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+  <link rel="preload" href="../fonts/inter-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/theme.js"></script>
+  <script type="module" src="../js/metadata.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <nav class="nav-links" aria-label="Utama">
+        <a href="../#tools" data-i18n="navTools">Alat</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      </nav>
+      <div class="top-actions">
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+        <div class="lang" role="group" aria-label="Bahasa / Language">
+          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero tool-hero tone-indigo">
+    <div class="container">
+      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 21H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 8h4M8 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m14.5 15.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      <h1 data-i18n="toolMetaTitle">Buang Metadata PDF</h1>
+      <p class="lead" data-i18n="metaLead"></p>
+    </div>
+  </section>
+
+  <main class="page">
+    <div class="container stack">
+      <section class="privacy">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+      </section>
+
+      <div class="tool-layout narrow tone-indigo is-empty" id="toolLayout">
+        <section class="card" aria-labelledby="docTitle">
+          <div class="dropzone" id="dropzone">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><strong data-i18n="pdfDropBig"></strong></p>
+            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <div class="drop-buttons">
+              <label class="btn primary lg">
+                <input type="file" id="pickFiles" accept="application/pdf,.pdf" multiple>
+                <span data-i18n="pdfChoose"></span>
+              </label>
+            </div>
+          </div>
+          <div class="file-card after-load">
+            <div class="file-info">
+              <h2 id="docTitle" class="file-name"></h2>
+              <p class="file-meta" id="docMeta"></p>
+              <button type="button" class="link" id="another" data-i18n="cmpAnother">Pilih PDF lain</button>
+            </div>
+          </div>
+          <div class="after-load">
+            <section class="meta-found" aria-labelledby="foundTitle">
+              <h3 id="foundTitle" data-i18n="metaFound">Maklumat tersembunyi yang dijumpai</h3>
+              <dl class="meta-list" id="metaFound"></dl>
+            </section>
+            <fieldset class="meta-opts">
+              <legend data-i18n="metaRemove">Buang</legend>
+              <label class="check"><input type="checkbox" id="rmInfo" checked><span data-i18n="metaOptInfo">Tajuk, pengarang, perisian, tarikh &amp; ID dokumen</span></label>
+              <label class="check"><input type="checkbox" id="rmXmp" checked><span data-i18n="metaOptXmp">Metadata XMP</span></label>
+              <label class="check"><input type="checkbox" id="rmFiles" checked><span data-i18n="metaOptFiles">Fail lampiran tersembunyi</span></label>
+              <label class="check"><input type="checkbox" id="rmJs" checked><span data-i18n="metaOptJs">JavaScript &amp; tindakan automatik</span></label>
+              <label class="check"><input type="checkbox" id="rmAuthors" checked><span data-i18n="metaOptAuthors">Nama pengarang pada komen</span></label>
+            </fieldset>
+            <label class="field">
+              <span data-i18n="metaNewTitle">Tajuk baharu (pilihan)</span>
+              <input type="text" id="newTitle" maxlength="120" autocomplete="off">
+            </label>
+            <div class="meta-after" id="result" hidden>
+              <h3 data-i18n="metaAfter">Selepas dibersihkan</h3>
+              <dl class="meta-list" id="metaAfter"></dl>
+            </div>
+            <div class="buttons">
+              <button type="button" class="primary" id="savePdf" data-i18n="metaBtn"></button>
+              <button type="button" id="sharePdf" data-i18n="pdfShare"></button>
+            </div>
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+      </div>
+      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+    </div>
+  </footer>
+</body>
+</html>
