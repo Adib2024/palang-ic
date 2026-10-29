@@ -282,3 +282,7 @@ ICONS.update({
 ICONS.update({
  'imgconvert': '<svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="9" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 11.5 2.5-2.5 2 2 1.5-1.5 1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><rect x="12.5" y="11" width="9" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 6.5h4.5v3M17 8l1.5 1.5L20 8M10 17.5H5.5v-3M7 16l-1.5-1.5L4 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 })
+
+ICONS.update({
+ 'office2pdf': '<svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m4.6 6.3 1 4.4 1.4-3.2 1.4 3.2 1-4.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 9h3.5l4 4v7a1 1 0 0 1-1 1H14a1 1 0 0 1-1-1v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 5.5h3.5m0 0L15 4m1.5 1.5L15 7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 16.5h3M15.5 18.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+})

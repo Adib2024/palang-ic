@@ -75,7 +75,11 @@
             ".jpeg",
             ".png",
             ".webp",
-            ".heic"
+            ".heic",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".docx",
+            ".xlsx"
           ]
         }
       ]

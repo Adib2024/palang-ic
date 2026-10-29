@@ -3,7 +3,7 @@
 import { initPage } from './page.js';
 import { formatSize } from './pdf-kit.js';
 import { peekInbox, takeInbox } from './handoff.js';
-import { toolsFor, isPdfFile } from './tool-catalog.js';
+import { toolsFor, isPdfFile, isOfficeFile } from './tool-catalog.js';
 
 const $ = (sel) => document.querySelector(sel);
 let files = [];
@@ -15,8 +15,9 @@ function render() {
   files.forEach((f) => {
     const li = document.createElement('li');
     const kind = document.createElement('span');
-    kind.className = `wf-kind ${isPdfFile(f) ? 'pdf' : 'img'}`;
-    kind.textContent = isPdfFile(f) ? 'PDF' : 'IMG';
+    const office = isOfficeFile(f);
+    kind.className = `wf-kind ${isPdfFile(f) || office ? 'pdf' : 'img'}`;
+    kind.textContent = isPdfFile(f) ? 'PDF' : office ? f.name.split('.').pop().toUpperCase() : 'IMG';
     const name = document.createElement('span');
     name.className = 'wf-fname';
     name.textContent = f.name;

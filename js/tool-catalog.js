@@ -1,6 +1,6 @@
 // Which tools can take which files: used by the "Pilih alat" page (files
 // shared to DokuJaga) and the "Teruskan ke…" bar after saving a result.
-// accepts: 'pdf' | 'image' | 'both'; max: how many files the tool takes.
+// accepts: 'pdf' | 'image' | 'both' | 'office'; max: how many files the tool takes.
 export const CATALOG = [
   { href: 'palang/', key: 'toolPalangTitle', accepts: 'image', max: 2 },
   { href: 'gabung-pdf/', key: 'toolMergeTitle', accepts: 'pdf', max: 99 },
@@ -11,6 +11,7 @@ export const CATALOG = [
   { href: 'ratakan-pdf/', key: 'toolFlatTitle', accepts: 'pdf', max: 1 },
   { href: 'gambar-pasport/', key: 'toolPassportTitle', accepts: 'image', max: 1 },
   { href: 'tukar-gambar/', key: 'toolImgConvTitle', accepts: 'image', max: 99 },
+  { href: 'word-pdf/', key: 'toolO2pTitle', accepts: 'office', max: 99 },
   { href: 'watermark-pdf/', key: 'toolWmTitle', accepts: 'pdf', max: 1 },
   { href: 'nombor-pdf/', key: 'toolPnTitle', accepts: 'pdf', max: 1 },
   { href: 'ocr-pdf/', key: 'toolOcrTitle', accepts: 'both', max: 99 },
@@ -37,7 +38,10 @@ export const isPdfFile = (f) => f.type === 'application/pdf' || /\.pdf$/i.test(f
 export const isImageFile = (f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic|gif|bmp)$/i.test(f.name);
 
 /** Tools that can take all of `files`. */
+export const isOfficeFile = (f) => /\.(docx|xlsx)$/i.test(f.name) || /officedocument\.(wordprocessingml|spreadsheetml)/.test(f.type);
+
 export function toolsFor(files) {
+  if (files.length && files.every(isOfficeFile)) return CATALOG.filter((t) => t.accepts === 'office' && files.length <= t.max);
   const pdfs = files.filter(isPdfFile).length;
   const imgs = files.filter(isImageFile).length;
   if (!files.length || pdfs + imgs < files.length) return [];
