@@ -27,7 +27,7 @@ const haystack = new Map(tools.map((card) => {
 }));
 
 let ready = false;
-const page = initPage(() => { if (ready) filter(); });
+const page = initPage(() => { if (ready) { filter(); relabelTips(); } });
 const tr = (key, vars) => t(page.lang(), key, vars);
 
 function filter() {
@@ -94,5 +94,40 @@ function renderRecent() {
   }
 }
 
+/** Three short tips for first-time visitors; hidden for good once closed. */
+function mountTips() {
+  if (store.load('tipsSeen', false)) return () => {};
+  const box = document.createElement('section');
+  box.className = 'first-tips';
+  box.setAttribute('aria-labelledby', 'tipsTitle');
+  const head = document.createElement('h2');
+  head.id = 'tipsTitle';
+  const list = document.createElement('ol');
+  const items = ['tip1', 'tip2', 'tip3'].map(() => {
+    const li = document.createElement('li');
+    list.appendChild(li);
+    return li;
+  });
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'btn primary';
+  close.id = 'tipsClose';
+  close.addEventListener('click', () => {
+    store.save('tipsSeen', true);
+    box.remove();
+    $('#toolSearch').focus();
+  });
+  box.append(head, list, close);
+  const tools = $('#tools');
+  tools.insertBefore(box, $('.tool-search', tools));
+  return () => {
+    head.textContent = tr('tipsTitle');
+    items.forEach((li, i) => { li.textContent = tr(`tip${i + 1}`); });
+    close.textContent = tr('tipsClose');
+  };
+}
+const relabelTips = mountTips();
+
 ready = true;
 filter();
+relabelTips();

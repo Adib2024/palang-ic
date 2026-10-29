@@ -1236,3 +1236,13 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
 .pv-list { margin: 0 0 14px; padding-left: 20px; display: grid; gap: 4px; font-weight: 600; }
 .site-footer .footer-links { display: flex; gap: 16px; margin: 0; }
 .site-footer .footer-links a { color: var(--muted); font-size: .85rem; font-weight: 600; }
+
+/* ---------- First-visit tips ---------- */
+.first-tips {
+  max-width: 760px; margin: 0 auto 20px; padding: 18px 20px; border-radius: var(--radius);
+  background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); color: var(--text);
+}
+.first-tips h2 { margin: 0 0 10px; font-size: 1.05rem; }
+.first-tips ol { margin: 0 0 14px; padding-left: 22px; display: grid; gap: 6px; line-height: 1.5; }
+.first-tips .btn { width: 100%; }
+@media (min-width: 640px) { .first-tips .btn { width: auto; } }
