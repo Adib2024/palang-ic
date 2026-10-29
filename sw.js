@@ -1,10 +1,12 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v24';
+const VERSION = 'dokujaga-v26';
 // Third-party libraries, the OCR engine and fonts (vendor/) change rarely and
 // are big, so they live in their own cache that survives app updates.
 const VENDOR_CACHE = 'dokujaga-vendor-1';
 const ASSETS = [
+  'word-pdf/',
+  'word-pdf/index.html',
   'tukar-gambar/',
   'tukar-gambar/index.html',
   'privasi/',
@@ -103,6 +105,10 @@ const ASSETS = [
   'js/image-loader.js',
   'js/pdf.js',
   'js/i18n.js',
+  'js/unzip.js',
+  'js/office-layout.js',
+  'js/office-read.js',
+  'js/office2pdf.js',
   'js/webp.js',
   'js/imgconvert.js',
   'js/pdf-flatten.js',

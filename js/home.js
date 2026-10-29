@@ -11,6 +11,7 @@ let cat = 'all';
 const EXTRA = {
   'kecil-gambar/': 'resize shrink photo jpg png webp kb mb',
   'tukar-gambar/': 'convert heic iphone jpg png webp format',
+  'word-pdf/': 'docx xlsx doc xls microsoft office convert tukar',
   'kecilkan-pdf/': 'shrink size mb kb',
   'gambar-pdf/': 'jpg png photo convert',
   'pdf-gambar/': 'jpg png convert',

@@ -32,6 +32,7 @@
 | **Tandatangan PDF / Sign PDF**: lukis, taip atau gambar tandatangan; letak, alih, ubah saiz; teks & tarikh / draw, type or upload; place, move, resize; text & date | ✅ `tandatangan-pdf/` |
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
 | **PDF → Word / Excel / PowerPoint** (ringkas / simple): teks, perenggan, tajuk, jadual mudah; imbasan jadi gambar / text, paragraphs, headings, simple tables; scans become pictures | ✅ `pdf-word/` `pdf-excel/` `pdf-powerpoint/` |
+| **Word/Excel → PDF** (ringkas / simple): .docx (teks, tajuk, senarai, jadual, gambar) dan .xlsx (setiap helaian sebagai jadual) / .docx (text, headings, lists, tables, pictures) and .xlsx (each sheet as a grid) | ✅ `word-pdf/` |
 | **Kecilkan Gambar / Compress Images**: preset (borang ≤ 200 KB, WhatsApp, e-mel, pasport, laman web), had saiz/dimensi/kualiti sendiri, JPG/PNG/WebP, putar & potong, banding sebelum/selepas, tampal, buang EXIF / presets, custom size/dimension/quality, JPG/PNG/WebP, rotate & crop, before/after compare, paste, strips EXIF | ✅ `kecil-gambar/` |
 | **Tukar Gambar / Convert Images**: JPG / PNG / WebP pada saiz penuh, termasuk HEIC iPhone, banyak sekali gus (ZIP) / at full size, incl. iPhone HEIC, many at once (ZIP) | ✅ `tukar-gambar/` |
 
@@ -252,6 +253,7 @@ js/metadata.js, pdf-meta.js                     Remove PDF Metadata (read + clea
 js/passport.js                                  Passport Photo (frame, adjust, print sheets)
 js/flatten.js, pdf-flatten.js                   Flatten PDF (form fields, annotation appearances, picture mode)
 js/undo.js                                      undo/redo steps + buttons for the page editors
+js/office2pdf.js, office-read.js, office-layout.js, unzip.js   Word/Excel → PDF (read OOXML, lay out with pdf-lib)
 js/guide.js                                     steps bar, quick picks and phone save bar for every tool page
 js/ocr-core.js, pdf-stamps.js                   shared OCR engine + text layer; shared watermark/page-number stamps
 vendor/fonts/                                   Google Fonts (OFL/Apache), static + Latin subset (tools/build-fonts.py); licences in vendor/fonts/licenses/
@@ -302,6 +304,7 @@ NODE_PATH="$(npm root -g)" node tests/fonts-test.cjs     # font choice (needs py
 NODE_PATH="$(npm root -g)" node tests/imgsmall-test.cjs   # compress images (presets, crop, compare), display settings, dashboard search
 NODE_PATH="$(npm root -g)" node tests/guide-test.cjs     # steps bar, quick picks, settings left, phone save bar
 NODE_PATH="$(npm root -g)" node tests/metadata-test.cjs  # remove PDF metadata (needs python3 + pypdf)
+NODE_PATH="$(npm root -g)" node tests/office2pdf-test.cjs # Word/Excel → PDF (needs python-docx, openpyxl, pypdf)
 NODE_PATH="$(npm root -g)" node tests/phase2d-test.cjs   # PDF -> Word/Excel/PowerPoint (needs python-docx, openpyxl, python-pptx)
 tests/run-all.sh                                          # every suite (what CI runs)
 ```
