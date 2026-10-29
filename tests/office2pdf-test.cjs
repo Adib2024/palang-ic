@@ -39,7 +39,10 @@ const readPdf = (f) => JSON.parse(execFileSync('python3', ['-I', '-c', PY, f], {
       const foreign = [];
       page.on('request', (r) => { if (!/^(data|blob):/.test(r.url()) && !r.url().startsWith(origin)) foreign.push(r.url()); });
       page.on('pageerror', (e) => errors.push(String(e)));
-      page.on('console', (m) => { if (m.type() === 'error' || /Content Security Policy|Refused to/i.test(m.text())) errors.push(m.text()); });
+      // (The site's own Inter web font is built at deploy time, so CI logs 404s for it.)
+      page.on('console', (m) => {
+        if (/Content Security Policy|Refused to/i.test(m.text()) || (m.type() === 'error' && !/Failed to load resource/.test(m.text()))) errors.push(m.text());
+      });
       const convert = async (file) => {
         await page.setInputFiles('#pickFiles', path.join(SRC, file));
         await page.waitForFunction(() => window.__o2p.input);
