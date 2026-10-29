@@ -100,6 +100,15 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
       await page.goto(origin + '/tandatangan-pdf/');
       const pdf = { name: 'surat.pdf', mimeType: 'application/pdf', buffer: Buffer.from(await page.evaluate(makePdf), 'base64') };
 
+      /* ---------- First-visit tips ---------- */
+      await page.goto(origin + '/');
+      const tips = await page.$$eval('.first-tips li', (els) => els.length);
+      await page.click('#tipsClose');
+      await page.reload();
+      const tipsAgain = await page.$$eval('.first-tips', (els) => els.length);
+      check(`${label}: first visit shows 3 tips; closed tips stay closed`, () => assert.deepStrictEqual([tips, tipsAgain], [3, 0]));
+      await page.goto(origin + '/tandatangan-pdf/');
+
       /* ---------- Saved signatures ---------- */
       const savedHidden = await page.$eval('.saved-sigs', (e) => e.hidden);
       check(`${label}: no saved signatures at first`, () => assert.strictEqual(savedHidden, true));
