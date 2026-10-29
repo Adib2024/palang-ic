@@ -1257,3 +1257,5 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
 .wf-last strong { display: block; margin-bottom: 6px; }
 .wf-last .btn { min-height: 52px; }
 @media (min-width: 640px) { .wf-last { grid-template-columns: minmax(0, 1fr) auto; } }
+.merge-view { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 14px; }
+.merge-view fieldset { margin: 0; flex: 1 1 260px; max-width: 420px; }

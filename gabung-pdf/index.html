@@ -85,6 +85,14 @@
               <button type="button" class="link" id="clearAll" data-i18n="i2pClear">Buang semua</button>
             </div>
           </div>
+          <div class="merge-view" id="mergeViewRow" hidden>
+            <fieldset class="segmented small">
+              <legend class="sr-title" data-i18n="mergeViewLabel">Paparan</legend>
+              <label><input type="radio" name="mergeView" value="files" checked><span data-i18n="mergeViewFiles">Ikut fail</span></label>
+              <label><input type="radio" name="mergeView" value="pages"><span data-i18n="mergeViewPages">Setiap muka surat</span></label>
+            </fieldset>
+            <button type="button" class="link" id="pagesReset" hidden data-i18n="mergePagesReset">Set semula muka surat</button>
+          </div>
           <p class="hint-top" data-i18n="mergeHint"></p>
           <ol class="page-grid" id="pageGrid"></ol>
         </section>
