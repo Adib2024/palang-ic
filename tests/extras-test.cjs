@@ -240,6 +240,41 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
       check(`${label}: privacy page fits the screen`, () => assert(ovPv <= 0, `${ovPv}px`));
       await page.screenshot({ path: path.join(OUT, `extras-privacy-${label}.png`), fullPage: true });
 
+      /* ---------- Repeat last workflow ---------- */
+      await page.goto(origin + '/aliran-kerja/');
+      await page.evaluate(() => localStorage.setItem('palangic:wf-last-run', JSON.stringify({ steps: [{ type: 'pagenum', opts: {} }, { type: 'compress', opts: {} }], chosen: null, at: 1 })));
+      await page.reload();
+      const lastTitle = await page.textContent('#lastRun strong');
+      await page.evaluate(() => { document.querySelector('#pickFiles').click = () => {}; });
+      await page.click('#repeatLast');
+      const wfTypes = await page.evaluate(() => window.__wf.steps.map((st) => st.type));
+      check(`${label}: "repeat last workflow" restores its steps`, () => {
+        assert.strictEqual(lastTitle, 'Aliran terakhir anda: Aliran sendiri');
+        assert.deepStrictEqual(wfTypes, ['pagenum', 'compress']);
+      });
+
+      /* ---------- Send to WhatsApp (phones) ---------- */
+      await page.goto(origin + '/nombor-pdf/');
+      await page.setInputFiles('#pickFiles', pdf);
+      await page.waitForFunction(() => !document.querySelector('#toolLayout').classList.contains('is-empty'));
+      // Headless Chromium has no share sheet (and may report no touch): stand in for a phone's.
+      await page.evaluate((isPhone) => {
+        if (isPhone) Object.defineProperty(navigator, 'maxTouchPoints', { get: () => 5 });
+        navigator.canShare = () => true;
+        navigator.share = async (d) => { window.__shared = d.files.map((f) => f.name); };
+      }, mobile);
+      await Promise.all([page.waitForEvent('download'), page.click('#savePdf')]);
+      await page.waitForSelector('.next-bar');
+      const wa = await page.$$eval('#shareWhatsapp', (els) => els.length);
+      if (mobile) {
+        await page.click('#shareWhatsapp');
+        const shared = await page.evaluate(() => window.__shared);
+        check(`${label}: after saving, a big "Send to WhatsApp" button shares the file`, () => { assert.strictEqual(wa, 1); assert.deepStrictEqual(shared, ['surat-bernombor.pdf']); });
+        await page.screenshot({ path: path.join(OUT, `extras-whatsapp-${label}.png`) });
+      } else {
+        check(`${label}: no WhatsApp button on a computer`, () => assert.strictEqual(wa, 0));
+      }
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));

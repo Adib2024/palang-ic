@@ -99,7 +99,45 @@ function tplCard(id, title, desc, list, onDelete) {
   return card;
 }
 
+/** Name of a template / saved workflow id, for the "repeat last" banner. */
+function flowName(id) {
+  if (id && TEMPLATES_WF.some((t) => t.id === id)) return tr(`wfTpl_${id}`);
+  const m = /^saved-(\d+)$/.exec(id || '');
+  const saved = m && savedList()[Number(m[1])];
+  return saved ? saved.name : tr('wfCustomFlow');
+}
+
+/** "Repeat your last workflow": same steps, new files, one tap. */
+function renderLastRun() {
+  let box = $('#lastRun');
+  const last = store.load('wf-last-run', null);
+  if (!last || !Array.isArray(last.steps) || !last.steps.length) { if (box) box.remove(); return; }
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'lastRun';
+    box.className = 'wf-last';
+    $('#tplGrid').before(box);
+  }
+  box.textContent = '';
+  const text = document.createElement('div');
+  const title = document.createElement('strong');
+  title.textContent = tr('wfLastTitle', { name: flowName(last.chosen) });
+  text.append(title, stepChips(last.steps));
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn primary';
+  btn.id = 'repeatLast';
+  btn.textContent = tr('wfLastRepeat');
+  btn.addEventListener('click', () => {
+    setSteps(last.steps, last.chosen);
+    setStatus(tr('wfLastReady'));
+    $('#pickFiles').click();
+  });
+  box.append(text, btn);
+}
+
 function renderTemplates() {
+  renderLastRun();
   const grid = $('#tplGrid');
   grid.textContent = '';
   for (const tpl of TEMPLATES_WF) {
@@ -437,6 +475,7 @@ export async function run() {
     const doc = await openForRender(bytes).catch(() => null);
     const pages = doc ? doc.numPages : null;
     if (doc) doc.destroy();
+    store.save('wf-last-run', { steps: strip(steps), chosen, at: Date.now() });
     $('#runTitle').textContent = tr('wfDone');
     $('#resultMeta').textContent = pages ? tr('wfResult', { pages, size: formatSize(result.size) }) : formatSize(result.size);
     $('#resultArea').hidden = false;
