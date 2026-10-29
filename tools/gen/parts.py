@@ -278,3 +278,7 @@ ICONS.update({
 ICONS.update({
  'flatten': '<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 11h8M8 14.5h8M8 18h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 6.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
 })
+
+ICONS.update({
+ 'imgconvert': '<svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="9" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 11.5 2.5-2.5 2 2 1.5-1.5 1.5 1.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><rect x="12.5" y="11" width="9" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 6.5h4.5v3M17 8l1.5 1.5L20 8M10 17.5H5.5v-3M7 16l-1.5-1.5L4 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+})

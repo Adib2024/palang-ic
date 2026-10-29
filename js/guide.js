@@ -14,7 +14,7 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const STEP2 = {
   'tandatangan-pdf': 'gsSign', 'edit-pdf': 'gsEdit', 'hitamkan-pdf': 'gsRedact', 'isi-borang': 'gsFill',
   'buka-kunci-pdf': 'gsPassword', 'lindungi-pdf': 'gsPassword', 'gabung-pdf': 'gsArrange', 'susun-pdf': 'gsArrange',
-  'putar-pdf': 'gsRotate', 'potong-pdf': 'gsCrop', 'pisah-pdf': 'gsSplitWhere', 'ocr-pdf': 'gsLanguage', 'gambar-pasport': 'gsFrame',
+  'putar-pdf': 'gsRotate', 'potong-pdf': 'gsCrop', 'pisah-pdf': 'gsSplitWhere', 'ocr-pdf': 'gsLanguage', 'gambar-pasport': 'gsFrame', 'tukar-gambar': 'gsFormat',
 };
 // Pages that already guide the user their own way.
 const SKIP = new Set(['kecil-gambar', 'aliran-kerja', 'kongsi', 'palang']);

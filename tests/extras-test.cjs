@@ -275,6 +275,45 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
         check(`${label}: no WhatsApp button on a computer`, () => assert.strictEqual(wa, 0));
       }
 
+      /* ---------- Convert Images ---------- */
+      await page.goto(origin + '/tukar-gambar/');
+      const transparent = await page.evaluate(async () => {
+        const c = document.createElement('canvas');
+        c.width = 200; c.height = 100;
+        c.getContext('2d').fillStyle = '#c00';
+        c.getContext('2d').fillRect(0, 0, 100, 100); // right half stays transparent
+        const b = await new Promise((r) => c.toBlob(r, 'image/png'));
+        const u = new Uint8Array(await b.arrayBuffer());
+        let s = ''; for (const x of u) s += String.fromCharCode(x);
+        return btoa(s);
+      });
+      await page.setInputFiles('#pickFiles', [
+        { name: 'logo.png', mimeType: 'image/png', buffer: Buffer.from(transparent, 'base64') },
+        { name: 'kad.jpg', mimeType: 'image/jpeg', buffer: fs.readFileSync(path.join(__dirname, 'fixtures', 'sample-back.jpg')) },
+      ]);
+      const [zip] = await Promise.all([page.waitForEvent('download'), page.click('#saveAll')]);
+      const outs = await page.evaluate(async () => Promise.all(window.__imgconvert.items.map(async (it) => {
+        const bmp = await createImageBitmap(it.out);
+        const c = document.createElement('canvas');
+        c.width = bmp.width; c.height = bmp.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(bmp, 0, 0);
+        return { name: it.out.name, type: it.out.type, w: bmp.width, h: bmp.height, corner: [...ctx.getImageData(c.width - 2, 2, 1, 1).data] };
+      })));
+      check(`${label}: Convert Images → JPG keeps full size, transparent → white, ZIP for many`, () => {
+        assert.strictEqual(zip.suggestedFilename(), 'gambar-jpg.zip');
+        assert.deepStrictEqual(outs.map((o) => [o.name, o.type, o.w, o.h]), [['logo.jpg', 'image/jpeg', 200, 100], ['kad.jpg', 'image/jpeg', 1712, 1080]]);
+        assert(outs[0].corner[0] > 240 && outs[0].corner[1] > 240 && outs[0].corner[2] > 240, JSON.stringify(outs[0].corner));
+      });
+      await page.click('label:has(> input[name="icFormat"][value="png"]) span');
+      await page.click('.ic-item >> nth=1 >> .icon-btn');
+      const [png] = await Promise.all([page.waitForEvent('download'), page.click('#saveAll')]);
+      const pngOut = await page.evaluate(async () => { const it = window.__imgconvert.items[0]; const bmp = await createImageBitmap(it.out); const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height; const ctx = c.getContext('2d'); ctx.drawImage(bmp, 0, 0); return ctx.getImageData(198, 2, 1, 1).data[3]; });
+      check(`${label}: Convert Images → PNG keeps transparency`, () => { assert.strictEqual(png.suggestedFilename(), 'logo.png'); assert.strictEqual(pngOut, 0); });
+      const ovIc = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(`${label}: Convert Images fits the screen`, () => assert(ovIc <= 0, `${ovIc}px`));
+      await page.screenshot({ path: path.join(OUT, `extras-convert-${label}.png`), fullPage: true });
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));
