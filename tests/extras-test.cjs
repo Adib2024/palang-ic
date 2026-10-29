@@ -314,6 +314,33 @@ print(json.dumps({'fields': len(r.get_fields() or {}), 'annots': len(p.get('/Ann
       check(`${label}: Convert Images fits the screen`, () => assert(ovIc <= 0, `${ovIc}px`));
       await page.screenshot({ path: path.join(OUT, `extras-convert-${label}.png`), fullPage: true });
 
+      /* ---------- Merge PDF: page view ---------- */
+      await page.goto(origin + '/gabung-pdf/');
+      const pdf3 = { name: 'tiga.pdf', mimeType: 'application/pdf', buffer: Buffer.from(await page.evaluate(makePdf, 3), 'base64') };
+      await page.setInputFiles('#pickFiles', [pdf, pdf3]);
+      await page.waitForFunction(() => window.__merge.files.length === 2);
+      await page.click('label:has(> input[name="mergeView"][value="pages"]) span');
+      const cards = await page.$$eval('#pageGrid .page-card', (els) => els.length);
+      // Remove page 2 of the first file and move the last page to the front.
+      await page.click('#pageGrid .page-card >> nth=1 >> button.danger');
+      await page.evaluate(() => { const p = window.__merge.pages; p.unshift(p.pop()); });
+      await page.click('label:has(> input[name="mergeView"][value="files"]) span');
+      await page.click('label:has(> input[name="mergeView"][value="pages"]) span');
+      const merged = await page.evaluate(async () => {
+        const f = await window.__merge.buildOutput();
+        const pdfjs = await import('/vendor/pdfjs/pdf.min.mjs');
+        pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs';
+        const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
+        const out = [];
+        for (let i = 1; i <= doc.numPages; i++) out.push((await (await doc.getPage(i)).getTextContent()).items.map((it) => it.str).join(''));
+        return out;
+      });
+      check(`${label}: Merge page view: 5 pages shown, one removed, order kept in the output`, () => {
+        assert.strictEqual(cards, 5);
+        assert.deepStrictEqual(merged, ['Halaman 3', 'Halaman 1', 'Halaman 1', 'Halaman 2']);
+      });
+      await page.screenshot({ path: path.join(OUT, `extras-merge-pages-${label}.png`), fullPage: true });
+
       /* ---------- Passport photo ---------- */
       await page.goto(origin + '/gambar-pasport/');
       await page.setInputFiles('#pickFiles', path.join(__dirname, 'fixtures', 'sample-front-exif6.jpg'));
