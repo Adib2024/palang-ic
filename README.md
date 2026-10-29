@@ -33,6 +33,7 @@
 | **PDF → Gambar / PDF → Images**: JPG/PNG, pilih resolusi & muka surat / pick resolution & pages | ✅ `pdf-gambar/` |
 | **PDF → Word / Excel / PowerPoint** (ringkas / simple): teks, perenggan, tajuk, jadual mudah; imbasan jadi gambar / text, paragraphs, headings, simple tables; scans become pictures | ✅ `pdf-word/` `pdf-excel/` `pdf-powerpoint/` |
 | **Kecilkan Gambar / Compress Images**: preset (borang ≤ 200 KB, WhatsApp, e-mel, pasport, laman web), had saiz/dimensi/kualiti sendiri, JPG/PNG/WebP, putar & potong, banding sebelum/selepas, tampal, buang EXIF / presets, custom size/dimension/quality, JPG/PNG/WebP, rotate & crop, before/after compare, paste, strips EXIF | ✅ `kecil-gambar/` |
+| **Tukar Gambar / Convert Images**: JPG / PNG / WebP pada saiz penuh, termasuk HEIC iPhone, banyak sekali gus (ZIP) / at full size, incl. iPhone HEIC, many at once (ZIP) | ✅ `tukar-gambar/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
