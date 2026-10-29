@@ -1246,3 +1246,14 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
 .first-tips ol { margin: 0 0 14px; padding-left: 22px; display: grid; gap: 6px; line-height: 1.5; }
 .first-tips .btn { width: 100%; }
 @media (min-width: 640px) { .first-tips .btn { width: auto; } }
+.next-share { grid-column: 1 / -1; width: 100%; min-height: 52px; margin: 2px 0 10px; gap: 10px; }
+.next-share svg { width: 22px; height: 22px; flex: none; }
+
+/* ---------- Repeat last workflow ---------- */
+.wf-last {
+  display: grid; gap: 12px; align-items: center; margin-bottom: 16px; padding: 14px 16px; border-radius: 14px;
+  background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.wf-last strong { display: block; margin-bottom: 6px; }
+.wf-last .btn { min-height: 52px; }
+@media (min-width: 640px) { .wf-last { grid-template-columns: minmax(0, 1fr) auto; } }
