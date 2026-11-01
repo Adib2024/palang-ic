@@ -41,7 +41,7 @@ jobs:
         run: tests/run-all.sh "$RUNNER_TEMP/test-output"
       - name: Keep screenshots and outputs if a test failed
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: test-output
           path: ${{ runner.temp }}/test-output
