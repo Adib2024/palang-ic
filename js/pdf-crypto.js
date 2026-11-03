@@ -1,4 +1,4 @@
-// PDF Standard Security Handler, written for DokuJaga because pdf-lib has no
+// PDF Standard Security Handler, written for Pagewise because pdf-lib has no
 // encryption support. Decrypts RC4 / AES-128 / AES-256 (R2–R6) with a known
 // password and encrypts with AES-256 (R6). Uses WebCrypto for AES and SHA;
 // MD5 and RC4 (needed by older PDFs) are implemented below. Nothing leaves

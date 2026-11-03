@@ -227,7 +227,7 @@ async function save(share) {
     const msg = tr('clDone', { pages: pageCount(), size: formatSize(files.reduce((s, f) => s + f.size, 0)) });
     if (files.length === 1) {
       if (share) await shareOrDownload(files[0]); else download(files[0]);
-    } else if (!share || (await shareFiles(files, 'DokuJaga')) === 'unsupported') {
+    } else if (!share || (await shareFiles(files, 'Pagewise')) === 'unsupported') {
       const entries = await Promise.all(files.map(async (f) => ({ name: f.name, data: new Uint8Array(await f.arrayBuffer()) })));
       download(new File([makeZip(entries)], 'kolaj-jpg.zip', { type: 'application/zip' }));
     }

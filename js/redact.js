@@ -217,8 +217,8 @@ export async function buildOutput() {
     if (title) out.setTitle(title);
     if (author) out.setAuthor(author);
   }
-  out.setProducer('DokuJaga');
-  out.setCreator('DokuJaga');
+  out.setProducer('Pagewise');
+  out.setCreator('Pagewise');
   const bytes = await out.save();
   return new File([bytes], `${safeName($('#fileName').value, 'dokumen')}.pdf`, { type: 'application/pdf' });
 }

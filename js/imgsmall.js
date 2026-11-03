@@ -478,7 +478,7 @@ async function saveAll(share) {
   const files = items.map((it) => it.out).filter(Boolean);
   if (!files.length) return;
   if (share) {
-    const how = await shareFiles(files, 'DokuJaga');
+    const how = await shareFiles(files, 'Pagewise');
     if (how !== 'unsupported') return;
   }
   if (files.length === 1) { download(files[0]); return; }

@@ -35,7 +35,7 @@ body = f'''      <section class="card share-files" aria-labelledby="filesTitle">
         <div class="tool-grid">
 {cards}        </div>
       </section>'''
-html = page('../', 'Pilih alat · DokuJaga', 'Pilih alat DokuJaga untuk fail yang dikongsi. Fail kekal dalam peranti anda.',
+html = page('../', 'Pilih alat · Pagewise', 'Pilih alat Pagewise untuk fail yang dikongsi. Fail kekal dalam peranti anda.',
             'share.js', 'indigo', 'flow', 'shareTitle', 'shareLead', body)
 os.makedirs(f'{R}/kongsi', exist_ok=True)
 open(f'{R}/kongsi/index.html', 'w').write(html)

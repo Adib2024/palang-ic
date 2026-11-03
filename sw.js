@@ -1,6 +1,6 @@
 // Offline cache for the app shell. It only ever caches this site's own
 // static files; user files never pass through here (they're never fetched).
-const VERSION = 'dokujaga-v32';
+const VERSION = 'dokujaga-v33';
 // Third-party libraries, the OCR engine and fonts (vendor/) change rarely and
 // are big, so they live in their own cache that survives app updates.
 const VENDOR_CACHE = 'dokujaga-vendor-1';
@@ -185,7 +185,7 @@ function staleWhileRevalidate(event) {
 // uses them rather than up front. Pages and app code are network-first so
 // updates land quickly, falling back to the cache when offline. Requests from
 // workers (pdf.js, OCR) come through here too. Anything else is left alone.
-/* Web Share Target: files shared to DokuJaga from another app arrive as a
+/* Web Share Target: files shared to Pagewise from another app arrive as a
    POST to kongsi/. Keep them in the on-device inbox (IndexedDB, same store as
    js/handoff.js) and open the tool picker. Nothing leaves the device. */
 function putInbox(files) {

@@ -1,4 +1,6 @@
-# DokuJaga (repo: palang-ic)
+# Pagewise (repo: palang-ic)
+
+Renamed from DokuJaga to **Pagewise** (Nov 2026, owner's choice). Internal ids keep the old name on purpose — `dokujaga-vNN` caches, `dokujaga:saved` events, the `dokujaga-handoff` IndexedDB and `palangic:` storage keys — so users' offline cache and saved settings survive; don't rename them.
 
 Privacy-first document tools for Malaysians: 31 tools on the dashboard (Palang IC, PDF, image and Office tools), plus Advanced mode (workflows), a share-target page (`kongsi/`) and a privacy page (`privasi/`).
 Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).

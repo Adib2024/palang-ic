@@ -1,4 +1,4 @@
-// Browser test for the DokuJaga dashboard and the Images -> PDF tool,
+// Browser test for the Pagewise dashboard and the Images -> PDF tool,
 // using the FAKE sample cards in tests/fixtures.
 // Run: NODE_PATH="$(npm root -g)" node tests/tools-test.cjs [outDir]
 const fs = require('fs');

@@ -1,4 +1,4 @@
-# DokuJaga
+# Pagewise
 
 **Alat dokumen yang jaga privasi anda: palang IC, gambar → PDF dan lain-lain, terus dalam pelayar.**
 **Document tools that keep your files private: IC watermarking, images → PDF and more, right in your browser.**
@@ -62,7 +62,7 @@ Butang **Mod Lanjutan** di header membuka aliran kerja: jalankan beberapa langka
 ### Banyak fail, kongsi & teruskan
 
 - **Banyak fail sekali gus**: Kecilkan PDF, Watermark, Nombor muka surat, Lindungi, Buka kunci dan OCR boleh terima beberapa PDF; tetapan sama digunakan pada semua dan hasilnya disimpan sebagai satu ZIP.
-- **Kongsi ke DokuJaga**: selepas dipasang (PWA, Android), kongsi PDF/gambar dari app lain → halaman *Pilih alat*.
+- **Kongsi ke Pagewise**: selepas dipasang (PWA, Android), kongsi PDF/gambar dari app lain → halaman *Pilih alat*.
 - **Teruskan ke…**: selepas simpan, hantar hasil terus ke alat lain (cth. Gabung → Tandatangan → Kunci) tanpa pilih fail semula.
 - **OCR dalam aliran kerja** dan enjin OCR disimpan untuk guna luar talian selepas kali pertama.
 
@@ -155,7 +155,7 @@ The **Advanced mode** button in the header opens workflows: run several steps in
 ### Many files, sharing & continue
 
 - **Batch**: Compress PDF, Watermark, Page numbers, Protect, Unlock and OCR accept several PDFs; the same settings apply to each and the results are saved as one ZIP.
-- **Share to DokuJaga**: once installed (PWA, Android), share PDFs/photos from other apps → the *Pick a tool* page.
+- **Share to Pagewise**: once installed (PWA, Android), share PDFs/photos from other apps → the *Pick a tool* page.
 - **Continue to…**: after saving, send the result straight to another tool (e.g. Merge → Sign → Protect) without picking the file again.
 - **OCR as a workflow step**, and the OCR engine is cached for offline use after the first run.
 
@@ -232,7 +232,7 @@ The Inter web font (SIL OFL 1.1) is self-hosted: the deploy workflow subsets it 
 WOFF2 under `fonts/`. Locally, pages fall back to the system UI font.
 
 ```
-index.html              DokuJaga dashboard (tool grid)
+index.html              Pagewise dashboard (tool grid)
 palang/index.html       Palang IC tool
 gambar-pdf/index.html   Images -> PDF tool
 css/style.css           shared mobile-first styles, light/dark

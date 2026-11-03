@@ -120,8 +120,8 @@ export async function buildInput(files, palang) {
     out.addPage([pw, ph]).drawImage(img, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
   }
   if (!out.getPageCount()) throw new Error('empty');
-  out.setProducer('DokuJaga');
-  out.setCreator('DokuJaga');
+  out.setProducer('Pagewise');
+  out.setCreator('Pagewise');
   return out.save();
 }
 

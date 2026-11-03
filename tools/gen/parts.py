@@ -18,7 +18,7 @@ def head(root, title, desc, script):
   <title>{title}</title>
   <meta name="description" content="{desc}">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="DokuJaga">
+  <meta property="og:site_name" content="Pagewise">
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{desc}">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
@@ -39,7 +39,7 @@ def header(root, current=''):
     tools_cur = ' aria-current="page"' if current == 'tools' else ''
     return f'''  <header class="site-header">
     <div class="container nav">
-      <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
+      <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="30" height="30"><span>Pagewise</span></a>
       <nav class="nav-links" aria-label="Main">
         <a href="{root}#tools"{tools_cur} data-i18n="navTools">Tools</a>
         <a href="{root}#privacy" data-i18n="navPrivacy">Privacy</a>
@@ -59,7 +59,7 @@ def footer(root):
     return f'''  <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
+        <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="24" height="24"><span>Pagewise</span></a>
         <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
       <p class="footer-links"><a href="{root}privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>

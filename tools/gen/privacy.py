@@ -39,6 +39,6 @@ body = '      <div class="pv-page">\n' + '\n'.join(section(t, p) for t, p in SEC
     '\n'.join(section(t, p) for t, p in SECTIONS[3:]) + '\n      </div>'
 os.makedirs(f'{R}/privasi', exist_ok=True)
 open(f'{R}/privasi/index.html', 'w').write(page(
-    '../', 'Privasi · DokuJaga', 'Bagaimana DokuJaga menjaga fail anda: semuanya diproses dalam peranti anda, tiada muat naik, tiada akaun, tiada analitik.',
+    '../', 'Privasi · Pagewise', 'Bagaimana Pagewise menjaga fail anda: semuanya diproses dalam peranti anda, tiada muat naik, tiada akaun, tiada analitik.',
     'privacy.js', 'emerald', 'protect', 'pvTitle', 'pvLead', body))
 print('wrote privasi/index.html')

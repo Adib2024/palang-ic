@@ -4,7 +4,7 @@ note, dropzone, footer, strict CSP). Edit the page by hand afterwards.
 Usage (from the repo root):
   python3 -I tools/gen/new_tool.py spec.json
 spec.json:
-  {"slug": "buang-metadata", "title": "Buang Metadata PDF · DokuJaga",
+  {"slug": "buang-metadata", "title": "Buang Metadata PDF · Pagewise",
    "desc": "<meta description>", "script": "metadata.js",
    "tone": "indigo", "icon": "protect", "tkey": "toolMetaTitle", "lkey": "metaLead",
    "accept": "application/pdf,.pdf", "multiple": true, "camera": false,

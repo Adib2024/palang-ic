@@ -1,5 +1,5 @@
 // The "inbox": files handed from one place to a tool without leaving the
-// device — shared to DokuJaga from another app (via the service worker) or
+// device — shared to Pagewise from another app (via the service worker) or
 // passed on with "Teruskan ke…". Kept in IndexedDB on this device only and
 // removed as soon as a tool takes them.
 const DB = 'dokujaga-handoff';

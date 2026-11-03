@@ -33,7 +33,7 @@ def tool2(href, cat, tone, icon, tkey, dkey):
           </a>
 '''
 
-html = head(root, 'DokuJaga — Document tools that keep your files private',
+html = head(root, 'Pagewise — Document tools that keep your files private',
   'Alat dokumen percuma yang jaga privasi: palang IC, gambar ke PDF dan lain-lain. Semua diproses dalam peranti anda — tiada apa-apa dimuat naik.',
   'home.js') + f'''
 <body>

@@ -1,4 +1,4 @@
-// Privacy page: lists what DokuJaga keeps in this browser and deletes it on
+// Privacy page: lists what Pagewise keeps in this browser and deletes it on
 // request (settings, saved signatures, recent tools, shared-file inbox).
 import { initPage } from './page.js';
 import { t } from './i18n.js';
@@ -50,7 +50,7 @@ function render() {
   $('#pvClear').disabled = !all.length && !inbox;
 }
 
-/** Delete everything DokuJaga stored in this browser (the offline app copy stays). */
+/** Delete everything Pagewise stored in this browser (the offline app copy stays). */
 export async function clearAll() {
   try { for (const k of keys()) localStorage.removeItem(PREFIX + k); } catch { /* blocked */ }
   try { localStorage.removeItem('palangic:theme'); } catch { /* blocked */ }

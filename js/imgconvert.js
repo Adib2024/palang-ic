@@ -124,7 +124,7 @@ async function save(share) {
     const total = formatSize(out.reduce((n, f) => n + f.size, 0));
     let msg = tr('icDone', { n: out.length, size: total });
     if (failed) msg += ` ${tr('i2pSkipped', { n: failed })}`;
-    if (share && (await shareFiles(out, 'DokuJaga')) !== 'unsupported') { setStatus(msg); return; }
+    if (share && (await shareFiles(out, 'Pagewise')) !== 'unsupported') { setStatus(msg); return; }
     if (out.length === 1) download(out[0]);
     else {
       // Same names (e.g. a.jpg + a.png → a.jpg twice) get a number.

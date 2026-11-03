@@ -1,5 +1,5 @@
 // Which tools can take which files: used by the "Pilih alat" page (files
-// shared to DokuJaga) and the "Teruskan ke…" bar after saving a result.
+// shared to Pagewise) and the "Teruskan ke…" bar after saving a result.
 // accepts: 'pdf' | 'image' | 'both' | 'office'; max: how many files the tool takes.
 export const CATALOG = [
   { href: 'palang/', key: 'toolPalangTitle', accepts: 'image', max: 2 },

@@ -1,4 +1,4 @@
-// "Pilih alat": files shared to DokuJaga from another app (Web Share Target)
+// "Pilih alat": files shared to Pagewise from another app (Web Share Target)
 // or passed on from a tool wait in the on-device inbox; pick a tool for them.
 import { initPage } from './page.js';
 import { formatSize } from './pdf-kit.js';

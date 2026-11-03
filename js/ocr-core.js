@@ -137,8 +137,8 @@ export async function ocrDocument(inp, o) {
       texts.push((data.text || '').trim());
       canvas.width = canvas.height = 0;
     }
-    out.setProducer('DokuJaga');
-    out.setCreator('DokuJaga');
+    out.setProducer('Pagewise');
+    out.setCreator('Pagewise');
     return { bytes: await out.save(), texts, skipped };
   } finally {
     if (own) await worker.terminate();
