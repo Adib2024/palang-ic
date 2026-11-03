@@ -35,6 +35,8 @@
 | **Word/Excel → PDF** (ringkas / simple): .docx (teks, tajuk, senarai, jadual, gambar) dan .xlsx (setiap helaian sebagai jadual) / .docx (text, headings, lists, tables, pictures) and .xlsx (each sheet as a grid) | ✅ `word-pdf/` |
 | **Kecilkan Gambar / Compress Images**: preset (borang ≤ 200 KB, WhatsApp, e-mel, pasport, laman web), had saiz/dimensi/kualiti sendiri, JPG/PNG/WebP, putar & potong, banding sebelum/selepas, tampal, buang EXIF / presets, custom size/dimension/quality, JPG/PNG/WebP, rotate & crop, before/after compare, paste, strips EXIF | ✅ `kecil-gambar/` |
 | **Tukar Gambar / Convert Images**: JPG / PNG / WebP pada saiz penuh, termasuk HEIC iPhone, banyak sekali gus (ZIP) / at full size, incl. iPhone HEIC, many at once (ZIP) | ✅ `tukar-gambar/` |
+| **Nota Gambar / Image Notes**: tulis nota, anak panah, kotak & sorotan pada gambar slip gaji, bil, resit; buat asal/ulang; JPG saiz penuh / write notes, arrows, boxes & highlights on photos of pay slips, bills, receipts; undo/redo; full-size JPG | ✅ `nota-gambar/` |
+| **Kolaj Gambar / Photo Collage**: 2, 4, 6 atau 9 gambar setiap muka A4 (menegak/melintang), gambar penuh atau penuhkan kotak; PDF atau JPG / 2, 4, 6 or 9 photos per A4 page (portrait/landscape), whole photo or fill; PDF or JPG | ✅ `kolaj-gambar/` |
 
 [Bahasa Melayu](#bahasa-melayu) · [English](#english)
 
@@ -251,6 +253,8 @@ js/pdf2office.js, pdf-layout.js, office.js      PDF -> Word/Excel/PowerPoint: te
 js/batch.js, handoff.js, continue.js, share.js  batch ZIP, file handoff between tools, "Continue to…", share target page (kongsi/)
 js/metadata.js, pdf-meta.js                     Remove PDF Metadata (read + clean, drops unreferenced objects)
 js/passport.js                                  Passport Photo (frame, adjust, print sheets)
+js/imgnote.js                                   Image Notes (text, arrows, boxes, highlights on a photo)
+js/collage.js                                   Photo Collage (several photos per A4 page → PDF / JPG)
 js/flatten.js, pdf-flatten.js                   Flatten PDF (form fields, annotation appearances, picture mode)
 js/undo.js                                      undo/redo steps + buttons for the page editors
 js/office2pdf.js, office-read.js, office-layout.js, unzip.js   Word/Excel → PDF (read OOXML, lay out with pdf-lib)

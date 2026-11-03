@@ -64,7 +64,7 @@ else:
 {spec.get('content', '')}
         </section>
         <aside class="card options" aria-labelledby="optTitle">
-          <h2 id="optTitle" data-i18n="i2pOptions">Tetapan</h2>
+          <h2 id="optTitle" data-i18n="optSettings">Tetapan</h2>
 {spec.get('options', '')}
 {buttons}
         </aside>

@@ -11,6 +11,8 @@ export const CATALOG = [
   { href: 'ratakan-pdf/', key: 'toolFlatTitle', accepts: 'pdf', max: 1 },
   { href: 'gambar-pasport/', key: 'toolPassportTitle', accepts: 'image', max: 1 },
   { href: 'tukar-gambar/', key: 'toolImgConvTitle', accepts: 'image', max: 99 },
+  { href: 'nota-gambar/', key: 'toolNoteTitle', accepts: 'image', max: 1 },
+  { href: 'kolaj-gambar/', key: 'toolCollageTitle', accepts: 'image', max: 99 },
   { href: 'word-pdf/', key: 'toolO2pTitle', accepts: 'office', max: 99 },
   { href: 'watermark-pdf/', key: 'toolWmTitle', accepts: 'pdf', max: 1 },
   { href: 'nombor-pdf/', key: 'toolPnTitle', accepts: 'pdf', max: 1 },

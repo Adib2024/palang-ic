@@ -15,6 +15,7 @@ const STEP2 = {
   'tandatangan-pdf': 'gsSign', 'edit-pdf': 'gsEdit', 'hitamkan-pdf': 'gsRedact', 'isi-borang': 'gsFill',
   'buka-kunci-pdf': 'gsPassword', 'lindungi-pdf': 'gsPassword', 'gabung-pdf': 'gsArrange', 'susun-pdf': 'gsArrange',
   'putar-pdf': 'gsRotate', 'potong-pdf': 'gsCrop', 'pisah-pdf': 'gsSplitWhere', 'ocr-pdf': 'gsLanguage', 'gambar-pasport': 'gsFrame', 'tukar-gambar': 'gsFormat',
+  'nota-gambar': 'gsNote', 'kolaj-gambar': 'gsLayout',
 };
 // Pages that already guide the user their own way.
 const SKIP = new Set(['kecil-gambar', 'aliran-kerja', 'kongsi', 'palang']);
@@ -24,6 +25,17 @@ const SKIP = new Set(['kecil-gambar', 'aliran-kerja', 'kongsi', 'palang']);
  * '#id' (value / checkbox state) or 'name=group' (radio value).
  */
 export const PRESETS = {
+  'nota-gambar': [
+    { key: 'psNtPaid', spec: 'SUDAH DIBAYAR', set: { 'name=ntTool': 'text', '#ntText': 'SUDAH DIBAYAR', 'name=ntColor': 'green' } },
+    { key: 'psNtChecked', spec: 'DISEMAK', set: { 'name=ntTool': 'text', '#ntText': 'DISEMAK', 'name=ntColor': 'blue' } },
+    { key: 'psNtImportant', spec: 'PENTING', set: { 'name=ntTool': 'text', '#ntText': 'PENTING', 'name=ntColor': 'red' } },
+    { key: 'psNtMark', spec: 'psNtMarkSpecText', set: { 'name=ntTool': 'mark', 'name=ntColor': 'yellow' } },
+  ],
+  'kolaj-gambar': [
+    { key: 'psClIc', spec: 'psClIcSpec', set: { 'name=clGrid': '2', 'name=clPaper': 'portrait', 'name=clFit': 'contain', 'name=clFormat': 'pdf' } },
+    { key: 'psClReceipts', spec: 'psClReceiptsSpec', set: { 'name=clGrid': '4', 'name=clPaper': 'portrait', 'name=clFit': 'contain', 'name=clFormat': 'pdf' } },
+    { key: 'psClPhotos', spec: 'psClPhotosSpec', set: { 'name=clGrid': '6', 'name=clPaper': 'portrait', 'name=clFit': 'cover', 'name=clFormat': 'jpeg' } },
+  ],
   'ocr-pdf': [
     { key: 'psOcrBoth', spec: 'BM + English', set: { '#langMs': true, '#langEn': true, '#skipText': true } },
     { key: 'psOcrMs', spec: 'Bahasa Melayu', set: { '#langMs': true, '#langEn': false, '#skipText': true } },

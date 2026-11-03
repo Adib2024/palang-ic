@@ -286,3 +286,8 @@ ICONS.update({
 ICONS.update({
  'office2pdf': '<svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m4.6 6.3 1 4.4 1.4-3.2 1.4 3.2 1-4.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 9h3.5l4 4v7a1 1 0 0 1-1 1H14a1 1 0 0 1-1-1v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 5.5h3.5m0 0L15 4m1.5 1.5L15 7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 16.5h3M15.5 18.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
 })
+
+ICONS.update({
+ 'imgnote': '<svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="15" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 8h6M5.5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m14.5 19.5 1-3.5 5.5-5.5 2.5 2.5-5.5 5.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+ 'collage': '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v18M3 12h9" stroke="currentColor" stroke-width="1.6"/><path d="m13.5 18 2.5-3 1.8 1.8 1.2-1.2 1 1.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="16.5" cy="8" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>',
+})
