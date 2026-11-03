@@ -38,12 +38,12 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 6. README rows (BM/EN table + dev structure).
 
 ## Tests / CI
+- Accessibility: `tests/a11y-test.cjs` runs axe-core (WCAG 2.1 A+AA, vendored in `tests/vendor/axe/`, not deployed) on every page — new pages are picked up automatically; add a tool to its `LOADED` list if most controls appear only after a file is chosen.
 - Local: `NODE_PATH="$(npm root -g)" tests/run-all.sh` (Playwright + Chromium; python3 with pypdf, cryptography, python-docx, openpyxl, python-pptx).
 - CI (`.github/workflows/deploy.yml`): test job on every push/PR, deploy only from `main` after tests pass. Test job is pinned to `ubuntu-24.04` (Playwright 1.56).
 - Release flow used so far: develop on `claude/palangic-watermark-app-zs1bhd`, wait for green CI, then fast-forward `main`.
 
 ## Ideas not done yet (user's backlog)
-- Automated accessibility checks in CI (e.g. axe-core, vendored) and fix what they find.
 - QR code tool; PDF bookmarks / table of contents. Own domain (on hold).
 
 ## Conventions

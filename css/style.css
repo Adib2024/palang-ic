@@ -235,6 +235,8 @@ a.tool:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border
   position: absolute; top: 14px; right: 14px; font-style: normal; font-size: .72rem; font-weight: 700;
   letter-spacing: .02em; padding: 3px 10px; border-radius: 999px; background: var(--tone-bg); color: var(--tone);
 }
+/* Small bold text: a darker shade of the tone keeps it above 4.5:1 (light theme). */
+:root:not([data-theme="dark"]) .pop-badge { color: color-mix(in srgb, var(--tone) 82%, #000); }
 .tool.hero-tool {
   background: linear-gradient(135deg, var(--tone-bg), var(--surface) 70%);
   border-color: var(--tone); border-width: 2px; align-content: center;
