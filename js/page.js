@@ -1,9 +1,8 @@
 // Shared boot for simple pages: language toggle, i18n and offline support.
-import { applyI18n } from './i18n.js';
+import { applyI18n, loadLang } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
 import { deliverInbox } from './handoff.js';
-import { initGuide } from './guide.js';
 
 /**
  * @param {(lang: string) => void} [onLang] called after every language change
@@ -21,10 +20,16 @@ export function initPage(onLang) {
   };
   let refreshGuide = () => {};
   document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => {
-    lang = b.dataset.lang === 'en' ? 'en' : 'ms';
-    store.save('lang', lang);
-    sync();
+    const next = b.dataset.lang === 'en' ? 'en' : 'ms';
+    store.save('lang', next);
+    // Switch in one go once the strings are here (English loads on demand).
+    loadLang(next).then(() => { lang = next; sync(); });
   }));
+  // Fetch English as soon as someone reaches for the button.
+  document.querySelectorAll('[data-lang="en"]').forEach((b) => ['pointerenter', 'focus', 'touchstart'].forEach((ev) => b.addEventListener(ev, () => loadLang('en'), { passive: true })));
+  // English is loaded on demand (js/i18n-en.js): redraw the tool's own text
+  // once it has arrived.
+  document.addEventListener('dokujaga:i18n', () => { if (onLang) onLang(lang); refreshGuide(); });
   sync();
   rememberTool();
   registerServiceWorker();
@@ -33,7 +38,8 @@ export function initPage(onLang) {
   setTimeout(() => { deliverInbox().catch(() => {}); }, 0);
   // Steps bar, quick picks and the phone save bar, once the tool has set its
   // controls up.
-  setTimeout(() => { refreshGuide = initGuide(() => lang); }, 0);
+  // Loaded separately so the tool itself is ready first (helps older phones).
+  setTimeout(() => { import('./guide.js').then((m) => { refreshGuide = m.initGuide(() => lang); }).catch(() => {}); }, 0);
   return { lang: () => lang };
 }
 

@@ -5,8 +5,10 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import { formatSize, safeName, download, shareOrDownload } from './pdf-kit.js';
 import { bindFileDrop } from './pdf-pages.js';
-import { readOffice } from './office-read.js';
-import { docxToPdf, xlsxToPdf } from './office-layout.js';
+// The Word/Excel reader and the PDF layout are loaded once a file is chosen.
+const readOffice = async (bytes) => (await import('./office-read.js')).readOffice(bytes);
+const docxToPdf = async (...a) => (await import('./office-layout.js')).docxToPdf(...a);
+const xlsxToPdf = async (...a) => (await import('./office-layout.js')).xlsxToPdf(...a);
 import { createBatch, batchSummary } from './batch.js';
 
 const $ = (sel) => document.querySelector(sel);

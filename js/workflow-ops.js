@@ -2,14 +2,16 @@
 // PDF bytes. Pure functions (no page UI), so steps can be chained in any
 // order the user picks. Everything runs in this tab; nothing is uploaded.
 import { loadPdfLib, openForRender, renderPage } from './pdf-kit.js';
-import { stampPage, numberPage } from './pdf-stamps.js';
 import { writePdf } from './pdf.js';
 import { loadPhoto } from './image-loader.js';
-import { composite } from './watermark.js';
 import { TEMPLATES, todayDMY } from './i18n.js';
-import { protectPdf } from './pdf-security.js';
-import { permissions } from './pdf-crypto.js';
-import { ocrDocument } from './ocr-core.js';
+// Step code that only some workflows need (stamps, encryption, OCR) is
+// loaded when a step first runs, so the page opens faster on older phones.
+const lazy = (load) => { let p; return () => p || (p = load()); };
+const stampsMod = lazy(() => import('./pdf-stamps.js'));
+const watermarkMod = lazy(() => import('./watermark.js'));
+const securityMod = lazy(() => Promise.all([import('./pdf-security.js'), import('./pdf-crypto.js')]));
+const ocrMod = lazy(() => import('./ocr-core.js'));
 
 /** Step types, in the order offered in the "add step" menu. */
 export const STEP_TYPES = ['palang', 'place', 'watermark', 'pagenum', 'rotate', 'compress', 'ocr', 'protect'];
@@ -104,7 +106,7 @@ export async function buildInput(files, palang) {
     }
     const photo = await loadPhoto(f, 2400);
     const canvas = palang
-      ? composite(document.createElement('canvas'), photo, photo.width, photo.height, {
+      ? (await watermarkMod()).composite(document.createElement('canvas'), photo, photo.width, photo.height, {
         mode: 'palang', text: palangText(palang), color: palang.color, palangShape: 'corner', stampAt: { corner: palang.corner },
       })
       : photo;
@@ -131,7 +133,7 @@ export async function watermark(bytes, o) {
   const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
   const cache = {};
   for (const page of doc.getPages()) {
-    await stampPage(doc, page, L, cache, {
+    await (await stampsMod()).stampPage(doc, page, L, cache, {
       type: 'text', text: o.text, color: o.color, opacity: o.opacity, angle: 45, pos: 'mc', tile: o.layout === 'tile', size: 'auto',
     });
   }
@@ -146,7 +148,7 @@ export async function pagenum(bytes, o) {
   const cache = {};
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i++) {
-    await numberPage(doc, pages[i], L, cache, { text: o.format === 'n' ? String(i + 1) : `${i + 1} / ${total}`, size: 11, pos: o.pos, margin: 30 });
+    await (await stampsMod()).numberPage(doc, pages[i], L, cache, { text: o.format === 'n' ? String(i + 1) : `${i + 1} / ${total}`, size: 11, pos: o.pos, margin: 30 });
   }
   return doc.save();
 }
@@ -201,6 +203,7 @@ export async function compress(bytes, o, onProgress = () => {}) {
 /** Lock with a password (AES-256). */
 export async function protect(bytes, o) {
   if (!o.password) throw new Error('nopassword');
+  const [{ protectPdf }, { permissions }] = await securityMod();
   return protectPdf(bytes, o.password, '', permissions({ print: o.print !== false, copy: o.copy !== false }));
 }
 
@@ -208,7 +211,7 @@ export async function protect(bytes, o) {
 export async function ocr(bytes, o, onProgress = () => {}) {
   const doc = await openForRender(bytes);
   try {
-    const res = await ocrDocument({ kind: 'pdf', bytes, doc, pages: doc.numPages }, {
+    const res = await (await ocrMod()).ocrDocument({ kind: 'pdf', bytes, doc, pages: doc.numPages }, {
       langs: (o.langs || 'msa+eng').split('+'), skipText: o.skipText !== false, onPage: (i, n) => onProgress(i / n),
     });
     return res.bytes;

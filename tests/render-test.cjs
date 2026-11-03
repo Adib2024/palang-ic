@@ -205,6 +205,7 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
 
         // English toggle.
         await page.click('[data-lang="en"]');
+        await page.waitForSelector('html[lang="en"]'); // English strings load on demand
         const banner = await page.textContent('.privacy strong');
         const enText = await page.evaluate(() => window.__palangic.options().text);
         check('EN toggle switches UI + wording', () => {

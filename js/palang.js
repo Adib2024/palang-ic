@@ -1,7 +1,7 @@
 import { renderWatermark, composite, CORNER_ANGLE } from './watermark.js';
 import { loadPhoto } from './image-loader.js';
 import { buildPdf } from './pdf.js';
-import { applyI18n, t, TEMPLATES, todayDMY } from './i18n.js';
+import { applyI18n, loadLang, t, TEMPLATES, todayDMY } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
 import { deliverInbox } from './handoff.js';
@@ -156,7 +156,8 @@ function bindRadio(name, apply) {
 }
 
 function bindControls() {
-  $$('[data-lang]').forEach((b) => b.addEventListener('click', () => {
+  $$('[data-lang]').forEach((b) => b.addEventListener('click', async () => {
+    await loadLang(b.dataset.lang);
     state.lang = b.dataset.lang;
     // Follow the UI language for the wording until the user picks one.
     if (store.load('templateChosen', false) !== true) state.template = state.lang;
@@ -392,6 +393,7 @@ async function run(task) {
 /* ---------- Boot ---------- */
 
 applyI18n(document, state.lang);
+document.addEventListener('dokujaga:i18n', () => { syncControls(); schedulePreview(); });
 syncControls();
 bindControls();
 drawPreview();

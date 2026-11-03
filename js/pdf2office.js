@@ -5,8 +5,10 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import { openForRender, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
 import { bindFileDrop } from './pdf-pages.js';
-import { pageLines, pageJpeg } from './pdf-layout.js';
-import { buildDocx, buildXlsx, buildPptx } from './office.js';
+// Layout analysis and the Office writers are loaded when converting.
+const pageLines = async (...a) => (await import('./pdf-layout.js')).pageLines(...a);
+const pageJpeg = async (...a) => (await import('./pdf-layout.js')).pageJpeg(...a);
+const office = () => import('./office.js');
 
 const $ = (sel) => document.querySelector(sel);
 const FORMAT = $('#toolLayout').dataset.format; // 'docx' | 'xlsx' | 'pptx'
@@ -68,6 +70,7 @@ export async function convert() {
   }
   const name = safeName($('#fileName').value, 'dokumen');
   let blob;
+  const { buildDocx, buildXlsx, buildPptx } = await office();
   if (FORMAT === 'docx') blob = buildDocx(pages, images, input.name);
   else if (FORMAT === 'xlsx') blob = buildXlsx(pages, (i) => tr('officeSheet', { n: i + 1 }));
   else blob = buildPptx(pages, pptMode, images);

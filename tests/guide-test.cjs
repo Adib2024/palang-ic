@@ -109,6 +109,7 @@ async function makePdf() {
       const cmp = await steps();
       check(`${label}: Compare has two steps`, () => assert.deepStrictEqual(cmp, ['✓1Pilih 2 PDF', '>2Lihat perbezaan']));
       await page.click('[data-lang="en"]');
+      await page.waitForSelector('html[lang="en"]'); // English strings load on demand
       const en = await steps();
       check(`${label}: steps follow the language`, () => assert.deepStrictEqual(en, ['✓1Choose 2 PDFs', '>2See the differences']));
       await page.click('[data-lang="ms"]');

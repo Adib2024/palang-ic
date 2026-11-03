@@ -299,6 +299,7 @@ async function pixelDiff({ a, b }) {
 
       /* ---------- English UI ---------- */
       await page.click('.lang [data-lang="en"]');
+      await page.waitForSelector('html[lang="en"]'); // English strings load on demand
       const en = await page.textContent('#runWf');
       check(`${label}: English labels`, () => assert.match(en, /Run workflow/));
       await page.click('.lang [data-lang="ms"]');

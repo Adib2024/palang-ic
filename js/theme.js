@@ -1,6 +1,6 @@
 // Light/dark toggle. Loaded as a classic script in <head> so the saved theme
-// applies before first paint (no flash). Light is the default; dark only
-// when the user picks it.
+// applies before first paint (no flash). Light is the default; dark when the
+// user picks it, or 'auto' (the "Aa" panel) to follow the device setting.
 (function () {
   var KEY = 'palangic:theme';
   var root = document.documentElement;
@@ -8,19 +8,24 @@
   function saved() {
     try {
       var v = JSON.parse(window.localStorage.getItem(KEY));
-      return v === 'light' || v === 'dark' ? v : null;
+      return v === 'light' || v === 'dark' || v === 'auto' ? v : null;
     } catch (e) {
       return null;
     }
   }
 
+  var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   function effective() {
-    return saved() || 'light';
+    var v = saved();
+    if (v === 'auto') return media && media.matches ? 'dark' : 'light';
+    return v || 'light';
+  }
+  function store(v) {
+    try { window.localStorage.setItem(KEY, JSON.stringify(v)); return true; } catch (e) { return false; }
   }
 
   function apply() {
-    var theme = saved();
-    if (theme) root.setAttribute('data-theme', theme);
+    if (saved()) root.setAttribute('data-theme', effective());
     else root.removeAttribute('data-theme');
     var dark = effective() === 'dark';
     document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
@@ -43,6 +48,15 @@
   function write(key, v) {
     try { window.localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* not saved */ }
   }
+  // English strings are a separate module: start fetching them now.
+  try {
+    if (read('palangic:lang') === 'en' && document.currentScript) {
+      var pre = document.createElement('link');
+      pre.rel = 'modulepreload';
+      pre.href = new URL('i18n-en.js', document.currentScript.src).href;
+      document.head.appendChild(pre);
+    }
+  } catch (e) { /* only a speed-up */ }
   var display = { text: read(TEXT_KEY) || 'md', contrast: read(CONTRAST_KEY) === 'high' };
   function applyDisplay() {
     if (display.text === 'lg' || display.text === 'xl') root.setAttribute('data-text', display.text);
@@ -53,8 +67,8 @@
   applyDisplay();
 
   var LABELS = {
-    ms: { title: 'Paparan', btn: 'Tetapan paparan', size: 'Saiz teks', contrast: 'Kontras tinggi', dark: 'Tema gelap', on: 'Hidup', off: 'Mati' },
-    en: { title: 'Display', btn: 'Display settings', size: 'Text size', contrast: 'High contrast', dark: 'Dark theme', on: 'On', off: 'Off' },
+    ms: { title: 'Paparan', btn: 'Tetapan paparan', size: 'Saiz teks', contrast: 'Kontras tinggi', dark: 'Tema gelap', auto: 'Ikut tetapan peranti', on: 'Hidup', off: 'Mati' },
+    en: { title: 'Display', btn: 'Display settings', size: 'Text size', contrast: 'High contrast', dark: 'Dark theme', auto: 'Follow device setting', on: 'On', off: 'Off' },
   };
   function lang() { return read('palangic:lang') === 'en' ? 'en' : 'ms'; }
 
@@ -99,11 +113,18 @@
     });
     var dark = el('button', { type: 'button', class: 'a11y-sw', id: 'a11yDark' });
     dark.addEventListener('click', function () {
-      var themeBtn = document.getElementById('themeToggle');
-      if (themeBtn) themeBtn.click();
+      toggle();
       relabel();
     });
-    pop.append(h, sizeRow, contrast, dark);
+    // Follow the phone/computer's light or dark setting (and its changes).
+    var auto = el('button', { type: 'button', class: 'a11y-sw', id: 'a11yAuto' });
+    auto.addEventListener('click', function () {
+      // Turning it off keeps whatever theme is showing now.
+      if (!store(saved() === 'auto' ? effective() : 'auto')) return;
+      apply();
+      relabel();
+    });
+    pop.append(h, sizeRow, contrast, dark, auto);
     wrap.append(btn, pop);
     var langEl = actions.querySelector('.lang');
     actions.insertBefore(wrap, langEl || null);
@@ -118,10 +139,14 @@
       contrast.textContent = L.contrast;
       contrast.setAttribute('aria-pressed', String(display.contrast));
       contrast.setAttribute('data-state', display.contrast ? L.on : L.off);
-      var isDark = effective() === 'dark' || root.getAttribute('data-theme') === 'dark';
+      var isDark = root.getAttribute('data-theme') === 'dark';
       dark.textContent = L.dark;
       dark.setAttribute('aria-pressed', String(isDark));
       dark.setAttribute('data-state', isDark ? L.on : L.off);
+      var isAuto = saved() === 'auto';
+      auto.textContent = L.auto;
+      auto.setAttribute('aria-pressed', String(isAuto));
+      auto.setAttribute('data-state', isAuto ? L.on : L.off);
     }
     function close() {
       pop.hidden = true;
@@ -145,23 +170,31 @@
     relabel();
   }
 
+  // Light ⇄ dark by hand. A manual switch stops following the device.
+  function toggle() {
+    var dark = (root.getAttribute('data-theme') || effective()) === 'dark';
+    if (!store(dark ? 'light' : 'dark')) {
+      // Storage blocked: still switch for this visit.
+      root.setAttribute('data-theme', dark ? 'light' : 'dark');
+      var b = document.getElementById('themeToggle');
+      if (b) b.textContent = dark ? '☾' : '☀️';
+      return;
+    }
+    apply();
+  }
+
   apply();
+  // In 'auto', switch as soon as the device does (e.g. at sunset).
+  if (media) {
+    var follow = function () { if (saved() === 'auto') apply(); };
+    if (media.addEventListener) media.addEventListener('change', follow); else if (media.addListener) media.addListener(follow);
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     apply();
     mountDisplayMenu();
     var btn = document.getElementById('themeToggle');
     if (!btn) return;
-    btn.addEventListener('click', function () {
-      try {
-        window.localStorage.setItem(KEY, JSON.stringify(effective() === 'dark' ? 'light' : 'dark'));
-      } catch (e) {
-        // Storage blocked: still switch for this visit.
-        root.setAttribute('data-theme', effective() === 'dark' ? 'light' : 'dark');
-        btn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀️' : '☾';
-        return;
-      }
-      apply();
-    });
+    btn.addEventListener('click', toggle);
   });
 })();
