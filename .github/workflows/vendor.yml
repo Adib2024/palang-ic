@@ -2,7 +2,8 @@ name: Vendor PDF libraries
 
 # Run manually to (re)fetch the third-party libraries (PDF + OCR) into vendor/
 # and commit them, so the site serves them itself and never loads code or
-# OCR models from a CDN.
+# OCR models from a CDN. axe-core (accessibility checks) goes to tests/vendor/
+# for the test suite only.
 on:
   workflow_dispatch:
 
@@ -26,6 +27,8 @@ jobs:
           npm install --no-audit --no-fund --ignore-scripts @tesseract.js-data/eng@1.0.0 @tesseract.js-data/msa@1.0.0 || true
           # HEIC (iPhone photos) decoder, loaded only when such a photo is opened.
           npm install --no-audit --no-fund --ignore-scripts libheif-js@1
+          # Accessibility checker for the tests only (kept in tests/vendor/, never deployed).
+          npm install --no-audit --no-fund --ignore-scripts axe-core@4.10.3
       - name: Copy into vendor/
         run: |
           rm -rf vendor && mkdir -p vendor/pdf-lib vendor/pdfjs
@@ -65,6 +68,12 @@ jobs:
           cp "$f" vendor/libheif/libheif-bundle.js
           cp /tmp/v/node_modules/libheif-js/LICENSE* vendor/libheif/ 2>/dev/null || true
           ls -la vendor/libheif
+          # axe-core: used by tests/a11y-test.cjs; outside vendor/ so the site doesn't ship it.
+          rm -rf tests/vendor/axe && mkdir -p tests/vendor/axe
+          cp /tmp/v/node_modules/axe-core/axe.min.js tests/vendor/axe/
+          cp /tmp/v/node_modules/axe-core/LICENSE* tests/vendor/axe/ 2>/dev/null || true
+          node -e "const l=require('/tmp/v/package-lock.json').packages['node_modules/axe-core']; console.log('axe-core', l.version, l.integrity, l.license||'')" > tests/vendor/axe/VERSION.txt
+          ls -la tests/vendor/axe
       - name: Build fonts (Google Fonts, OFL/Apache; static Regular/Bold, Latin subset)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,9 +94,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add vendor
+          git add vendor tests/vendor
           git diff --cached --quiet && { echo "No changes"; exit 0; }
-          git commit -m "Vendor pdf-lib, pdf.js, tesseract.js (eng+msa), fontkit and fonts"
+          git commit -m "Vendor pdf-lib, pdf.js, tesseract.js (eng+msa), fontkit, fonts and axe-core (tests)"
           # Others may have pushed meanwhile; vendor/ is only written here, so a rebase is safe.
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin HEAD:${GITHUB_REF_NAME}
