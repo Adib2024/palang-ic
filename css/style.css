@@ -94,6 +94,8 @@ body {
   margin: 0; background: var(--bg); color: var(--text);
   font: 400 1rem/1.55 var(--font); letter-spacing: -0.006em;
   -webkit-font-smoothing: antialiased; padding-bottom: env(safe-area-inset-bottom);
+  /* Long words (URLs, "Content-Security-Policy") wrap instead of pushing the page sideways on small phones. */
+  overflow-wrap: break-word;
 }
 h1, h2, h3 { margin: 0; line-height: 1.2; letter-spacing: -0.022em; }
 h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 14px; }

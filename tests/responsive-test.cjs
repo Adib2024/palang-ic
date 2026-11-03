@@ -31,6 +31,13 @@ const BACK = path.join(__dirname, 'fixtures/sample-back.jpg');
         const r = e.getBoundingClientRect();
         if (r.width && r.right > d.clientWidth + 1 && wide.length < 3) wide.push(e.id ? `#${e.id}` : `${e.tagName.toLowerCase()}.${[...e.classList].join('.')}`);
       });
+      // Text spilling out of its box (a long word) doesn't widen the box itself.
+      const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const range = document.createRange();
+      for (let n = walk.nextNode(); n && wide.length < 3; n = walk.nextNode()) {
+        range.selectNodeContents(n);
+        if (range.getBoundingClientRect().right > d.clientWidth + 1) wide.push(`text "${n.textContent.trim().slice(0, 40)}"`);
+      }
     }
     return { ov, wide };
   });
