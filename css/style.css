@@ -1122,6 +1122,8 @@ textarea.form-input { resize: none; line-height: 1.2; }
 /* On small phones the theme switch lives in this panel instead of the header. */
 @media (max-width: 480px) { .top-actions > .theme-toggle#themeToggle { display: none; } }
 @media (max-width: 400px) { :root[data-text="xl"] .logo span, :root[data-text="lg"] .logo span { display: none; } }
+/* Smallest phones (320 px): the header buttons sit closer so nothing spills sideways. */
+@media (max-width: 359px) { .top-actions { gap: 4px; } .lang button { padding: 0 8px; } .nav { gap: 6px; } }
 
 :root[data-contrast="high"] {
   --bg: #ffffff; --bg-hero: #ffffff; --surface: #ffffff; --surface-2: #ffffff;

@@ -7,7 +7,7 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 - **100% client-side.** Files never leave the device: no upload, no backend, no analytics, no external API calls with file data.
 - **Static site only:** HTML/CSS/vanilla ES modules, **no build step**. Deployable to GitHub Pages.
 - **Strict CSP meta on every page** (`connect-src 'none'`, `script-src 'self'`, `style-src 'self'`): no `fetch()`, no inline scripts/styles in markup, no CDNs. Load data (fonts, manifests) via `import()` of JS modules. Setting `el.style.x` from JS is fine.
-- **Mobile-first**, no horizontal scroll at 390 px (tests check `scrollWidth - clientWidth`).
+- **Mobile-first**, no horizontal scroll from 320 px up (`tests/responsive-test.cjs` checks every page at 320–1366 px, EN/BM, large text).
 - **No JPN/government logos** or anything that looks like an official site.
 - **English is the default language** (owner's decision, Nov 2026), BM one tap away (EN/BM toggle; a chosen language is remembered); light theme default; indigo + Inter design.
 - Never commit a real IC/document. Test fixtures are fake (`tests/fixtures/`).
