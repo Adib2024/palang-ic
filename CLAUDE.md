@@ -50,4 +50,6 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 
 ## Conventions
 - Comments explain *why*; match the surrounding style. No model names in commits or files.
+- Every commit message ends with this trailer so the owner gets GitHub contribution credit (commits stay authored by Claude and verified):
+  `Co-authored-by: Muhammad Adib <122847193+Adib2024@users.noreply.github.com>`
 - User talks in Bahasa Melayu; answer in BM. Before complex work, ask 3–4 short clarifying questions (AskUserQuestion), then build, test, push each item.
