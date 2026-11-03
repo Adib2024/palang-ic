@@ -1,6 +1,6 @@
 # DokuJaga (repo: palang-ic)
 
-Privacy-first document tools for Malaysians (Palang IC + 24 PDF/image tools).
+Privacy-first document tools for Malaysians: 29 tools on the dashboard (Palang IC, PDF, image and Office tools), plus Advanced mode (workflows), a share-target page (`kongsi/`) and a privacy page (`privasi/`).
 Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 
 ## Hard rules (never break)
@@ -22,6 +22,9 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
   `js/pdf-kit.js` (vendored pdf.js + pdf-lib loaders, `download()` / `shareOrDownload()` fire `dokujaga:saved`),
   `js/tool-catalog.js` (which tools accept which files, for "Continue to…" and the share page),
   `js/batch.js`, `js/handoff.js`, `js/continue.js`, `js/pdf-stamps.js`, `js/ocr-core.js`, `js/fonts.js`.
+- Per-tool scripts worth knowing: `js/imgsmall.js` (live compress, presets, crop/compare dialogs), `js/passport.js`, `js/imgconvert.js`,
+  `js/office2pdf.js` + `office-read.js` + `office-layout.js` + `unzip.js` (Word/Excel → PDF), `js/pdf2office.js` (PDF → Office),
+  `js/pdf-meta.js` (remove metadata), `js/pdf-flatten.js`, `js/undo.js` (undo/redo for Sign/Redact/workflows), `js/heic-worker.js` (libheif).
 - `vendor/` is filled by `.github/workflows/vendor.yml` (pdf-lib, pdf.js, tesseract, fontkit, libheif, fonts) — don't hand-edit; run it from the Actions tab (workflow_dispatch). No npm access in the cloud sandbox.
 - `sw.js`: network-first app cache `dokujaga-vNN` (bump on every release) + `ASSETS` list (**add every new js file / page**).
 
@@ -39,6 +42,12 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 - CI (`.github/workflows/deploy.yml`): test job on every push/PR, deploy only from `main` after tests pass. Test job is pinned to `ubuntu-24.04` (Playwright 1.56).
 - Release flow used so far: develop on `claude/palangic-watermark-app-zs1bhd`, wait for green CI, then fast-forward `main`.
 
+## Ideas not done yet (user's backlog)
+- Images: write a note on document photos (pay slips, bills); collage several photos onto one page.
+- Auto dark mode following the device (option in the "Aa" panel); load heavy modules lazily for old phones.
+- Automated accessibility checks in CI (e.g. axe-core, vendored) and fix what they find.
+- QR code tool; PDF bookmarks / table of contents. Own domain (on hold).
+
 ## Conventions
 - Comments explain *why*; match the surrounding style. No model names in commits or files.
-- User talks in Bahasa Melayu; answer in BM.
+- User talks in Bahasa Melayu; answer in BM. Before complex work, ask 3–4 short clarifying questions (AskUserQuestion), then build, test, push each item.
