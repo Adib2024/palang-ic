@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,11 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Kecilkan Gambar · DokuJaga</title>
+  <title>Compress Images · DokuJaga</title>
   <meta name="description" content="Kecilkan saiz dan dimensi gambar, dan buang data EXIF, terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DokuJaga">
-  <meta property="og:title" content="Kecilkan Gambar · DokuJaga">
+  <meta property="og:title" content="Compress Images · DokuJaga">
   <meta property="og:description" content="Kecilkan saiz dan dimensi gambar, dan buang data EXIF, terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
   <meta property="og:image:width" content="1200">
@@ -32,17 +32,17 @@
   <header class="site-header">
     <div class="container nav">
       <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="../#tools" data-i18n="navTools">Alat</a>
-        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="../#tools" data-i18n="navTools">Tools</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
-        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Advanced mode</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -50,9 +50,9 @@
 
   <section class="hero tool-hero tone-emerald">
     <div class="container">
-      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <p class="crumbs"><a href="../" data-i18n="allTools">All tools</a> /</p>
       <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M14 4v6h6M10 20v-6H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m14 10 5.5-5.5M10 14l-5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-      <h1 data-i18n="toolImgSmallTitle">Kecilkan Gambar</h1>
+      <h1 data-i18n="toolImgSmallTitle">Compress Images</h1>
       <p class="lead" data-i18n="isLead"></p>
     </div>
   </section>
@@ -61,26 +61,26 @@
     <div class="container stack">
       <section class="privacy">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+        <strong data-i18n="privacyFiles">Your files are processed on your device only. Nothing is uploaded.</strong>
       </section>
 
-      <ol class="steps-bar tone-emerald" id="stepsBar" aria-label="Langkah" data-i18n-attr="aria-label:isSteps">
-        <li data-step="1"><span class="step">1</span><span data-i18n="isStep1">Pilih gambar</span></li>
-        <li data-step="2"><span class="step">2</span><span data-i18n="isStep2">Pilih tujuan</span></li>
-        <li data-step="3"><span class="step">3</span><span data-i18n="isStep3">Simpan</span></li>
+      <ol class="steps-bar tone-emerald" id="stepsBar" aria-label="Steps" data-i18n-attr="aria-label:isSteps">
+        <li data-step="1"><span class="step">1</span><span data-i18n="isStep1">Choose images</span></li>
+        <li data-step="2"><span class="step">2</span><span data-i18n="isStep2">Choose purpose</span></li>
+        <li data-step="3"><span class="step">3</span><span data-i18n="isStep3">Save</span></li>
       </ol>
 
       <div class="tool-layout settings-left tone-emerald is-empty" id="toolLayout">
         <aside class="card options" aria-labelledby="optTitle">
-          <h2 id="optTitle"><span class="step">2</span><span data-i18n="isPurpose">Untuk apa gambar ini?</span></h2>
+          <h2 id="optTitle"><span class="step">2</span><span data-i18n="isPurpose">What is it for?</span></h2>
           <div class="presets" id="presets" role="radiogroup" data-i18n-attr="aria-label:isPurpose"></div>
 
           <details class="advanced" id="custom">
-            <summary data-i18n="isCustom">Tetapan sendiri</summary>
+            <summary data-i18n="isCustom">Custom settings</summary>
             <label class="field">
-              <span data-i18n="isMaxSize">Saiz fail maksimum</span>
+              <span data-i18n="isMaxSize">Maximum file size</span>
               <select id="limit">
-                <option value="0" data-i18n="cmpNoLimit">Tiada had</option>
+                <option value="0" data-i18n="cmpNoLimit">No limit</option>
                 <option value="2097152">2 MB</option>
                 <option value="1048576">1 MB</option>
                 <option value="512000">500 KB</option>
@@ -88,17 +88,17 @@
                 <option value="204800">200 KB</option>
                 <option value="102400">100 KB</option>
                 <option value="51200">50 KB</option>
-                <option value="custom" data-i18n="isOther">Lain-lain…</option>
+                <option value="custom" data-i18n="isOther">Other…</option>
               </select>
             </label>
             <label class="field" id="limitCustomRow" hidden>
-              <span data-i18n="isLimitKb">Had saiz (KB)</span>
+              <span data-i18n="isLimitKb">Size limit (KB)</span>
               <input type="number" id="limitCustom" min="10" max="51200" step="10" inputmode="numeric" value="250">
             </label>
             <label class="field">
-              <span data-i18n="isMaxDim">Lebar / tinggi maksimum</span>
+              <span data-i18n="isMaxDim">Maximum width / height</span>
               <select id="maxDim">
-                <option value="0" data-i18n="isOriginal">Saiz asal</option>
+                <option value="0" data-i18n="isOriginal">Original size</option>
                 <option value="2560">2560 px</option>
                 <option value="1920">1920 px</option>
                 <option value="1600">1600 px</option>
@@ -109,15 +109,15 @@
                 <option value="p75">75%</option>
                 <option value="p50">50%</option>
                 <option value="p25">25%</option>
-                <option value="custom" data-i18n="isOther">Lain-lain…</option>
+                <option value="custom" data-i18n="isOther">Other…</option>
               </select>
             </label>
             <label class="field" id="dimCustomRow" hidden>
-              <span data-i18n="isDimPx">Sisi paling panjang (px)</span>
+              <span data-i18n="isDimPx">Longest side (px)</span>
               <input type="number" id="dimCustom" min="64" max="8000" step="10" inputmode="numeric" value="1500">
             </label>
             <label class="range" for="quality">
-              <span data-i18n="isQuality">Kualiti</span>
+              <span data-i18n="isQuality">Quality</span>
               <output id="qualityOut">85%</output>
               <input type="range" id="quality" min="30" max="100" step="1" value="85">
             </label>
@@ -136,7 +136,7 @@
           <div class="dropzone" id="dropzone">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <p class="drop-title"><strong data-i18n="isDropBig"></strong></p>
-            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <p class="drop-or" data-i18n="i2pOr">or</p>
             <div class="drop-buttons">
               <label class="btn primary lg">
                 <input type="file" id="pickFiles" accept="image/*,.heic,.heif" multiple>
@@ -144,15 +144,15 @@
               </label>
               <label class="btn lg camera-only">
                 <input type="file" id="pickCamera" accept="image/*,.heic,.heif" capture="environment">
-                <span data-i18n="i2pCamera">Ambil gambar</span>
+                <span data-i18n="i2pCamera">Take photo</span>
               </label>
             </div>
-            <p class="drop-hint paste-hint" data-i18n="isPasteHint">Boleh juga tampal gambar dengan Ctrl+V.</p>
+            <p class="drop-hint paste-hint" data-i18n="isPasteHint">You can also paste an image (Ctrl+V).</p>
           </div>
 
           <div class="pages-head">
-            <h2 id="listTitle"><span data-i18n="isImages">Gambar</span><span class="count" id="count">0</span></h2>
-            <button type="button" class="link" id="clearAll" data-i18n="i2pClear">Buang semua</button>
+            <h2 id="listTitle"><span data-i18n="isImages">Images</span><span class="count" id="count">0</span></h2>
+            <button type="button" class="link" id="clearAll" data-i18n="i2pClear">Remove all</button>
           </div>
           <ul class="img-list" id="imgList"></ul>
         </section>
@@ -163,8 +163,8 @@
             <span class="sum-meter" aria-hidden="true"><span id="sumMeter"></span></span>
           </div>
           <div class="save-actions">
-            <button type="button" class="btn" id="shareAll" disabled data-i18n="pdfShare">Kongsi</button>
-            <button type="button" class="btn primary" id="saveAll" disabled><span class="step">3</span><span id="saveLabel" data-i18n="isSaveAll">Simpan semua</span></button>
+            <button type="button" class="btn" id="shareAll" disabled data-i18n="pdfShare">Share</button>
+            <button type="button" class="btn primary" id="saveAll" disabled><span class="step">3</span><span id="saveLabel" data-i18n="isSaveAll">Save all</span></button>
           </div>
           <div class="progress" id="progress" hidden><span id="progressBar"></span></div>
           <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -174,8 +174,8 @@
       <dialog class="dlg" id="editDlg" aria-labelledby="editTitle">
         <div class="dlg-inner">
           <header class="dlg-head">
-            <h2 id="editTitle" data-i18n="isEditTitle">Putar &amp; potong</h2>
-            <button type="button" class="icon-btn dlg-x" data-close data-i18n-attr="aria-label:isClose,title:isClose" aria-label="Tutup">✕</button>
+            <h2 id="editTitle" data-i18n="isEditTitle">Rotate &amp; crop</h2>
+            <button type="button" class="icon-btn dlg-x" data-close data-i18n-attr="aria-label:isClose,title:isClose" aria-label="Close">✕</button>
           </header>
           <div class="crop-stage" id="cropStage">
             <canvas id="cropCanvas"></canvas>
@@ -185,23 +185,23 @@
             </div>
           </div>
           <div class="edit-tools">
-            <button type="button" class="btn small" id="rotL"><span aria-hidden="true">⟲</span> <span data-i18n="isRotL">Putar kiri</span></button>
-            <button type="button" class="btn small" id="rotR"><span aria-hidden="true">⟳</span> <span data-i18n="isRotR">Putar kanan</span></button>
-            <button type="button" class="btn small" id="flipH"><span aria-hidden="true">⇋</span> <span data-i18n="isFlip">Cermin</span></button>
+            <button type="button" class="btn small" id="rotL"><span aria-hidden="true">⟲</span> <span data-i18n="isRotL">Rotate left</span></button>
+            <button type="button" class="btn small" id="rotR"><span aria-hidden="true">⟳</span> <span data-i18n="isRotR">Rotate right</span></button>
+            <button type="button" class="btn small" id="flipH"><span aria-hidden="true">⇋</span> <span data-i18n="isFlip">Mirror</span></button>
           </div>
           <fieldset class="segmented small aspect-set" id="aspectSet">
-            <legend data-i18n="isAspect">Potong ikut nisbah</legend>
-            <label><input type="radio" name="aspect" value="free" checked><span data-i18n="isFree">Bebas</span></label>
+            <legend data-i18n="isAspect">Crop ratio</legend>
+            <label><input type="radio" name="aspect" value="free" checked><span data-i18n="isFree">Free</span></label>
             <label><input type="radio" name="aspect" value="1"><span>1:1</span></label>
             <label><input type="radio" name="aspect" value="0.75"><span>3:4</span></label>
             <label><input type="radio" name="aspect" value="1.3333"><span>4:3</span></label>
             <label><input type="radio" name="aspect" value="1.7778"><span>16:9</span></label>
-            <label><input type="radio" name="aspect" value="0.7778"><span data-i18n="isPassport">Pasport</span></label>
+            <label><input type="radio" name="aspect" value="0.7778"><span data-i18n="isPassport">Passport</span></label>
           </fieldset>
           <footer class="dlg-foot">
-            <button type="button" class="btn" id="editReset" data-i18n="isReset">Set semula</button>
-            <button type="button" class="btn" data-close data-i18n="isCancel">Batal</button>
-            <button type="button" class="btn primary" id="editApply" data-i18n="isApply">Guna</button>
+            <button type="button" class="btn" id="editReset" data-i18n="isReset">Reset</button>
+            <button type="button" class="btn" data-close data-i18n="isCancel">Cancel</button>
+            <button type="button" class="btn primary" id="editApply" data-i18n="isApply">Apply</button>
           </footer>
         </div>
       </dialog>
@@ -209,8 +209,8 @@
       <dialog class="dlg wide" id="cmpDlg" aria-labelledby="cmpTitle">
         <div class="dlg-inner">
           <header class="dlg-head">
-            <h2 id="cmpTitle" data-i18n="isCompare">Banding sebelum &amp; selepas</h2>
-            <button type="button" class="icon-btn dlg-x" data-close data-i18n-attr="aria-label:isClose,title:isClose" aria-label="Tutup">✕</button>
+            <h2 id="cmpTitle" data-i18n="isCompare">Compare before &amp; after</h2>
+            <button type="button" class="icon-btn dlg-x" data-close data-i18n-attr="aria-label:isClose,title:isClose" aria-label="Close">✕</button>
           </header>
           <div class="cmp-view" id="cmpView">
             <div class="cmp-inner" id="cmpInner">
@@ -221,14 +221,14 @@
           </div>
           <div class="cmp-labels"><span id="cmpLabelA"></span><span id="cmpLabelB"></span></div>
           <label class="range" for="cmpRange">
-            <span data-i18n="isSlide">Seret untuk banding</span>
+            <span data-i18n="isSlide">Drag to compare</span>
             <output id="cmpOut">50%</output>
             <input type="range" id="cmpRange" min="0" max="100" value="50">
           </label>
           <fieldset class="segmented small">
-            <legend class="sr-title" data-i18n="isZoom">Zum</legend>
-            <label><input type="radio" name="cmpZoom" value="fit" checked><span data-i18n="isFit">Muat skrin</span></label>
-            <label><input type="radio" name="cmpZoom" value="full"><span data-i18n="isFull">Saiz sebenar (zum)</span></label>
+            <legend class="sr-title" data-i18n="isZoom">Zoom</legend>
+            <label><input type="radio" name="cmpZoom" value="fit" checked><span data-i18n="isFit">Fit screen</span></label>
+            <label><input type="radio" name="cmpZoom" value="full"><span data-i18n="isFull">Actual size</span></label>
           </fieldset>
         </div>
       </dialog>
@@ -239,10 +239,10 @@
     <div class="container footer-inner">
       <div>
         <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>
 </body>

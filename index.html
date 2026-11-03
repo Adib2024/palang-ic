@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,11 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>DokuJaga — Alat dokumen yang jaga privasi</title>
+  <title>DokuJaga — Document tools that keep your files private</title>
   <meta name="description" content="Alat dokumen percuma yang jaga privasi: palang IC, gambar ke PDF dan lain-lain. Semua diproses dalam peranti anda — tiada apa-apa dimuat naik.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DokuJaga">
-  <meta property="og:title" content="DokuJaga — Alat dokumen yang jaga privasi">
+  <meta property="og:title" content="DokuJaga — Document tools that keep your files private">
   <meta property="og:description" content="Alat dokumen percuma yang jaga privasi: palang IC, gambar ke PDF dan lain-lain. Semua diproses dalam peranti anda — tiada apa-apa dimuat naik.">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
   <meta property="og:image:width" content="1200">
@@ -32,17 +32,17 @@
   <header class="site-header">
     <div class="container nav">
       <a class="logo" href=""><img src="icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="#tools" aria-current="page" data-i18n="navTools">Alat</a>
-        <a href="#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#tools" aria-current="page" data-i18n="navTools">Tools</a>
+        <a href="#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
-        <a class="adv-link" href="aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <a class="adv-link" href="aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Advanced mode</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -50,12 +50,12 @@
 
   <section class="hero">
     <div class="container">
-      <h1><span data-i18n="heroTitleA">Semua alat dokumen anda.</span> <span class="grad" data-i18n="heroTitleB">Tanpa muat naik.</span></h1>
+      <h1><span data-i18n="heroTitleA">All your document tools.</span> <span class="grad" data-i18n="heroTitleB">Zero uploads.</span></h1>
       <p class="lead" data-i18n="heroLead"></p>
       <div class="pills">
-        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillLocal">100% dalam peranti</span></span>
-        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillFree">Percuma, tanpa daftar</span></span>
-        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillOffline">Boleh guna luar talian</span></span>
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillLocal">100% on your device</span></span>
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillFree">Free, no sign-up</span></span>
+        <span class="pill"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg><span data-i18n="pillOffline">Works offline</span></span>
       </div>
     </div>
   </section>
@@ -63,22 +63,22 @@
   <main class="page">
     <div class="container stack">
       <section id="tools" aria-labelledby="toolsTitle">
-        <h2 id="toolsTitle" class="section-title" data-i18n="toolsHeading">Pilih alat</h2>
+        <h2 id="toolsTitle" class="section-title" data-i18n="toolsHeading">Choose a tool</h2>
         <p class="section-sub" data-i18n="toolsSub"></p>
         <div class="tool-search" role="search">
           <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <input type="search" id="toolSearch" autocomplete="off" enterkeyhint="search"
-                 data-i18n-attr="placeholder:searchTools,aria-label:searchToolsLabel" placeholder="Cari alat…" aria-label="Cari alat">
+                 data-i18n-attr="placeholder:searchTools,aria-label:searchToolsLabel" placeholder="Search tools… (e.g. compress, sign, word)" aria-label="Search tools">
           <kbd aria-hidden="true">/</kbd>
         </div>
         <div class="recent" id="recent" hidden></div>
         <div class="cat-chips" role="toolbar" aria-label="Kategori">
-          <button type="button" class="chip" data-cat="all" aria-pressed="true" data-i18n="catAll">Semua</button>
-          <button type="button" class="chip" data-cat="organize" aria-pressed="false" data-i18n="catOrganize">Susun</button>
-          <button type="button" class="chip" data-cat="optimize" aria-pressed="false" data-i18n="catOptimize">Optimum</button>
-          <button type="button" class="chip" data-cat="convert" aria-pressed="false" data-i18n="catConvert">Tukar</button>
+          <button type="button" class="chip" data-cat="all" aria-pressed="true" data-i18n="catAll">All</button>
+          <button type="button" class="chip" data-cat="organize" aria-pressed="false" data-i18n="catOrganize">Organise</button>
+          <button type="button" class="chip" data-cat="optimize" aria-pressed="false" data-i18n="catOptimize">Optimise</button>
+          <button type="button" class="chip" data-cat="convert" aria-pressed="false" data-i18n="catConvert">Convert</button>
           <button type="button" class="chip" data-cat="edit" aria-pressed="false" data-i18n="catEdit">Edit</button>
-          <button type="button" class="chip" data-cat="security" aria-pressed="false" data-i18n="catSecurity">Keselamatan</button>
+          <button type="button" class="chip" data-cat="security" aria-pressed="false" data-i18n="catSecurity">Security</button>
         </div>
         <p class="no-tools" id="noTools" role="status" hidden></p>
         <div class="tool-grid">
@@ -89,7 +89,7 @@
               <strong data-i18n="toolPalangTitle"></strong>
               <span data-i18n="toolPalangDesc"></span>
             </span>
-            <span class="go"><span data-i18n="heroStart">Mula sekarang</span> →</span>
+            <span class="go"><span data-i18n="heroStart">Start now</span> →</span>
           </a>
           <a class="tool tone-rose popular" href="gabung-pdf/" data-cat="organize">
             <em class="pop-badge" data-i18n="popular">Popular</em>
@@ -307,16 +307,16 @@
       </section>
 
       <section id="privacy" class="card why" aria-labelledby="privacyTitle">
-        <h2 id="privacyTitle" class="section-title" data-i18n="privacyHeading">Privasi bukan sekadar janji</h2>
+        <h2 id="privacyTitle" class="section-title" data-i18n="privacyHeading">Privacy, not just a promise</h2>
         <p class="section-sub" data-i18n="privacySub"></p>
         <ul class="features">
           <li class="feature tone-emerald"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><strong data-i18n="why1Title"></strong><span data-i18n="why1"></span></li>
           <li class="feature tone-indigo"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9ZM3 7h18v4H3zM12 7v14M12 7S10.5 3 8 3.8C6 4.5 7.5 7 12 7Zm0 0s1.5-4 4-3.2C18 4.5 16.5 7 12 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><strong data-i18n="why2Title"></strong><span data-i18n="why2"></span></li>
           <li class="feature tone-sky"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10.5 21 12 17.5l1.5 3.5M12 3c.8 0 1.5.7 1.5 1.5V9l7 4.5v2L13.5 13v4.5h-3V13l-7 2.5v-2l7-4.5V4.5C10.5 3.7 11.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><strong data-i18n="why3Title"></strong><span data-i18n="why3"></span></li>
         </ul>
-        <p class="pv-more"><a href="privasi/" data-i18n="pvMore">Baca dasar privasi penuh →</a></p>
+        <p class="pv-more"><a href="privasi/" data-i18n="pvMore">Read the full privacy page →</a></p>
         <details class="verify">
-          <summary data-i18n="verifyTitle">Cara semak sendiri</summary>
+          <summary data-i18n="verifyTitle">How to verify it yourself</summary>
           <ul>
             <li data-i18n="how1"></li>
             <li data-i18n="how2"></li>
@@ -332,10 +332,10 @@
     <div class="container footer-inner">
       <div>
         <a class="logo" href=""><img src="icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>
 </body>

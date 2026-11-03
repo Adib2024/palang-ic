@@ -48,12 +48,12 @@
   function write(key, v) {
     try { window.localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* not saved */ }
   }
-  // English strings are a separate module: start fetching them now.
+  // Bahasa Melayu strings are a separate module: start fetching them now.
   try {
-    if (read('palangic:lang') === 'en' && document.currentScript) {
+    if (read('palangic:lang') === 'ms' && document.currentScript) {
       var pre = document.createElement('link');
       pre.rel = 'modulepreload';
-      pre.href = new URL('i18n-en.js', document.currentScript.src).href;
+      pre.href = new URL('i18n-ms.js', document.currentScript.src).href;
       document.head.appendChild(pre);
     }
   } catch (e) { /* only a speed-up */ }
@@ -70,7 +70,7 @@
     ms: { title: 'Paparan', btn: 'Tetapan paparan', size: 'Saiz teks', contrast: 'Kontras tinggi', dark: 'Tema gelap', auto: 'Ikut tetapan peranti', on: 'Hidup', off: 'Mati' },
     en: { title: 'Display', btn: 'Display settings', size: 'Text size', contrast: 'High contrast', dark: 'Dark theme', auto: 'Follow device setting', on: 'On', off: 'Off' },
   };
-  function lang() { return read('palangic:lang') === 'en' ? 'en' : 'ms'; }
+  function lang() { return read('palangic:lang') === 'ms' ? 'ms' : 'en'; }
 
   function el(tag, attrs, text) {
     var e = document.createElement(tag);
@@ -130,7 +130,7 @@
     actions.insertBefore(wrap, langEl || null);
 
     function relabel() {
-      var L = LABELS[window.document.documentElement.lang === 'en' ? 'en' : lang()];
+      var L = LABELS[window.document.documentElement.lang === 'ms' ? 'ms' : lang()];
       btn.setAttribute('aria-label', L.btn);
       btn.title = L.btn;
       h.textContent = L.title;

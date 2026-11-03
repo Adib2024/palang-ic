@@ -9,7 +9,7 @@ import { deliverInbox } from './handoff.js';
  * @returns {{ lang: () => string }}
  */
 export function initPage(onLang) {
-  let lang = store.load('lang', 'ms') === 'en' ? 'en' : 'ms';
+  let lang = store.load('lang', 'en') === 'ms' ? 'ms' : 'en';
   const sync = () => {
     applyI18n(document, lang);
     document.querySelectorAll('[data-lang]').forEach((b) => {
@@ -20,14 +20,14 @@ export function initPage(onLang) {
   };
   let refreshGuide = () => {};
   document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => {
-    const next = b.dataset.lang === 'en' ? 'en' : 'ms';
+    const next = b.dataset.lang === 'ms' ? 'ms' : 'en';
     store.save('lang', next);
-    // Switch in one go once the strings are here (English loads on demand).
+    // Switch in one go once the strings are here (BM loads on demand).
     loadLang(next).then(() => { lang = next; sync(); });
   }));
-  // Fetch English as soon as someone reaches for the button.
-  document.querySelectorAll('[data-lang="en"]').forEach((b) => ['pointerenter', 'focus', 'touchstart'].forEach((ev) => b.addEventListener(ev, () => loadLang('en'), { passive: true })));
-  // English is loaded on demand (js/i18n-en.js): redraw the tool's own text
+  // Fetch Bahasa Melayu as soon as someone reaches for the button.
+  document.querySelectorAll('[data-lang="ms"]').forEach((b) => ['pointerenter', 'focus', 'touchstart'].forEach((ev) => b.addEventListener(ev, () => loadLang('ms'), { passive: true })));
+  // Bahasa Melayu is loaded on demand (js/i18n-ms.js): redraw the tool's own text
   // once it has arrived.
   document.addEventListener('dokujaga:i18n', () => { if (onLang) onLang(lang); refreshGuide(); });
   sync();

@@ -5,7 +5,7 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' 
 
 def head(root, title, desc, script):
     return f'''<!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -40,16 +40,16 @@ def header(root, current=''):
     return f'''  <header class="site-header">
     <div class="container nav">
       <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="{root}#tools"{tools_cur} data-i18n="navTools">Alat</a>
-        <a href="{root}#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="{root}#tools"{tools_cur} data-i18n="navTools">Tools</a>
+        <a href="{root}#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -60,10 +60,10 @@ def footer(root):
     <div class="container footer-inner">
       <div>
         <a class="logo" href="{root}"><img src="{root}icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="{root}privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="{root}privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>'''
 
@@ -91,7 +91,7 @@ ICONS.update({
 def hero(tone, icon, tkey, title, lkey):
     return f'''  <section class="hero tool-hero tone-{tone}">
     <div class="container">
-      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <p class="crumbs"><a href="../" data-i18n="allTools">All tools</a> /</p>
       <span class="tool-icon" aria-hidden="true">{ICONS[icon]}</span>
       <h1 data-i18n="{tkey}">{title}</h1>
       <p class="lead" data-i18n="{lkey}"></p>
@@ -100,7 +100,7 @@ def hero(tone, icon, tkey, title, lkey):
 
 PRIVACY = f'''      <section class="privacy">
         {SHIELD}
-        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+        <strong data-i18n="privacyFiles">Your files are processed on your device only. Nothing is uploaded.</strong>
       </section>'''
 
 def dropzone(accept, multiple, drop_key, choose_key, camera=False):
@@ -108,12 +108,12 @@ def dropzone(accept, multiple, drop_key, choose_key, camera=False):
     cam = '''
               <label class="btn lg camera-only">
                 <input type="file" id="pickCamera" accept="image/*" capture="environment">
-                <span data-i18n="i2pCamera">Ambil gambar</span>
+                <span data-i18n="i2pCamera">Take photo</span>
               </label>''' if camera else ''
     return f'''          <div class="dropzone" id="dropzone">
             {ICONS['upload']}
             <p><strong data-i18n="{drop_key}"></strong></p>
-            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <p class="drop-or" data-i18n="i2pOr">or</p>
             <div class="drop-buttons">
               <label class="btn primary lg">
                 <input type="file" id="pickFiles" accept="{accept}"{m}>
@@ -166,31 +166,31 @@ ICONS.update({
 def sign_panel():
     """Signature maker + date + text + 'all pages' controls (js: sig-maker.js, placer.js)."""
     return '''          <fieldset class="segmented small">
-            <legend class="sr-title" data-i18n="sigYours">Tandatangan anda</legend>
-            <label><input type="radio" name="sigTab" value="draw" checked><span data-i18n="sigDraw">Lukis</span></label>
-            <label><input type="radio" name="sigTab" value="type"><span data-i18n="sigType">Taip</span></label>
-            <label><input type="radio" name="sigTab" value="image"><span data-i18n="sigImage">Gambar</span></label>
+            <legend class="sr-title" data-i18n="sigYours">Your signature</legend>
+            <label><input type="radio" name="sigTab" value="draw" checked><span data-i18n="sigDraw">Draw</span></label>
+            <label><input type="radio" name="sigTab" value="type"><span data-i18n="sigType">Type</span></label>
+            <label><input type="radio" name="sigTab" value="image"><span data-i18n="sigImage">Image</span></label>
           </fieldset>
 
           <div data-tab="draw">
             <canvas class="sig-pad" id="pad" width="900" height="360"></canvas>
             <div class="pad-tools">
               <fieldset class="ink">
-                <legend class="sr-title" data-i18n="sigPen">Warna dakwat</legend>
-                <label class="ink-black"><input type="radio" name="ink" value="#111111" checked><span data-i18n-attr="aria-label:black,title:black" aria-label="Hitam"></span></label>
-                <label class="ink-blue"><input type="radio" name="ink" value="#1d3a8a"><span data-i18n-attr="aria-label:blue,title:blue" aria-label="Biru"></span></label>
+                <legend class="sr-title" data-i18n="sigPen">Ink colour</legend>
+                <label class="ink-black"><input type="radio" name="ink" value="#111111" checked><span data-i18n-attr="aria-label:black,title:black" aria-label="Black"></span></label>
+                <label class="ink-blue"><input type="radio" name="ink" value="#1d3a8a"><span data-i18n-attr="aria-label:blue,title:blue" aria-label="Blue"></span></label>
               </fieldset>
-              <button type="button" class="link" id="padClear" data-i18n="sigClear">Kosongkan</button>
+              <button type="button" class="link" id="padClear" data-i18n="sigClear">Clear</button>
             </div>
           </div>
 
           <div data-tab="type" hidden>
             <label class="field">
-              <span class="sr-title" data-i18n="sigNamePh">Nama</span>
-              <input type="text" id="typedName" maxlength="60" autocomplete="name" data-i18n-attr="placeholder:sigNamePh" placeholder="Nama penuh anda">
+              <span class="sr-title" data-i18n="sigNamePh">Your full name</span>
+              <input type="text" id="typedName" maxlength="60" autocomplete="name" data-i18n-attr="placeholder:sigNamePh" placeholder="Your full name">
             </label>
             <label class="field">
-              <span data-i18n="sigStyle">Gaya</span>
+              <span data-i18n="sigStyle">Style</span>
               <select id="sigFont"></select>
             </label>
             <canvas class="sig-pad preview" id="typedPreview" width="900" height="300"></canvas>
@@ -199,41 +199,41 @@ def sign_panel():
           <div data-tab="image" hidden>
             <label class="btn">
               <input type="file" id="sigFile" accept="image/*">
-              <span data-i18n="sigUpload">Pilih gambar tandatangan</span>
+              <span data-i18n="sigUpload">Choose signature image</span>
             </label>
             <label class="check">
               <input type="checkbox" id="removeBg" checked>
-              <span data-i18n="sigRemoveBg">Buang latar putih</span>
+              <span data-i18n="sigRemoveBg">Remove white background</span>
             </label>
             <canvas class="sig-pad preview" id="imagePreview" width="900" height="360"></canvas>
           </div>
 
           <div class="buttons stack">
-            <button type="button" class="primary" id="addSig" data-i18n="sigAdd">Letak tandatangan</button>
+            <button type="button" class="primary" id="addSig" data-i18n="sigAdd">Place signature</button>
           </div>
 
           <div class="sign-text">
             <label class="field">
-              <span data-i18n="fontTextLabel">Font teks &amp; tarikh</span>
+              <span data-i18n="fontTextLabel">Font for text &amp; date</span>
               <select id="textFont"></select>
             </label>
             <div class="field-row">
               <label class="field">
-                <span data-i18n="sigDate">Tarikh</span>
+                <span data-i18n="sigDate">Date</span>
                 <input type="date" id="dateValue">
               </label>
-              <button type="button" class="btn" id="addDate" data-i18n="wfPlaceDate">Letak tarikh</button>
+              <button type="button" class="btn" id="addDate" data-i18n="wfPlaceDate">Place date</button>
             </div>
             <div class="field-row">
               <label class="field">
-                <span data-i18n="wfTextLabel">Teks</span>
-                <input type="text" id="extraText" maxlength="80" autocomplete="off" data-i18n-attr="placeholder:sigTextPh" placeholder="cth. nama, No. IC, jawatan">
+                <span data-i18n="wfTextLabel">Text</span>
+                <input type="text" id="extraText" maxlength="80" autocomplete="off" data-i18n-attr="placeholder:sigTextPh" placeholder="e.g. name, IC no., position">
               </label>
-              <button type="button" class="btn" id="addText" data-i18n="sigAddText">Letak teks</button>
+              <button type="button" class="btn" id="addText" data-i18n="sigAddText">Place text</button>
             </div>
             <label class="check">
               <input type="checkbox" id="allPages">
-              <span data-i18n="sigAllPages">Letak pada semua muka surat</span>
+              <span data-i18n="sigAllPages">Place on every page</span>
             </label>
           </div>
           <p class="hint" data-i18n="sigHint"></p>
@@ -243,7 +243,7 @@ ICONS.update({
  'flow': '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
 })
 
-ADV_LINK = '<a class="adv-link" href="{root}aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan">' + ICONS['flow'] + '<span data-i18n="navAdvanced">Mod Lanjutan</span></a>'
+ADV_LINK = '<a class="adv-link" href="{root}aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode">' + ICONS['flow'] + '<span data-i18n="navAdvanced">Advanced mode</span></a>'
 _header_orig = header
 def header(root, current=''):
     """Header with the 'Mod Lanjutan' (workflows) button."""

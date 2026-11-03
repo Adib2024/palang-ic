@@ -26,9 +26,9 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
 const savedPerMode = store.load('perMode', {});
 const state = {
-  lang: store.load('lang', 'ms') === 'en' ? 'en' : 'ms',
+  lang: store.load('lang', 'en') === 'ms' ? 'ms' : 'en',
   mode: MODES.includes(store.load('mode', 'palang')) ? store.load('mode', 'palang') : 'palang',
-  template: store.load('template', 'ms') === 'en' ? 'en' : 'ms',
+  template: store.load('template', store.load('lang', 'en')) === 'ms' ? 'ms' : 'en',
   addDate: store.load('addDate', false) === true,
   color: store.load('color', 'black'),
   palangShape: SHAPES.includes(store.load('palangShape', 'corner')) ? store.load('palangShape', 'corner') : 'corner',

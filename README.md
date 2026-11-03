@@ -277,8 +277,8 @@ vendor/                 pdf-lib 1.17.1 (MIT), pdf.js 4.10.38 (Apache-2.0); see v
 js/watermark.js         pure renderer: palang / tiled / combined
 js/image-loader.js      decode + EXIF orientation fix + size cap
 js/pdf.js               tiny multi-page PDF writer (JPEG embed)
-js/i18n.js              BM strings (default) + templates; loadLang() fetches English
-js/i18n-en.js           English strings, loaded only when English is chosen
+js/i18n.js              English strings (default) + templates; loadLang() fetches BM
+js/i18n-ms.js           Bahasa Melayu strings, loaded only when BM is chosen
 js/theme.js             light/dark/auto (follow device) theme + "Aa" panel (runs before first paint)
 js/storage.js, js/pwa.js   localStorage wrapper, service worker registration
 sw.js, manifest.webmanifest, icons/   PWA

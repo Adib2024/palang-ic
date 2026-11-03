@@ -1,8 +1,8 @@
 {
-  "name": "DokuJaga — Alat dokumen yang jaga privasi",
+  "name": "DokuJaga — Document tools that keep your files private",
   "short_name": "DokuJaga",
-  "description": "Palang IC, gambar ke PDF dan alat dokumen lain. Semua diproses dalam peranti anda — tiada apa-apa dimuat naik.",
-  "lang": "ms",
+  "description": "Palang IC, images to PDF and other document tools. Everything is processed on your device — nothing is uploaded.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

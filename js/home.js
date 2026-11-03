@@ -1,5 +1,5 @@
 import { initPage } from './page.js';
-import { t } from './i18n.js';
+import { t, loadLang } from './i18n.js';
 import * as store from './storage.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -21,12 +21,15 @@ const EXTRA = {
   'ocr-pdf/': 'text teks scan imbas',
 };
 const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-const haystack = new Map(tools.map((card) => {
+const buildHaystack = () => new Map(tools.map((card) => {
   const keys = [...card.querySelectorAll('[data-i18n]')].map((e) => e.dataset.i18n);
   const words = keys.flatMap((k) => [t('ms', k), t('en', k)]);
   const href = card.getAttribute('href');
   return [card, norm(`${words.join(' ')} ${href.replace(/[/-]/g, ' ')} ${EXTRA[href] || ''}`)];
 }));
+let haystack = buildHaystack();
+// Search works in both languages; the one not on screen is loaded on demand.
+const bothLangs = () => loadLang('ms').then(() => { haystack = buildHaystack(); if (ready) filter(); });
 
 let ready = false;
 const page = initPage(() => { if (ready) { filter(); relabelTips(); } });
@@ -55,6 +58,7 @@ for (const chip of chips) {
     filter();
   });
 }
+$('#toolSearch').addEventListener('focus', bothLangs, { once: true });
 $('#toolSearch').addEventListener('input', filter);
 $('#toolSearch').addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { e.target.value = ''; filter(); }

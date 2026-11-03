@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,11 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Kolaj Gambar · DokuJaga</title>
+  <title>Photo Collage · DokuJaga</title>
   <meta name="description" content="Gabung 2, 4, 6 atau 9 gambar (IC depan dan belakang, resit) jadi satu muka A4, simpan sebagai JPG atau PDF. Tiada apa-apa dimuat naik.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DokuJaga">
-  <meta property="og:title" content="Kolaj Gambar · DokuJaga">
+  <meta property="og:title" content="Photo Collage · DokuJaga">
   <meta property="og:description" content="Gabung 2, 4, 6 atau 9 gambar (IC depan dan belakang, resit) jadi satu muka A4, simpan sebagai JPG atau PDF. Tiada apa-apa dimuat naik.">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
   <meta property="og:image:width" content="1200">
@@ -32,17 +32,17 @@
   <header class="site-header">
     <div class="container nav">
       <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="../#tools" data-i18n="navTools">Alat</a>
-        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="../#tools" data-i18n="navTools">Tools</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
-        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Advanced mode</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -50,9 +50,9 @@
 
   <section class="hero tool-hero tone-sky">
     <div class="container">
-      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <p class="crumbs"><a href="../" data-i18n="allTools">All tools</a> /</p>
       <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v18M3 12h9" stroke="currentColor" stroke-width="1.6"/><path d="m13.5 18 2.5-3 1.8 1.8 1.2-1.2 1 1.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="16.5" cy="8" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></span>
-      <h1 data-i18n="toolCollageTitle">Kolaj Gambar</h1>
+      <h1 data-i18n="toolCollageTitle">Photo Collage</h1>
       <p class="lead" data-i18n="clLead"></p>
     </div>
   </section>
@@ -61,7 +61,7 @@
     <div class="container stack">
       <section class="privacy">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+        <strong data-i18n="privacyFiles">Your files are processed on your device only. Nothing is uploaded.</strong>
       </section>
 
       <div class="tool-layout tone-sky is-empty" id="toolLayout">
@@ -69,7 +69,7 @@
           <div class="dropzone" id="dropzone">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <p><strong data-i18n="clDropBig"></strong></p>
-            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <p class="drop-or" data-i18n="i2pOr">or</p>
             <div class="drop-buttons">
               <label class="btn primary lg">
                 <input type="file" id="pickFiles" accept="image/*,.heic,.heif" multiple>
@@ -77,7 +77,7 @@
               </label>
               <label class="btn lg camera-only">
                 <input type="file" id="pickCamera" accept="image/*" capture="environment">
-                <span data-i18n="i2pCamera">Ambil gambar</span>
+                <span data-i18n="i2pCamera">Take photo</span>
               </label>
             </div>
           </div>
@@ -89,35 +89,35 @@
             </div>
           </div>
           <div class="pages-head after-load">
-            <h2 id="listTitle"><span data-i18n="clPhotos">Gambar</span><span class="count" id="count">0</span></h2>
-            <button type="button" class="link" id="clearAll" data-i18n="i2pClear">Buang semua</button>
+            <h2 id="listTitle"><span data-i18n="clPhotos">Photos</span><span class="count" id="count">0</span></h2>
+            <button type="button" class="link" id="clearAll" data-i18n="i2pClear">Remove all</button>
           </div>
           <ol class="page-grid cl-grid after-load" id="photoGrid"></ol>
-          <h2 class="cl-preview-title after-load" data-i18n="clPreview">Pratonton</h2>
+          <h2 class="cl-preview-title after-load" data-i18n="clPreview">Preview</h2>
           <div class="cl-preview after-load" id="clPreview"></div>
         </section>
         <aside class="card options" aria-labelledby="optTitle">
-          <h2 id="optTitle" data-i18n="optSettings">Tetapan</h2>
+          <h2 id="optTitle" data-i18n="optSettings">Settings</h2>
           <fieldset class="segmented small">
-            <legend data-i18n="clGrid">Gambar setiap muka</legend>
+            <legend data-i18n="clGrid">Photos per page</legend>
             <label><input type="radio" name="clGrid" value="2" checked><span>2</span></label>
             <label><input type="radio" name="clGrid" value="4"><span>4</span></label>
             <label><input type="radio" name="clGrid" value="6"><span>6</span></label>
             <label><input type="radio" name="clGrid" value="9"><span>9</span></label>
           </fieldset>
           <fieldset class="segmented small">
-            <legend data-i18n="clPaper">Kertas</legend>
-            <label><input type="radio" name="clPaper" value="portrait" checked><span data-i18n="clPortrait">A4 menegak</span></label>
-            <label><input type="radio" name="clPaper" value="landscape"><span data-i18n="clLandscape">A4 melintang</span></label>
+            <legend data-i18n="clPaper">Paper</legend>
+            <label><input type="radio" name="clPaper" value="portrait" checked><span data-i18n="clPortrait">A4 portrait</span></label>
+            <label><input type="radio" name="clPaper" value="landscape"><span data-i18n="clLandscape">A4 landscape</span></label>
           </fieldset>
           <fieldset class="segmented small">
-            <legend data-i18n="clFit">Muat gambar</legend>
-            <label><input type="radio" name="clFit" value="contain" checked><span data-i18n="clFitWhole">Gambar penuh</span></label>
-            <label><input type="radio" name="clFit" value="cover"><span data-i18n="clFitFill">Penuhkan kotak</span></label>
+            <legend data-i18n="clFit">Fit photos</legend>
+            <label><input type="radio" name="clFit" value="contain" checked><span data-i18n="clFitWhole">Whole photo</span></label>
+            <label><input type="radio" name="clFit" value="cover"><span data-i18n="clFitFill">Fill the box</span></label>
           </fieldset>
-          <label class="check"><input type="checkbox" id="clBorder"><span data-i18n="clBorder">Garis nipis di sekeliling gambar</span></label>
+          <label class="check"><input type="checkbox" id="clBorder"><span data-i18n="clBorder">Thin line around each photo</span></label>
           <fieldset class="segmented small">
-            <legend data-i18n="clFormat">Simpan sebagai</legend>
+            <legend data-i18n="clFormat">Save as</legend>
             <label><input type="radio" name="clFormat" value="pdf" checked><span>PDF</span></label>
             <label><input type="radio" name="clFormat" value="jpeg"><span>JPG</span></label>
           </fieldset>
@@ -137,10 +137,10 @@
     <div class="container footer-inner">
       <div>
         <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>
 </body>

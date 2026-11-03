@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,11 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Nombor Muka Surat · DokuJaga</title>
+  <title>Page Numbers · DokuJaga</title>
   <meta name="description" content="Tambah nombor muka surat pada PDF terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DokuJaga">
-  <meta property="og:title" content="Nombor Muka Surat · DokuJaga">
+  <meta property="og:title" content="Page Numbers · DokuJaga">
   <meta property="og:description" content="Tambah nombor muka surat pada PDF terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
   <meta property="og:image:width" content="1200">
@@ -32,17 +32,17 @@
   <header class="site-header">
     <div class="container nav">
       <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="../#tools" data-i18n="navTools">Alat</a>
-        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="../#tools" data-i18n="navTools">Tools</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
-        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Advanced mode</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -50,9 +50,9 @@
 
   <section class="hero tool-hero tone-violet">
     <div class="container">
-      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <p class="crumbs"><a href="../" data-i18n="allTools">All tools</a> /</p>
       <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 8h6M8 11h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10.5 15.5 12 14.5V19m-1.5 0h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <h1 data-i18n="toolPnTitle">Nombor Muka Surat</h1>
+      <h1 data-i18n="toolPnTitle">Page Numbers</h1>
       <p class="lead" data-i18n="pnLead"></p>
     </div>
   </section>
@@ -61,7 +61,7 @@
     <div class="container stack">
       <section class="privacy">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+        <strong data-i18n="privacyFiles">Your files are processed on your device only. Nothing is uploaded.</strong>
       </section>
 
       <div class="tool-layout tone-violet is-empty" id="toolLayout">
@@ -69,7 +69,7 @@
           <div class="dropzone" id="dropzone">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <p><strong data-i18n="pdfDropBig"></strong></p>
-            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <p class="drop-or" data-i18n="i2pOr">or</p>
             <div class="drop-buttons">
               <label class="btn primary lg">
                 <input type="file" id="pickFiles" accept="application/pdf,.pdf" multiple>
@@ -81,19 +81,19 @@
             <div class="file-info">
               <h2 id="docTitle" class="file-name"></h2>
               <p class="file-meta" id="docMeta"></p>
-              <button type="button" class="link" id="another" data-i18n="cmpAnother">Pilih PDF lain</button>
+              <button type="button" class="link" id="another" data-i18n="cmpAnother">Choose another PDF</button>
             </div>
           </div>
           <div class="preview-wrap after-load" id="previewWrap">
             <canvas id="preview" class="pdf-preview"></canvas>
-            <p class="preview-cap" data-i18n="preview">Pratonton</p>
+            <p class="preview-cap" data-i18n="preview">Preview</p>
           </div>
         </section>
 
         <aside class="card options" aria-labelledby="optTitle">
-          <h2 id="optTitle" data-i18n="toolPnTitle">Nombor Muka Surat</h2>
+          <h2 id="optTitle" data-i18n="toolPnTitle">Page Numbers</h2>
           <fieldset class="pos-field">
-            <legend data-i18n="pnPos">Kedudukan</legend>
+            <legend data-i18n="pnPos">Position</legend>
             <div class="pos-grid six" id="pnPosGrid"><label><input type="radio" name="pnPos" value="tl"><span aria-label="tl">◤</span></label><label><input type="radio" name="pnPos" value="tc"><span aria-label="tc">▲</span></label><label><input type="radio" name="pnPos" value="tr"><span aria-label="tr">◥</span></label><label><input type="radio" name="pnPos" value="bl"><span aria-label="bl">◣</span></label><label><input type="radio" name="pnPos" value="bc" checked><span aria-label="bc">▼</span></label><label><input type="radio" name="pnPos" value="br"><span aria-label="br">◢</span></label></div>
           </fieldset>
           <label class="field">
@@ -105,25 +105,25 @@
             </select>
           </label>
           <label class="field">
-            <span data-i18n="pnStart">Mula dari nombor</span>
+            <span data-i18n="pnStart">Start at number</span>
             <input type="number" id="pnStart" min="0" step="1" value="1" inputmode="numeric">
           </label>
-          <label class="check"><input type="checkbox" id="pnSkip"><span data-i18n="pnSkip">Langkau muka surat pertama</span></label>
-          <label class="range" for="pnSize"><span data-i18n="pnSize">Saiz tulisan</span>
+          <label class="check"><input type="checkbox" id="pnSkip"><span data-i18n="pnSkip">Skip the first page (cover)</span></label>
+          <label class="range" for="pnSize"><span data-i18n="pnSize">Text size</span>
             <input type="range" id="pnSize" min="7" max="24" step="1"><output id="sizeOut"></output></label>
           <fieldset class="segmented small">
             <legend data-i18n="pnMargin">Margin</legend>
-            <label><input type="radio" name="pnMargin" value="small"><span data-i18n="i2pSmall">Kecil</span></label>
-            <label><input type="radio" name="pnMargin" value="mid" checked><span data-i18n="mid">Sederhana</span></label>
-            <label><input type="radio" name="pnMargin" value="large"><span data-i18n="i2pLarge">Besar</span></label>
+            <label><input type="radio" name="pnMargin" value="small"><span data-i18n="i2pSmall">Small</span></label>
+            <label><input type="radio" name="pnMargin" value="mid" checked><span data-i18n="mid">Medium</span></label>
+            <label><input type="radio" name="pnMargin" value="large"><span data-i18n="i2pLarge">Large</span></label>
           </fieldset>
           <label class="field">
-            <span data-i18n="i2pFileName">Nama fail</span>
+            <span data-i18n="i2pFileName">File name</span>
             <input type="text" id="fileName" maxlength="60" autocomplete="off">
           </label>
           <div class="buttons stack">
-            <button type="button" class="primary" id="savePdf" data-i18n="pdfSave">Simpan</button>
-            <button type="button" id="sharePdf" data-i18n="pdfShare">Kongsi</button>
+            <button type="button" class="primary" id="savePdf" data-i18n="pdfSave">Save</button>
+            <button type="button" id="sharePdf" data-i18n="pdfShare">Share</button>
           </div>
           <p class="status" id="status" role="status" aria-live="polite"></p>
         </aside>
@@ -135,10 +135,10 @@
     <div class="container footer-inner">
       <div>
         <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>
 </body>

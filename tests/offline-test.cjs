@@ -4,6 +4,7 @@
 const path = require('path');
 const assert = require('assert');
 const { chromium } = require('playwright');
+require('./bm.cjs'); // suites check BM wording; the site's default is English
 const serve = require('./serve.cjs');
 
 async function makeScan() {

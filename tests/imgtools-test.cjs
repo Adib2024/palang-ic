@@ -6,6 +6,7 @@ const path = require('path');
 const assert = require('assert');
 const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
+require('./bm.cjs'); // suites check BM wording; the site's default is English
 const serve = require('./serve.cjs');
 
 const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));

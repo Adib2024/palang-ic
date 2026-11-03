@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,11 +9,11 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'none'; font-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Gambar → PDF · DokuJaga</title>
+  <title>Images → PDF · DokuJaga</title>
   <meta name="description" content="Tukar gambar atau imbasan kepada satu PDF terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DokuJaga">
-  <meta property="og:title" content="Gambar → PDF · DokuJaga">
+  <meta property="og:title" content="Images → PDF · DokuJaga">
   <meta property="og:description" content="Tukar gambar atau imbasan kepada satu PDF terus dalam pelayar. Tiada apa-apa dimuat naik.">
   <meta property="og:image" content="https://adib2024.github.io/palang-ic/icons/og.png">
   <meta property="og:image:width" content="1200">
@@ -32,17 +32,17 @@
   <header class="site-header">
     <div class="container nav">
       <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="30" height="30"><span>DokuJaga</span></a>
-      <nav class="nav-links" aria-label="Utama">
-        <a href="../#tools" data-i18n="navTools">Alat</a>
-        <a href="../#privacy" data-i18n="navPrivacy">Privasi</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="../#tools" data-i18n="navTools">Tools</a>
+        <a href="../#privacy" data-i18n="navPrivacy">Privacy</a>
       </nav>
       <div class="top-actions">
-        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Mod Lanjutan"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Mod Lanjutan</span></a>
+        <a class="adv-link" href="../aliran-kerja/" data-i18n-attr="title:navAdvanced" title="Advanced mode"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 9v3.5a2 2 0 0 0 2 2H14m-2.5-2.5L14 14.5 11.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5h2.5M17.5 8h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-i18n="navAdvanced">Advanced mode</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false"
-                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Tukar tema cerah/gelap">&#9790;</button>
+                data-i18n-attr="aria-label:themeToggle,title:themeToggle" aria-label="Switch light/dark theme">&#9790;</button>
         <div class="lang" role="group" aria-label="Bahasa / Language">
-          <button type="button" data-lang="ms" aria-pressed="true">BM</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ms" aria-pressed="false">BM</button>
         </div>
       </div>
     </div>
@@ -50,9 +50,9 @@
 
   <section class="hero tool-hero tone-amber">
     <div class="container">
-      <p class="crumbs"><a href="../" data-i18n="allTools">Semua alat</a> /</p>
+      <p class="crumbs"><a href="../" data-i18n="allTools">All tools</a> /</p>
       <span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 11.5 3-3.2 2.2 2.2 1.3-1.2 1.5 1.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 8h2.5L21 11.5V20a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 17.5h5m-1.7-1.7 1.7 1.7-1.7 1.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <h1 data-i18n="toolImgPdfTitle">Gambar → PDF</h1>
+      <h1 data-i18n="toolImgPdfTitle">Images → PDF</h1>
       <p class="lead" data-i18n="i2pLead"></p>
     </div>
   </section>
@@ -61,68 +61,68 @@
     <div class="container stack">
       <section class="privacy">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
-        <strong data-i18n="privacyFiles">Fail anda diproses dalam peranti anda sahaja. Tiada apa-apa dimuat naik.</strong>
+        <strong data-i18n="privacyFiles">Your files are processed on your device only. Nothing is uploaded.</strong>
       </section>
 
       <div class="tool-layout tone-amber is-empty" id="toolLayout">
         <section class="card" aria-labelledby="pagesTitle">
           <div class="dropzone" id="dropzone">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="44" height="44"><path d="M12 15.5V4m-4.5 4.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <p><strong data-i18n="i2pDropBig">Seret gambar ke sini</strong></p>
-            <p class="drop-or" data-i18n="i2pOr">atau</p>
+            <p><strong data-i18n="i2pDropBig">Drag images here</strong></p>
+            <p class="drop-or" data-i18n="i2pOr">or</p>
             <div class="drop-buttons">
               <label class="btn primary lg">
                 <input type="file" id="pickFiles" accept="image/*,.heic,.heif" multiple>
-                <span data-i18n="i2pChoose">Pilih gambar</span>
+                <span data-i18n="i2pChoose">Choose images</span>
               </label>
               <label class="btn lg camera-only">
                 <input type="file" id="pickCamera" accept="image/*,.heic,.heif" capture="environment">
-                <span data-i18n="i2pCamera">Ambil gambar</span>
+                <span data-i18n="i2pCamera">Take photo</span>
               </label>
             </div>
           </div>
 
           <div class="pages-head">
-            <h2 id="pagesTitle"><span data-i18n="i2pPages">Muka surat</span><span class="count" id="pageCount">0</span></h2>
-            <button type="button" class="link" id="clearAll" hidden data-i18n="i2pClear">Buang semua</button>
+            <h2 id="pagesTitle"><span data-i18n="i2pPages">Pages</span><span class="count" id="pageCount">0</span></h2>
+            <button type="button" class="link" id="clearAll" hidden data-i18n="i2pClear">Remove all</button>
           </div>
           <p class="hint-top" id="orderHint" hidden data-i18n="i2pOrderHint"></p>
           <ol class="page-grid" id="pageGrid"></ol>
         </section>
 
         <aside class="card options" aria-labelledby="optTitle">
-          <h2 id="optTitle" data-i18n="i2pOptions">Tetapan PDF</h2>
+          <h2 id="optTitle" data-i18n="i2pOptions">PDF settings</h2>
           <fieldset class="segmented small">
-            <legend data-i18n="i2pPageSize">Saiz kertas</legend>
+            <legend data-i18n="i2pPageSize">Paper size</legend>
             <label><input type="radio" name="pageSize" value="a4" checked><span>A4</span></label>
             <label><input type="radio" name="pageSize" value="letter"><span>Letter</span></label>
-            <label><input type="radio" name="pageSize" value="fit"><span data-i18n="i2pFitImage">Ikut gambar</span></label>
+            <label><input type="radio" name="pageSize" value="fit"><span data-i18n="i2pFitImage">Fit image</span></label>
           </fieldset>
           <fieldset class="segmented small" id="orientationSet">
-            <legend data-i18n="i2pOrientation">Orientasi</legend>
+            <legend data-i18n="i2pOrientation">Orientation</legend>
             <label><input type="radio" name="orientation" value="auto" checked><span data-i18n="i2pAuto">Auto</span></label>
-            <label><input type="radio" name="orientation" value="portrait"><span data-i18n="i2pPortrait">Menegak</span></label>
-            <label><input type="radio" name="orientation" value="landscape"><span data-i18n="i2pLandscape">Melintang</span></label>
+            <label><input type="radio" name="orientation" value="portrait"><span data-i18n="i2pPortrait">Portrait</span></label>
+            <label><input type="radio" name="orientation" value="landscape"><span data-i18n="i2pLandscape">Landscape</span></label>
           </fieldset>
           <fieldset class="segmented small">
             <legend data-i18n="i2pMargin">Margin</legend>
-            <label><input type="radio" name="margin" value="none"><span data-i18n="i2pNone">Tiada</span></label>
-            <label><input type="radio" name="margin" value="small" checked><span data-i18n="i2pSmall">Kecil</span></label>
-            <label><input type="radio" name="margin" value="large"><span data-i18n="i2pLarge">Besar</span></label>
+            <label><input type="radio" name="margin" value="none"><span data-i18n="i2pNone">None</span></label>
+            <label><input type="radio" name="margin" value="small" checked><span data-i18n="i2pSmall">Small</span></label>
+            <label><input type="radio" name="margin" value="large"><span data-i18n="i2pLarge">Large</span></label>
           </fieldset>
           <fieldset class="segmented small">
-            <legend data-i18n="i2pQuality">Kualiti / saiz fail</legend>
-            <label><input type="radio" name="quality" value="high"><span data-i18n="i2pQHigh">Tinggi</span></label>
-            <label><input type="radio" name="quality" value="mid" checked><span data-i18n="i2pQMid">Sederhana</span></label>
-            <label><input type="radio" name="quality" value="low"><span data-i18n="i2pQLow">Kecil</span></label>
+            <legend data-i18n="i2pQuality">Quality / file size</legend>
+            <label><input type="radio" name="quality" value="high"><span data-i18n="i2pQHigh">High</span></label>
+            <label><input type="radio" name="quality" value="mid" checked><span data-i18n="i2pQMid">Medium</span></label>
+            <label><input type="radio" name="quality" value="low"><span data-i18n="i2pQLow">Small</span></label>
           </fieldset>
           <label class="field">
-            <span data-i18n="i2pFileName">Nama fail</span>
+            <span data-i18n="i2pFileName">File name</span>
             <input type="text" id="fileName" value="dokumen" maxlength="60" autocomplete="off">
           </label>
           <div class="buttons stack">
-            <button type="button" class="primary" id="makePdf" data-i18n="i2pMake">Simpan PDF</button>
-            <button type="button" id="sharePdf" data-i18n="i2pShare">Kongsi PDF</button>
+            <button type="button" class="primary" id="makePdf" data-i18n="i2pMake">Save PDF</button>
+            <button type="button" id="sharePdf" data-i18n="i2pShare">Share PDF</button>
           </div>
           <p class="status" id="status" role="status" aria-live="polite"></p>
         </aside>
@@ -134,10 +134,10 @@
     <div class="container footer-inner">
       <div>
         <a class="logo" href="../"><img src="../icons/icon.svg" alt="" width="24" height="24"><span>DokuJaga</span></a>
-        <p data-i18n="footerTag">Alat dokumen yang jaga privasi anda.</p>
+        <p data-i18n="footerTag">Document tools that keep your files private.</p>
       </div>
-      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privasi</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
-      <p data-i18n="footer">Bukan laman rasmi kerajaan. Sumber terbuka (MIT).</p>
+      <p class="footer-links"><a href="../privasi/" data-i18n="privacyPage">Privacy</a><a href="https://github.com/Adib2024/palang-ic" rel="noopener">GitHub</a></p>
+      <p data-i18n="footer">Not an official government site. Open source (MIT).</p>
     </div>
   </footer>
 </body>

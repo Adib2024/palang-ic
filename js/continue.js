@@ -11,7 +11,7 @@ const NEXT = {
 };
 
 const here = () => location.pathname.replace(ROOT.pathname, '');
-const lang = () => (document.documentElement.lang === 'en' ? 'en' : 'ms');
+const lang = () => (document.documentElement.lang === 'ms' ? 'ms' : 'en');
 
 async function go(file, href) {
   await putInbox([file], here());

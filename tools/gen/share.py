@@ -20,18 +20,18 @@ cards += f'''          <a class="tool tone-indigo" data-href="aliran-kerja/" hid
           </a>
 '''
 body = f'''      <section class="card share-files" aria-labelledby="filesTitle">
-        <h2 id="filesTitle" class="wf-h"><span data-i18n="shareFiles">Fail anda</span><span class="count" id="fileCount">0</span></h2>
+        <h2 id="filesTitle" class="wf-h"><span data-i18n="shareFiles">Your files</span><span class="count" id="fileCount">0</span></h2>
         <ul class="wf-files" id="shareList"></ul>
         <div id="shareEmpty" hidden>
           <p data-i18n="shareEmpty"></p>
           <p class="hint" data-i18n="shareHow"></p>
-          <a class="btn primary" href="../" data-i18n="allTools">Semua alat</a>
+          <a class="btn primary" href="../" data-i18n="allTools">All tools</a>
         </div>
-        <button type="button" class="link" id="shareClear" data-i18n="shareClear" hidden>Buang fail ini</button>
+        <button type="button" class="link" id="shareClear" data-i18n="shareClear" hidden>Remove these files</button>
       </section>
 
       <section id="sharePick" aria-labelledby="pickTitle" hidden>
-        <h2 id="pickTitle" class="section-title" data-i18n="sharePick">Pilih alat</h2>
+        <h2 id="pickTitle" class="section-title" data-i18n="sharePick">Choose a tool</h2>
         <div class="tool-grid">
 {cards}        </div>
       </section>'''

@@ -9,7 +9,7 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 - **Strict CSP meta on every page** (`connect-src 'none'`, `script-src 'self'`, `style-src 'self'`): no `fetch()`, no inline scripts/styles in markup, no CDNs. Load data (fonts, manifests) via `import()` of JS modules. Setting `el.style.x` from JS is fine.
 - **Mobile-first**, no horizontal scroll at 390 px (tests check `scrollWidth - clientWidth`).
 - **No JPN/government logos** or anything that looks like an official site.
-- **BM is the default language**, BM/EN toggle; light theme default; indigo + Inter design.
+- **English is the default language** (owner's decision, Nov 2026), BM one tap away (EN/BM toggle; a chosen language is remembered); light theme default; indigo + Inter design.
 - Never commit a real IC/document. Test fixtures are fake (`tests/fixtures/`).
 
 ## Layout
@@ -18,7 +18,7 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
   `js/page.js` (`initPage(onLang)`: i18n, language toggle, service worker, inbox hand-off, recent tools, guide),
   `js/guide.js` (steps bar, quick picks `PRESETS`, phone save bar — per-tool config at the top),
   `js/theme.js` (light/dark/auto theme + "Aa" display panel, injected into every header),
-  `js/i18n.js` (`STRINGS.ms`; English lives in `js/i18n-en.js`, loaded on demand by `loadLang()` — **keep keys equal**, `tests/i18n-test.mjs` checks),
+  `js/i18n.js` (`STRINGS.en`, the default; Bahasa Melayu lives in `js/i18n-ms.js`, loaded on demand by `loadLang()` — **keep keys equal**, `tests/i18n-test.mjs` checks),
   `js/pdf-kit.js` (vendored pdf.js + pdf-lib loaders, `download()` / `shareOrDownload()` fire `dokujaga:saved`),
   `js/tool-catalog.js` (which tools accept which files, for "Continue to…" and the share page),
   `js/batch.js`, `js/handoff.js`, `js/continue.js`, `js/pdf-stamps.js`, `js/ocr-core.js`, `js/fonts.js`.
@@ -29,7 +29,7 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 - `sw.js`: network-first app cache `dokujaga-vNN` (bump on every release) + `ASSETS` list (**add every new js file / page**).
 
 ## Adding a tool
-1. Strings: add `toolXTitle`, `toolXDesc`, `xLead`, … to **both** `js/i18n.js` (ms) and `js/i18n-en.js` (en).
+1. Strings: add `toolXTitle`, `toolXDesc`, `xLead`, … to **both** `js/i18n.js` (en) and `js/i18n-ms.js` (ms).
 2. Page: `python3 -I tools/gen/new_tool.py spec.json` (see docstring), then edit by hand. Pages are the source of truth.
 3. Script: `js/x.js` using `initPage`, `bindFileDrop`, `download`/`shareOrDownload`; expose `window.__x` for tests.
 4. Register: `python3 -I tools/gen/register.py '[["x/","cat","tone","icon","toolXTitle","toolXDesc","after/"]]' '["x.js"]'`
