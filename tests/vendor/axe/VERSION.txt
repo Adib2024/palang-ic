@@ -1,0 +1,1 @@
+axe-core 4.10.3 sha512-Xm7bpRXnDSX2YE2YFfBk2FnF0ep6tmG7xPh8iHee8MIcrgq762Nkce856dYtJYLkuIoYZvGfTs/PbZhideTcEg== MPL-2.0
