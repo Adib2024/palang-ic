@@ -51,4 +51,5 @@ Live: https://adib2024.github.io/palang-ic/ (GitHub Pages from `main`).
 ## Conventions
 - Speed on old phones: import code that only runs after a file is chosen or a step runs with `import()` (see `js/workflow-ops.js`, `js/office2pdf.js`); no ES2021+ syntax such as `||=`.
 - Comments explain *why*; match the surrounding style. No model names in commits or files.
+- Commit identity: **author** = `Adib2024 <122847193+Adib2024@users.noreply.github.com>` (counts on the owner's contribution graph), **committer** = the environment's default (Claude, whose signing key makes GitHub show Verified). Set with `git config --local author.name/author.email`; don't set `user.*` to the owner, or signed commits show Unverified.
 - User talks in Bahasa Melayu; answer in BM. Before complex work, ask 3–4 short clarifying questions (AskUserQuestion), then build, test, push each item.
