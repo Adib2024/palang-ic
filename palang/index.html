@@ -213,6 +213,13 @@
           <section class="card ws-save actions" aria-labelledby="s3">
             <h2 id="s3"><span class="step">3</span><span data-i18n="step3">Save / Share</span></h2>
 
+            <fieldset class="segmented small">
+              <legend data-i18n="pdfSize">Card size in the PDF</legend>
+              <label><input type="radio" name="pdfSize" value="real" checked><span data-i18n="pdfSizeReal">Real size</span></label>
+              <label><input type="radio" name="pdfSize" value="large"><span data-i18n="pdfSizeLarge">Large</span></label>
+              <label><input type="radio" name="pdfSize" value="fill"><span data-i18n="pdfSizeFill">Full page</span></label>
+            </fieldset>
+            <p class="hint" data-i18n="pdfSizeHint"></p>
             <div class="buttons">
               <button type="button" class="primary" id="share" data-i18n="share">Share</button>
               <button type="button" id="saveJpg" data-i18n="saveJpg">Save JPG</button>

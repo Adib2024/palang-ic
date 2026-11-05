@@ -30,6 +30,8 @@ const state = {
   mode: MODES.includes(store.load('mode', 'palang')) ? store.load('mode', 'palang') : 'palang',
   template: store.load('template', store.load('lang', 'en')) === 'ms' ? 'ms' : 'en',
   addDate: store.load('addDate', false) === true,
+  // Card size in the A4 PDF; real size is what a photocopy looks like.
+  pdfSize: ['real', 'large', 'fill'].includes(store.load('pdfSize', 'real')) ? store.load('pdfSize', 'real') : 'real',
   color: store.load('color', 'black'),
   palangShape: SHAPES.includes(store.load('palangShape', 'corner')) ? store.load('palangShape', 'corner') : 'corner',
   corner: CORNERS.includes(store.load('corner', 'tl')) ? store.load('corner', 'tl') : 'tl',
@@ -70,6 +72,7 @@ function persist() {
   store.save('mode', state.mode);
   store.save('template', state.template);
   store.save('addDate', state.addDate);
+  store.save('pdfSize', state.pdfSize);
   store.save('color', state.color);
   store.save('palangShape', state.palangShape);
   store.save('corner', state.corner);
@@ -136,6 +139,7 @@ function syncControls() {
   }
   $('#template').value = state.template;
   $('#addDate').checked = state.addDate;
+  $$('input[name="pdfSize"]').forEach((r) => { r.checked = r.value === state.pdfSize; });
   $$('[data-for]').forEach((el) => { el.hidden = !el.dataset.for.split(' ').includes(state.mode); });
   $$('input[name="corner"]').forEach((r) => { r.checked = r.value === state.corner; });
   $('#stampSize').value = state.stampSize;
@@ -218,6 +222,7 @@ function bindControls() {
     persist();
     schedulePreview();
   });
+  $$('input[name="pdfSize"]').forEach((r) => r.addEventListener('change', () => { if (r.checked) { state.pdfSize = r.value; persist(); } }));
   $('#addDate').addEventListener('change', (e) => {
     state.addDate = e.target.checked;
     persist();
@@ -329,7 +334,7 @@ async function pdfFile() {
     const blob = await toJpeg(canvas);
     return { jpeg: new Uint8Array(await blob.arrayBuffer()), width: canvas.width, height: canvas.height };
   }));
-  return new File([buildPdf(images)], `${fileBase()}.pdf`, { type: 'application/pdf' });
+  return new File([buildPdf(images, state.pdfSize)], `${fileBase()}.pdf`, { type: 'application/pdf' });
 }
 
 function download(file) {

@@ -176,6 +176,25 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
           assert.strictEqual((pdf.toString('latin1').match(/\/Subtype \/Image/g) || []).length, 2);
           assert(pdf.toString('latin1').trimEnd().endsWith('%%EOF'));
         });
+        // Card size on the A4 page: real 85.6 mm wide by default, then large and full page.
+        const widths = {};
+        for (const size of ['real', 'large', 'fill']) {
+          await page.click(`label:has(> input[name="pdfSize"][value="${size}"]) span`);
+          const b64 = await page.evaluate(async () => {
+            const b = new Uint8Array(await (await window.__palangic.pdfFile()).arrayBuffer());
+            let s = '';
+            for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000));
+            return btoa(s);
+          });
+          const placed = [...Buffer.from(b64, 'base64').toString('latin1').matchAll(/q ([\d.]+) 0 0 ([\d.]+) [\d.]+ [\d.]+ cm \/Im/g)];
+          widths[size] = placed.map((m) => Math.round(Math.max(Number(m[1]), Number(m[2])) / (72 / 25.4)));
+        }
+        check('PDF card size: real 86 mm (default), large 128 mm, full page ~181 mm', () => {
+          assert.deepStrictEqual(widths.real, [86, 86]);
+          assert.deepStrictEqual(widths.large, [128, 128]);
+          assert(widths.fill.every((w) => w > 150), JSON.stringify(widths));
+        });
+        await page.click('label:has(> input[name="pdfSize"][value="real"]) span');
 
         // CSP blocks any outbound connection from the page.
         const blocked = await page.evaluate(async () => {
