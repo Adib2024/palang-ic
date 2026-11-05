@@ -178,7 +178,7 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
         });
         // Card size on the A4 page: real 85.6 mm wide by default, then large and full page.
         const widths = {};
-        for (const size of ['real', 'large', 'fill']) {
+        for (const size of ['small', 'real', 'large', 'fill']) {
           await page.click(`label:has(> input[name="pdfSize"][value="${size}"]) span`);
           const b64 = await page.evaluate(async () => {
             const b = new Uint8Array(await (await window.__palangic.pdfFile()).arrayBuffer());
@@ -189,7 +189,15 @@ const OUT = path.resolve(process.argv[2] || path.join(__dirname, 'output'));
           const placed = [...Buffer.from(b64, 'base64').toString('latin1').matchAll(/q ([\d.]+) 0 0 ([\d.]+) [\d.]+ [\d.]+ cm \/Im/g)];
           widths[size] = placed.map((m) => Math.round(Math.max(Number(m[1]), Number(m[2])) / (72 / 25.4)));
         }
-        check('PDF card size: real 86 mm (default), large 128 mm, full page ~181 mm', () => {
+        // The slider sets any width (here 7 cm).
+        await page.$eval('#cardMm', (el) => { el.value = '70'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+        widths.custom = await page.evaluate(async () => {
+          const t = new TextDecoder('latin1').decode(new Uint8Array(await (await window.__palangic.pdfFile()).arrayBuffer()));
+          return [...t.matchAll(/q ([\d.]+) 0 0 ([\d.]+) [\d.]+ [\d.]+ cm \/Im/g)].map((m) => Math.round(Math.max(Number(m[1]), Number(m[2])) / (72 / 25.4)));
+        });
+        check('PDF card size: small 65 mm, real 86 mm (default), large 128 mm, slider 70 mm, full page ~181 mm', () => {
+          assert.deepStrictEqual(widths.small, [65, 65]);
+          assert.deepStrictEqual(widths.custom, [70, 70]);
           assert.deepStrictEqual(widths.real, [86, 86]);
           assert.deepStrictEqual(widths.large, [128, 128]);
           assert(widths.fill.every((w) => w > 150), JSON.stringify(widths));

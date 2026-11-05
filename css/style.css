@@ -1284,3 +1284,8 @@ body.has-float-bar .site-footer { padding-bottom: 84px; }
   width: min(100%, 300px); height: auto; border-radius: 4px; background: #fff;
   box-shadow: 0 0 0 1px var(--border-strong), 0 6px 18px rgba(15, 23, 42, .1);
 }
+
+/* Palang IC: mini A4 page showing how big the cards print. */
+.page-preview { display: flex; gap: 14px; align-items: center; margin: 6px 0 14px; }
+.page-preview canvas { width: 96px; height: auto; flex: none; border-radius: 3px; box-shadow: 0 4px 14px rgba(15, 23, 42, .12); background: #fff; }
+.page-preview .hint { margin: 0; }

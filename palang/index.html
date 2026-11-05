@@ -215,11 +215,17 @@
 
             <fieldset class="segmented small">
               <legend data-i18n="pdfSize">Card size in the PDF</legend>
+              <label><input type="radio" name="pdfSize" value="small"><span data-i18n="pdfSizeSmall">Small</span></label>
               <label><input type="radio" name="pdfSize" value="real" checked><span data-i18n="pdfSizeReal">Real size</span></label>
               <label><input type="radio" name="pdfSize" value="large"><span data-i18n="pdfSizeLarge">Large</span></label>
               <label><input type="radio" name="pdfSize" value="fill"><span data-i18n="pdfSizeFill">Full page</span></label>
             </fieldset>
-            <p class="hint" data-i18n="pdfSizeHint"></p>
+            <label class="range" for="cardMm" id="cardMmRow"><span data-i18n="pdfCardWidth">Card width</span>
+              <input type="range" id="cardMm" min="40" max="180" step="1" value="86"><output id="cardMmOut"></output></label>
+            <div class="page-preview">
+              <canvas id="pagePreview" width="210" height="297" role="img" data-i18n-attr="aria-label:pdfPagePreview"></canvas>
+              <p class="hint" data-i18n="pdfSizeHint"></p>
+            </div>
             <div class="buttons">
               <button type="button" class="primary" id="share" data-i18n="share">Share</button>
               <button type="button" id="saveJpg" data-i18n="saveJpg">Save JPG</button>

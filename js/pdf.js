@@ -83,20 +83,28 @@ export function fit(w, h, boxW, boxH) {
 }
 
 const MM = 72 / 25.4;
-// MyKad (ID-1 card): 85.6 × 54 mm. "Large" is 1.5× for easier reading.
-export const CARD_SIZES = { real: [85.6 * MM, 54 * MM], large: [128.4 * MM, 81 * MM] };
+// MyKad (ID-1 card) is 85.6 × 54 mm. Named sizes are card widths in mm.
+export const CARD_WIDTHS = { small: 65, real: 85.6, large: 128 };
+const cardBox = (size) => {
+  const mm = typeof size === 'number' ? size : CARD_WIDTHS[size];
+  if (!mm) return null;
+  const w = Math.min(190, Math.max(40, mm));
+  return [w * MM, w * (54 / 85.6) * MM];
+};
 
 /**
  * One A4 page with up to two images stacked vertically (IC front + back).
- * size 'real' / 'large': each card at that printed size, the pair centred on
- * the page like a photocopy; 'fill': as big as the page allows.
+ * size: a card width in mm, or 'small' / 'real' / 'large' — each card at
+ * that printed size, the pair centred on the page like a photocopy; 'fill':
+ * as big as the page allows.
  * @param {{jpeg: Uint8Array, width: number, height: number}[]} images
- * @param {'real'|'large'|'fill'} [size]
+ * @param {number|'small'|'real'|'large'|'fill'} [size]
  */
 export function buildPdf(images, size = 'fill') {
   const slots = images.length || 1;
-  if (CARD_SIZES[size]) {
-    const [cw, ch] = CARD_SIZES[size];
+  const box = cardBox(size);
+  if (box) {
+    const [cw, ch] = box;
     const gap = 12 * MM;
     // Portrait photos (a card shot upright) get the box turned too.
     const boxes = images.map((img) => (img.height > img.width ? [ch, cw] : [cw, ch]));

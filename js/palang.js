@@ -1,6 +1,6 @@
 import { renderWatermark, composite, CORNER_ANGLE } from './watermark.js';
 import { loadPhoto } from './image-loader.js';
-import { buildPdf } from './pdf.js';
+import { buildPdf, CARD_WIDTHS } from './pdf.js';
 import { applyI18n, loadLang, t, TEMPLATES, todayDMY } from './i18n.js';
 import * as store from './storage.js';
 import { registerServiceWorker } from './pwa.js';
@@ -31,7 +31,9 @@ const state = {
   template: store.load('template', store.load('lang', 'en')) === 'ms' ? 'ms' : 'en',
   addDate: store.load('addDate', false) === true,
   // Card size in the A4 PDF; real size is what a photocopy looks like.
-  pdfSize: ['real', 'large', 'fill'].includes(store.load('pdfSize', 'real')) ? store.load('pdfSize', 'real') : 'real',
+  pdfSize: ['small', 'real', 'large', 'fill'].includes(store.load('pdfSize', 'real')) ? store.load('pdfSize', 'real') : 'real',
+  // Card width in mm for the PDF (the slider); follows the size buttons.
+  cardMm: Math.min(180, Math.max(40, Number(store.load('cardMm', 85.6)) || 85.6)),
   color: store.load('color', 'black'),
   palangShape: SHAPES.includes(store.load('palangShape', 'corner')) ? store.load('palangShape', 'corner') : 'corner',
   corner: CORNERS.includes(store.load('corner', 'tl')) ? store.load('corner', 'tl') : 'tl',
@@ -73,6 +75,7 @@ function persist() {
   store.save('template', state.template);
   store.save('addDate', state.addDate);
   store.save('pdfSize', state.pdfSize);
+  store.save('cardMm', state.cardMm);
   store.save('color', state.color);
   store.save('palangShape', state.palangShape);
   store.save('corner', state.corner);
@@ -140,6 +143,10 @@ function syncControls() {
   $('#template').value = state.template;
   $('#addDate').checked = state.addDate;
   $$('input[name="pdfSize"]').forEach((r) => { r.checked = r.value === state.pdfSize; });
+  $('#cardMm').value = state.cardMm;
+  $('#cardMmOut').textContent = `${(state.cardMm / 10).toFixed(1)} cm`;
+  $('#cardMmRow').hidden = state.pdfSize === 'fill';
+  drawPagePreview();
   $$('[data-for]').forEach((el) => { el.hidden = !el.dataset.for.split(' ').includes(state.mode); });
   $$('input[name="corner"]').forEach((r) => { r.checked = r.value === state.corner; });
   $('#stampSize').value = state.stampSize;
@@ -222,7 +229,20 @@ function bindControls() {
     persist();
     schedulePreview();
   });
-  $$('input[name="pdfSize"]').forEach((r) => r.addEventListener('change', () => { if (r.checked) { state.pdfSize = r.value; persist(); } }));
+  $$('input[name="pdfSize"]').forEach((r) => r.addEventListener('change', () => {
+    if (!r.checked) return;
+    state.pdfSize = r.value;
+    if (CARD_WIDTHS[r.value]) state.cardMm = CARD_WIDTHS[r.value];
+    persist();
+    syncControls();
+  }));
+  $('#cardMm').addEventListener('input', (e) => {
+    state.cardMm = Number(e.target.value);
+    // A width that matches a button selects it; anything else is "own size".
+    state.pdfSize = Object.keys(CARD_WIDTHS).find((k) => Math.abs(CARD_WIDTHS[k] - state.cardMm) < 0.6) || 'custom';
+    persist();
+    syncControls();
+  });
   $('#addDate').addEventListener('change', (e) => {
     state.addDate = e.target.checked;
     persist();
@@ -295,6 +315,50 @@ function setPhoto(side, canvas) {
     small.toBlob((b) => { if (b && state.photos[side] === canvas) thumb.src = URL.createObjectURL(b); }, 'image/jpeg', 0.8);
   }
   schedulePreview();
+  drawPagePreview();
+}
+
+/* ---------- A4 page preview (how big the cards print) ---------- */
+
+function drawPagePreview() {
+  const cv = $('#pagePreview');
+  if (!cv) return;
+  const W = cv.width;
+  const H = cv.height;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#cfd4e2';
+  ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+  const list = sides().map((s) => state.photos[s]);
+  const pxPerMm = W / 210;
+  const gap = (state.pdfSize === 'fill' ? 10 : 12) * pxPerMm;
+  const boxes = list.map((p) => {
+    if (state.pdfSize === 'fill') {
+      const bw = W - 30 * pxPerMm;
+      const bh = (H - 30 * pxPerMm - gap * (list.length - 1)) / list.length;
+      const s = Math.min(bw / p.width, bh / p.height);
+      return [p.width * s, p.height * s];
+    }
+    const cw = state.cardMm * pxPerMm;
+    const ch = state.cardMm * (54 / 85.6) * pxPerMm;
+    const [bw, bh] = p.height > p.width ? [ch, cw] : [cw, ch];
+    const s = Math.min(bw / p.width, bh / p.height);
+    return [p.width * s, p.height * s];
+  });
+  const total = boxes.reduce((n, b) => n + b[1], 0) + gap * Math.max(0, boxes.length - 1);
+  let y = (H - total) / 2;
+  boxes.forEach(([w, h], i) => {
+    ctx.drawImage(list[i], (W - w) / 2, y, w, h);
+    y += h + gap;
+  });
+  if (!list.length) {
+    // No photo yet: show where a real-size card would go.
+    const cw = state.cardMm * pxPerMm;
+    const ch = state.cardMm * (54 / 85.6) * pxPerMm;
+    ctx.fillStyle = '#e4e7ef';
+    ctx.fillRect((W - cw) / 2, (H - ch) / 2, cw, ch);
+  }
 }
 
 /* ---------- Export ---------- */
@@ -334,7 +398,7 @@ async function pdfFile() {
     const blob = await toJpeg(canvas);
     return { jpeg: new Uint8Array(await blob.arrayBuffer()), width: canvas.width, height: canvas.height };
   }));
-  return new File([buildPdf(images, state.pdfSize)], `${fileBase()}.pdf`, { type: 'application/pdf' });
+  return new File([buildPdf(images, state.pdfSize === 'fill' ? 'fill' : state.cardMm)], `${fileBase()}.pdf`, { type: 'application/pdf' });
 }
 
 function download(file) {
