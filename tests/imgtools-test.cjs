@@ -40,6 +40,8 @@ const pdfBoxes = (file) => JSON.parse(execFileSync('python3', ['-I', '-c', [
 
       /* ---------- Image Notes ---------- */
       await page.goto(`${origin}/nota-gambar/`);
+      // The steps bar is added just after load and pushes the photo down: measure after it.
+      await page.waitForSelector('#stepsBar');
       await page.setInputFiles('#pickFiles', BACK);
       await page.waitForFunction(() => window.__imgnote.photo);
       const cv = async () => page.$eval('#ntCanvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
@@ -124,6 +126,7 @@ const pdfBoxes = (file) => JSON.parse(execFileSync('python3', ['-I', '-c', [
 
       /* ---------- Photo Collage ---------- */
       await page.goto(`${origin}/kolaj-gambar/`);
+      await page.waitForSelector('#stepsBar');
       await page.setInputFiles('#pickFiles', [FRONT, BACK, BACK]);
       await page.waitForFunction(() => window.__collage.items.length === 3);
       await page.waitForFunction(() => document.querySelectorAll('#clPreview canvas').length === 2);
