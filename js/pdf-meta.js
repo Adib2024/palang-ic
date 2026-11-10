@@ -2,7 +2,7 @@
 // author, software, dates), XMP metadata, document ID, embedded files,
 // JavaScript and the author names on comments. Objects left unreferenced
 // (e.g. older revisions of the info) are dropped too. Pure pdf-lib.
-import { loadPdfLib } from './pdf-kit.js';
+import { loadPdfLib, loadForEdit } from './pdf-kit.js';
 
 const INFO_KEYS = ['Title', 'Author', 'Subject', 'Keywords', 'Creator', 'Producer', 'CreationDate', 'ModDate', 'Trapped'];
 
@@ -31,7 +31,7 @@ const dictOf = (o) => (isDict(o) ? o : o && isDict(o.dict) ? o.dict : null);
 async function open(bytes) {
   const L = await loadPdfLib();
   try {
-    const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
+    const doc = await loadForEdit(bytes, { updateMetadata: false });
     return { L, doc };
   } catch (err) {
     if (err && /encrypt/i.test(`${err.name} ${err.message}`)) throw new Error('encrypted');

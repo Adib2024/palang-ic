@@ -5,7 +5,7 @@
 import { initPage } from './page.js';
 import { t, todayDMY } from './i18n.js';
 import {
-  loadPdfLib, openForRender, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey,
+  loadPdfLib, openForRender, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit,
 } from './pdf-kit.js';
 import { renderPages } from './page-viewer.js';
 import { initSignatureMaker, textCanvas, trim } from './sig-maker.js';
@@ -70,7 +70,7 @@ export function addItem(canvas, widthFrac) {
 export async function buildSigned() {
   if (!placer.items.length) throw new Error('empty');
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(input.bytes, { updateMetadata: false });
+  const doc = await loadForEdit(input.bytes, { updateMetadata: false });
   await placer.drawInto(PDFLib, doc);
   const bytes = await doc.save();
   const name = safeName($('#fileName').value, `${safeName(input.name, 'dokumen')}-ditandatangan`);

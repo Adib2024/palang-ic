@@ -1,7 +1,7 @@
 // Workflow engine: each step takes PDF bytes plus its options and returns new
 // PDF bytes. Pure functions (no page UI), so steps can be chained in any
 // order the user picks. Everything runs in this tab; nothing is uploaded.
-import { loadPdfLib, openForRender, renderPage } from './pdf-kit.js';
+import { loadPdfLib, openForRender, renderPage, loadForEdit } from './pdf-kit.js';
 import { writePdf } from './pdf.js';
 import { loadPhoto } from './image-loader.js';
 import { TEMPLATES, todayDMY } from './i18n.js';
@@ -95,7 +95,7 @@ export async function buildInput(files, palang) {
     if (isPdfFile(f)) {
       let src;
       try {
-        src = await L.PDFDocument.load(new Uint8Array(await f.arrayBuffer()), { updateMetadata: false });
+        src = await loadForEdit(new Uint8Array(await f.arrayBuffer()), { updateMetadata: false });
       } catch (err) {
         const e = new Error(/encrypt/i.test(String(err && err.message)) ? 'encrypted' : 'pdf');
         e.file = f.name;
@@ -130,7 +130,7 @@ export async function buildInput(files, palang) {
 /** Watermark text across each page, centred (large) or tiled, at 45°. */
 export async function watermark(bytes, o) {
   const L = await loadPdfLib();
-  const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
+  const doc = await loadForEdit(bytes, { updateMetadata: false });
   const cache = {};
   for (const page of doc.getPages()) {
     await (await stampsMod()).stampPage(doc, page, L, cache, {
@@ -143,7 +143,7 @@ export async function watermark(bytes, o) {
 /** Page numbers: "1", "1 / N" at one of six positions. */
 export async function pagenum(bytes, o) {
   const L = await loadPdfLib();
-  const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
+  const doc = await loadForEdit(bytes, { updateMetadata: false });
   const total = doc.getPageCount();
   const cache = {};
   const pages = doc.getPages();
@@ -156,7 +156,7 @@ export async function pagenum(bytes, o) {
 /** Rotate every page by `deg` (90, 180, 270). */
 export async function rotate(bytes, o) {
   const L = await loadPdfLib();
-  const doc = await L.PDFDocument.load(bytes, { updateMetadata: false });
+  const doc = await loadForEdit(bytes, { updateMetadata: false });
   for (const p of doc.getPages()) p.setRotation(L.degrees((((p.getRotation().angle + Number(o.deg)) % 360) + 360) % 360));
   return doc.save();
 }

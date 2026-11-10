@@ -1,7 +1,7 @@
 // Shared building blocks for the page-based PDF tools (merge, split,
 // organise, rotate...): loading PDFs, thumbnail rendering, page cards,
 // drag-to-reorder, file drop, and rebuilding PDFs from pages with pdf-lib.
-import { loadPdfLib, openForRender, renderPage, isPdf } from './pdf-kit.js';
+import { loadPdfLib, openForRender, renderPage, isPdf, loadForEdit } from './pdf-kit.js';
 
 // Distinct, readable hues for telling source files apart.
 const HUES = [152, 222, 28, 330, 262, 190, 4, 88];
@@ -205,7 +205,7 @@ export async function buildFromPages(list, bytesById, cache = new Map()) {
   for (const p of list) {
     let doc = cache.get(p.src);
     if (!doc) {
-      doc = await PDFLib.PDFDocument.load(bytesById.get(p.src), { updateMetadata: false });
+      doc = await loadForEdit(bytesById.get(p.src), { updateMetadata: false });
       cache.set(p.src, doc);
     }
     const [copy] = await out.copyPages(doc, [p.index]);
@@ -254,7 +254,7 @@ export function createPreview(canvas) {
     timer = setTimeout(async () => {
       try {
         const PDFLib = await loadPdfLib();
-        const src = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
+        const src = await loadForEdit(bytes, { updateMetadata: false });
         const doc = await PDFLib.PDFDocument.create();
         const [p] = await doc.copyPages(src, [index]);
         doc.addPage(p);

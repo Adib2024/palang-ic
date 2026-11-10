@@ -246,6 +246,28 @@ async function dragOn(page, sel, from, to) {
         assert.strictEqual(rt2[0].text.trim(), '');
         assert.match(rt2[1].text, /MUKA SURAT DUA KEKAL/);
       });
+      // Statements from banks / EPF are often locked with an empty open
+      // password and "no editing" rules: redacting must still work.
+      const locked = await page.evaluate(async (b64) => {
+        const { protectPdf } = await import('/js/pdf-security.js');
+        const { permissions } = await import('/js/pdf-crypto.js');
+        const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+        const out = await protectPdf(bytes, '', 'pemilik-rahsia', permissions({ print: true, copy: false }));
+        let s = ''; for (let i = 0; i < out.length; i += 0x8000) s += String.fromCharCode(...out.subarray(i, i + 0x8000));
+        return btoa(s);
+      }, docs.statement);
+      await page.setInputFiles('#pickFiles', [pdf('penyata-berkunci.pdf', locked)]);
+      // Wait for this file (by name), not just "2 pages", which the previous file also had.
+      await page.waitForFunction(() => document.querySelector('#docTitle').textContent === 'penyata-berkunci.pdf' && window.__redact.views.length === 2, null, { timeout: 30000 })
+        .catch(async (e) => { throw new Error(`locked PDF did not open: ${await page.textContent('#status')} (${e.message})`); });
+      await page.click('[data-find="ic"]');
+      await page.waitForFunction(() => window.__redact.boxes.length === 1);
+      const red3 = await save();
+      const rt3 = await page.evaluate(readPdf, red3.b64);
+      check(`${label}: a "no editing" locked statement can be redacted (page 2 text kept)`, () => {
+        assert.strictEqual(rt3[0].text.trim(), '');
+        assert.match(rt3[1].text, /MUKA SURAT DUA KEKAL/);
+      });
 
       /* ---------- Fill form ---------- */
       await page.goto(origin + '/isi-borang/');

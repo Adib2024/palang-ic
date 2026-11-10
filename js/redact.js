@@ -5,7 +5,7 @@
 import { createUndo, mountUndoButtons } from './undo.js';
 import { initPage } from './page.js';
 import { t } from './i18n.js';
-import { loadPdfJs, loadPdfLib, renderPage, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfJs, loadPdfLib, renderPage, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { openPdfs, bindFileDrop } from './pdf-pages.js';
 import { renderPages, fracPoint, placeFrac } from './page-viewer.js';
 
@@ -193,7 +193,7 @@ const jpeg = (c) => new Promise((r) => c.toBlob(async (b) => r(new Uint8Array(aw
 export async function buildOutput() {
   if (!boxes.length) throw new Error('empty');
   const PDFLib = await loadPdfLib();
-  const original = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const original = await loadForEdit(src.bytes, { updateMetadata: false });
   const out = await PDFLib.PDFDocument.create();
   for (const v of views) {
     const mine = boxes.filter((b) => b.page === v.index);

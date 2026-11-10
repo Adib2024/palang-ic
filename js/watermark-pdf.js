@@ -4,7 +4,7 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
 import { loadPhoto } from './image-loader.js';
-import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { createBatch, batchSummary } from './batch.js';
 import { openPdfs, bindFileDrop, parseRanges, createPreview } from './pdf-pages.js';
 import { stampPage } from './pdf-stamps.js';
@@ -43,7 +43,7 @@ function targetPages(n) {
 export async function buildOutput(bytes = src.bytes, outName = safeName($('#fileName').value, 'dokumen')) {
   if (settings.type === 'image' && !imagePng) throw new Error('noimage');
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
+  const doc = await loadForEdit(bytes, { updateMetadata: false });
   const targets = targetPages(doc.getPageCount());
   if (!targets) throw new Error('ranges');
   const cache = {};

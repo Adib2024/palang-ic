@@ -3,7 +3,7 @@
 // Optionally flattens the form. Runs in this tab; nothing is uploaded.
 import { initPage } from './page.js';
 import { t } from './i18n.js';
-import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { openPdfs, bindFileDrop } from './pdf-pages.js';
 import { renderPages, placeFrac } from './page-viewer.js';
 
@@ -47,7 +47,7 @@ function typeOf(PDFLib, f) {
 
 async function buildOverlay() {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await loadForEdit(src.bytes, { updateMetadata: false });
   const form = doc.getForm();
   fields = [];
   for (const f of form.getFields()) {
@@ -111,7 +111,7 @@ async function buildOverlay() {
 /** Write the entered values into the PDF (optionally flattened). */
 export async function buildOutput() {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await loadForEdit(src.bytes, { updateMetadata: false });
   const form = doc.getForm();
   for (const fe of fields) {
     const f = form.getField(fe.name);

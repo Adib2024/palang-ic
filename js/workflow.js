@@ -6,7 +6,7 @@ import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
 import {
-  loadPdfLib, openForRender, formatSize, safeName, download, shareOrDownload,
+  loadPdfLib, openForRender, formatSize, safeName, download, shareOrDownload, loadForEdit,
 } from './pdf-kit.js';
 import { bindFileDrop, moveItem } from './pdf-pages.js';
 import { renderPages } from './page-viewer.js';
@@ -410,7 +410,7 @@ async function placeStep(bytes, token) {
     if (!go || token !== runToken) throw new Error('cancelled');
     if (!placer.items.length) return bytes;
     const L = await loadPdfLib();
-    const pdf = await L.PDFDocument.load(bytes, { updateMetadata: false });
+    const pdf = await loadForEdit(bytes, { updateMetadata: false });
     await placer.drawInto(L, pdf);
     return pdf.save();
   } finally {

@@ -3,7 +3,7 @@
 import { initPage } from './page.js';
 import { t } from './i18n.js';
 import * as store from './storage.js';
-import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, isPdf, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { createBatch, batchSummary } from './batch.js';
 import { openPdfs, bindFileDrop, createPreview } from './pdf-pages.js';
 import { numberPage } from './pdf-stamps.js';
@@ -37,7 +37,7 @@ function number(doc, page, PDFLib, n, total, cache) {
 /** Build the numbered PDF. */
 export async function buildOutput(bytes = src.bytes, outName = safeName($('#fileName').value, 'dokumen')) {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
+  const doc = await loadForEdit(bytes, { updateMetadata: false });
   const total = doc.getPageCount();
   const first = settings.skipFirst ? 1 : 0;
   const start = Math.max(0, Math.floor(Number(settings.start) || 1));

@@ -1,7 +1,7 @@
 // Flatten a PDF: form fields and comments/stamps become part of the page so
 // they can't be edited or removed any more. Optionally every page becomes a
 // picture (strongest: nothing left to edit or copy). Pure pdf-lib / pdf.js.
-import { loadPdfLib, openForRender, renderPage } from './pdf-kit.js';
+import { loadPdfLib, openForRender, renderPage, loadForEdit } from './pdf-kit.js';
 
 const isDict = (o) => o && typeof o.entries === 'function' && typeof o.set === 'function';
 const isArray = (o) => o && typeof o.asArray === 'function';
@@ -11,7 +11,7 @@ const SKIP = new Set(['/Link', '/Popup', '/Widget']);
 async function open(bytes) {
   const L = await loadPdfLib();
   try {
-    return { L, doc: await L.PDFDocument.load(bytes, { updateMetadata: false }) };
+    return { L, doc: await loadForEdit(bytes, { updateMetadata: false }) };
   } catch (err) {
     if (err && /encrypt/i.test(`${err.name} ${err.message}`)) throw new Error('encrypted');
     throw err;

@@ -2,7 +2,7 @@
 // (sets CropBox/MediaBox). Runs in this tab; nothing is uploaded.
 import { initPage } from './page.js';
 import { t } from './i18n.js';
-import { loadPdfLib, renderPage, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, renderPage, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { openPdfs, bindFileDrop, displayToUser, displaySize } from './pdf-pages.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -94,7 +94,7 @@ export function setRect(r) { rect = { ...r }; sync(); }
 /** Build the cropped PDF. */
 export async function buildOutput() {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await loadForEdit(src.bytes, { updateMetadata: false });
   const targets = scope === 'all' ? doc.getPages() : [doc.getPage(current)];
   for (const pg of targets) {
     const { width: Dw, height: Dh } = displaySize(pg);

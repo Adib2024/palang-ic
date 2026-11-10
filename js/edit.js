@@ -4,7 +4,7 @@
 import { initPage } from './page.js';
 import { t } from './i18n.js';
 import { loadPhoto } from './image-loader.js';
-import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey } from './pdf-kit.js';
+import { loadPdfLib, formatSize, safeName, download, shareOrDownload, openErrorKey, loadForEdit } from './pdf-kit.js';
 import { openPdfs, bindFileDrop, displayToUser } from './pdf-pages.js';
 import { renderPages, fracPoint, placeFrac } from './page-viewer.js';
 import {
@@ -400,7 +400,7 @@ function hexToRgb(PDFLib, hex) {
 /** Write all edits into a copy of the PDF. */
 export async function buildOutput() {
   const PDFLib = await loadPdfLib();
-  const doc = await PDFLib.PDFDocument.load(src.bytes, { updateMetadata: false });
+  const doc = await loadForEdit(src.bytes, { updateMetadata: false });
   for (const view of views) {
     const pg = doc.getPage(view.index);
     const Dw = view.vp.width;

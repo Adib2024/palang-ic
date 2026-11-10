@@ -22,6 +22,29 @@ export function loadPdfLib() {
   return pdfLibPromise;
 }
 
+/**
+ * Open a PDF with pdf-lib for editing. Many statements (banks, EPF, LHDN)
+ * are encrypted with an empty open password and only "no editing" rules:
+ * pdf.js shows them, but pdf-lib refuses them. Those are unlocked here first
+ * (same code as Unlock PDF, loaded only when needed). A file that really
+ * needs a password still throws, with "encrypted" in the message.
+ */
+export async function loadForEdit(bytes, opts = { updateMetadata: false }) {
+  const L = await loadPdfLib();
+  try {
+    return await L.PDFDocument.load(bytes, opts);
+  } catch (err) {
+    if (!/encrypt/i.test(String(err && err.message))) throw err;
+    let plain;
+    try {
+      plain = await (await import('./pdf-security.js')).unlockPdf(bytes, '');
+    } catch {
+      throw new Error('encrypted: needs a password');
+    }
+    return L.PDFDocument.load(plain, opts);
+  }
+}
+
 /** Open a PDF for rendering. `bytes` is copied because pdf.js takes ownership. */
 export async function openForRender(bytes) {
   const pdfjs = await loadPdfJs();
@@ -122,6 +145,7 @@ export async function shareFiles(files, title) {
 
 /** Friendly message key for a PDF that couldn't be opened. */
 export function openErrorKey(err) {
-  const msg = String((err && (err.name || err.message)) || '');
+  // Both: pdf-lib's errors are all named "Error"; the reason is in the message.
+  const msg = err ? `${err.name || ''} ${err.message || ''}` : '';
   return /password|encrypt/i.test(msg) ? 'pdfEncrypted' : 'pdfOpenError';
 }

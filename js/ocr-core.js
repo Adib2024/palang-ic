@@ -1,7 +1,7 @@
 // OCR engine shared by the OCR PDF tool and workflows: tesseract.js (served by
 // this site) recognises Malay/English text, which is laid over each page as an
 // invisible text layer so the PDF can be searched and copied.
-import { loadPdfLib, renderPage } from './pdf-kit.js';
+import { loadPdfLib, renderPage, loadForEdit } from './pdf-kit.js';
 import { displayToUser, displaySize } from './pdf-pages.js';
 import { loadPhoto } from './image-loader.js';
 
@@ -100,7 +100,7 @@ export async function ocrDocument(inp, o) {
   try {
     const L = await loadPdfLib();
     const out = inp.kind === 'pdf'
-      ? await L.PDFDocument.load(inp.bytes, { updateMetadata: false })
+      ? await loadForEdit(inp.bytes, { updateMetadata: false })
       : await L.PDFDocument.create();
     const font = await out.embedFont(L.StandardFonts.Helvetica);
     const texts = [];
