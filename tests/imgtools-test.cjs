@@ -44,6 +44,13 @@ const pdfBoxes = (file) => JSON.parse(execFileSync('python3', ['-I', '-c', [
       await page.waitForSelector('#stepsBar');
       await page.setInputFiles('#pickFiles', BACK);
       await page.waitForFunction(() => window.__imgnote.photo);
+      // The canvas starts at 800×600 and takes the photo's shape on the next frame:
+      // measure only after that, or taps land in the wrong place on slow machines.
+      await page.waitForFunction(() => {
+        const c = document.querySelector('#ntCanvas');
+        const p = window.__imgnote.photo.canvas;
+        return Math.abs(c.width / c.height - p.width / p.height) < 0.01;
+      });
       const cv = async () => page.$eval('#ntCanvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
       let b = await cv();
       // Tap → a text note where tapped; typing changes it.

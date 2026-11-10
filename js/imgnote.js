@@ -139,14 +139,16 @@ function paint(c, W, H, { preview = false } = {}) {
 let raf = 0;
 function draw() {
   cancelAnimationFrame(raf);
+  if (!photo) return;
+  // Size the canvas now (not on the next frame) so the page doesn't jump and
+  // a tap right after loading lands where it was aimed.
+  const cv = $('#ntCanvas');
+  const s = Math.min(1, PREVIEW_MAX / Math.max(photo.canvas.width, photo.canvas.height));
+  const W = Math.round(photo.canvas.width * s);
+  const H = Math.round(photo.canvas.height * s);
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
   raf = requestAnimationFrame(() => {
-    if (!photo) return;
-    const cv = $('#ntCanvas');
-    const s = Math.min(1, PREVIEW_MAX / Math.max(photo.canvas.width, photo.canvas.height));
-    const W = Math.round(photo.canvas.width * s);
-    const H = Math.round(photo.canvas.height * s);
-    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
-    boxes = paint(cv, W, H, { preview: true });
+    if (photo) boxes = paint(cv, W, H, { preview: true });
   });
 }
 
